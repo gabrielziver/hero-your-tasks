@@ -48,7 +48,7 @@ const Profile = () => {
 
   const handleSave = async () => {
     if (!username.trim()) {
-      toast.error("Username cannot be empty");
+      toast.error("O nome de usuário não pode estar vazio");
       return;
     }
 
@@ -63,12 +63,12 @@ const Profile = () => {
 
     if (error) {
       if (error.code === "23505") {
-        toast.error("Username already taken");
+        toast.error("Nome de usuário já está em uso");
       } else {
-        toast.error("Failed to update profile");
+        toast.error("Falha ao atualizar perfil");
       }
     } else {
-      toast.success("Profile updated!");
+      toast.success("Perfil atualizado!");
       loadProfile(user.id);
     }
     setSaving(false);
@@ -79,7 +79,7 @@ const Profile = () => {
       <div className="min-h-screen bg-background">
         <NavBar />
         <div className="container mx-auto px-4 py-8">
-          <div className="text-center text-muted-foreground">Loading...</div>
+          <div className="text-center text-muted-foreground">Carregando...</div>
         </div>
       </div>
     );
@@ -93,7 +93,7 @@ const Profile = () => {
           <CardHeader>
             <CardTitle className="flex items-center gap-3 text-foreground">
               <User className="w-6 h-6 text-primary" />
-              Hero Profile
+              Perfil do Herói
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-6">
@@ -102,17 +102,17 @@ const Profile = () => {
               <Input id="email" value={email} disabled className="bg-muted" />
             </div>
             <div>
-              <Label htmlFor="username">Username</Label>
+              <Label htmlFor="username">Nome de usuário</Label>
               <Input
                 id="username"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
-                placeholder="Enter your hero name"
+                placeholder="Digite o nome do seu herói"
                 disabled={saving}
               />
             </div>
             <Button onClick={handleSave} disabled={saving} className="w-full bg-gradient-hero">
-              {saving ? "Saving..." : "Save Profile"}
+              {saving ? "Salvando..." : "Salvar Perfil"}
             </Button>
           </CardContent>
         </Card>

@@ -45,7 +45,7 @@ const Dashboard = () => {
       .single();
 
     if (error) {
-      toast.error("Failed to load stats");
+      toast.error("Falha ao carregar estatísticas");
       console.error(error);
     } else {
       setStats(data);
@@ -62,7 +62,7 @@ const Dashboard = () => {
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
-        <div className="text-xl text-foreground">Loading your quest...</div>
+        <div className="text-xl text-foreground">Carregando sua missão...</div>
       </div>
     );
   }
@@ -80,7 +80,7 @@ const Dashboard = () => {
           {/* Quests Section */}
           <div className="lg:col-span-2">
             <div className="flex justify-between items-center mb-6">
-              <h2 className="text-3xl font-bold text-foreground">Daily Quests</h2>
+              <h2 className="text-3xl font-bold text-foreground">Missões Diárias</h2>
               <CreateQuestDialog onQuestCreated={refreshStats} />
             </div>
             <QuestList onQuestCompleted={refreshStats} />

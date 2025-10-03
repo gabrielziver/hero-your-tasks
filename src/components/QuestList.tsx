@@ -41,7 +41,7 @@ const QuestList = ({ onQuestCompleted }: QuestListProps) => {
       .order("created_at", { ascending: false });
 
     if (error) {
-      toast.error("Failed to load quests");
+      toast.error("Falha ao carregar missões");
       console.error(error);
     } else {
       setQuests(data || []);
@@ -59,11 +59,11 @@ const QuestList = ({ onQuestCompleted }: QuestListProps) => {
     } else {
       const result = data as any;
       if (result.level_up) {
-        toast.success(`🎉 Level Up! You reached level ${result.new_level}!`, {
+        toast.success(`🎉 Subiu de Nível! Você alcançou o nível ${result.new_level}!`, {
           duration: 5000,
         });
       } else {
-        toast.success(`⚔️ Quest Complete! +${result.xp_gained} XP, +${result.gold_gained} Gold`);
+        toast.success(`⚔️ Missão Completa! +${result.xp_gained} XP, +${result.gold_gained} Ouro`);
       }
       loadQuests();
       onQuestCompleted();
@@ -77,9 +77,9 @@ const QuestList = ({ onQuestCompleted }: QuestListProps) => {
       .eq("id", questId);
 
     if (error) {
-      toast.error("Failed to delete quest");
+      toast.error("Falha ao deletar missão");
     } else {
-      toast.success("Quest deleted");
+      toast.success("Missão deletada");
       loadQuests();
     }
   };
@@ -95,8 +95,17 @@ const QuestList = ({ onQuestCompleted }: QuestListProps) => {
     }
   };
 
+  const getPriorityLabel = (priority: string) => {
+    switch (priority) {
+      case "high": return "alta";
+      case "medium": return "média";
+      case "low": return "baixa";
+      default: return priority;
+    }
+  };
+
   if (loading) {
-    return <div className="text-center text-muted-foreground">Loading quests...</div>;
+    return <div className="text-center text-muted-foreground">Carregando missões...</div>;
   }
 
   const activeQuests = quests.filter((q) => !q.is_completed);
@@ -106,12 +115,12 @@ const QuestList = ({ onQuestCompleted }: QuestListProps) => {
     <div className="space-y-6">
       {/* Active Quests */}
       <div>
-        <h3 className="text-xl font-semibold mb-4 text-foreground">Active Quests</h3>
+        <h3 className="text-xl font-semibold mb-4 text-foreground">Missões Ativas</h3>
         {activeQuests.length === 0 ? (
           <Card className="bg-card border-border">
             <CardContent className="p-8 text-center">
               <Sparkles className="w-12 h-12 mx-auto mb-4 text-muted-foreground" />
-              <p className="text-muted-foreground">No active quests. Create your first quest to begin!</p>
+              <p className="text-muted-foreground">Sem missões ativas. Crie sua primeira missão para começar!</p>
             </CardContent>
           </Card>
         ) : (
@@ -134,7 +143,7 @@ const QuestList = ({ onQuestCompleted }: QuestListProps) => {
                           </div>
                           <div className="flex flex-wrap gap-2">
                             <Badge variant="outline" className={getPriorityColor(quest.priority)}>
-                              {quest.priority}
+                              {getPriorityLabel(quest.priority)}
                             </Badge>
                             <Badge variant="outline" className="bg-muted text-muted-foreground">
                               {quest.category}
@@ -143,7 +152,7 @@ const QuestList = ({ onQuestCompleted }: QuestListProps) => {
                               +{quest.xp_reward} XP
                             </Badge>
                             <Badge variant="outline" className="bg-secondary/10 text-secondary">
-                              +{quest.gold_reward} Gold
+                              +{quest.gold_reward} Ouro
                             </Badge>
                           </div>
                         </div>
@@ -168,7 +177,7 @@ const QuestList = ({ onQuestCompleted }: QuestListProps) => {
       {/* Completed Quests */}
       {completedQuests.length > 0 && (
         <div>
-          <h3 className="text-xl font-semibold mb-4 text-muted-foreground">Completed Quests</h3>
+          <h3 className="text-xl font-semibold mb-4 text-muted-foreground">Missões Completas</h3>
           <div className="space-y-3">
             {completedQuests.map((quest) => (
               <Card key={quest.id} className="bg-muted/20 border-border opacity-60">

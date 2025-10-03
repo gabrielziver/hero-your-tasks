@@ -12,9 +12,9 @@ const NavBar = () => {
   const handleSignOut = async () => {
     const { error } = await supabase.auth.signOut();
     if (error) {
-      toast.error("Failed to sign out");
+      toast.error("Falha ao sair");
     } else {
-      toast.success("Signed out successfully");
+      toast.success("Saiu com sucesso");
       navigate("/");
     }
   };
@@ -33,24 +33,24 @@ const NavBar = () => {
             <Link to="/dashboard">
               <Button variant={isActive("/dashboard") ? "default" : "ghost"} size="sm" className={isActive("/dashboard") ? "bg-gradient-hero" : ""}>
                 <Home className="w-4 h-4 mr-2" />
-                Quests
+                Missões
               </Button>
             </Link>
             <Link to="/leaderboard">
               <Button variant={isActive("/leaderboard") ? "default" : "ghost"} size="sm" className={isActive("/leaderboard") ? "bg-gradient-hero" : ""}>
                 <Trophy className="w-4 h-4 mr-2" />
-                Leaderboard
+                Ranking
               </Button>
             </Link>
             <Link to="/profile">
               <Button variant={isActive("/profile") ? "default" : "ghost"} size="sm" className={isActive("/profile") ? "bg-gradient-hero" : ""}>
                 <User className="w-4 h-4 mr-2" />
-                Profile
+                Perfil
               </Button>
             </Link>
             <Button variant="ghost" size="sm" onClick={handleSignOut}>
               <LogOut className="w-4 h-4 mr-2" />
-              Sign Out
+              Sair
             </Button>
           </div>
         </div>

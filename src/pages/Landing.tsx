@@ -19,14 +19,14 @@ const Landing = () => {
             TaskHero
           </h1>
           <p className="text-2xl md:text-3xl mb-4 text-foreground font-semibold">
-            Turn your tasks into quests.
+            Transforme suas tarefas em missões.
           </p>
           <p className="text-xl md:text-2xl mb-12 text-muted-foreground">
-            Level up your life.
+            Suba de nível na vida.
           </p>
           <Link to="/auth">
             <Button size="lg" className="text-xl px-12 py-8 bg-gradient-hero hover:shadow-glow-primary transition-all duration-300 transform hover:scale-105">
-              Start Free
+              Começar Grátis
             </Button>
           </Link>
         </div>
@@ -40,29 +40,29 @@ const Landing = () => {
       <section className="py-24 px-4">
         <div className="max-w-6xl mx-auto">
           <h2 className="text-4xl md:text-5xl font-bold text-center mb-16 text-foreground">
-            How It Works
+            Como Funciona
           </h2>
           
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
             <FeatureCard
               icon={<Sword className="w-12 h-12 text-primary" />}
-              title="Create Quests"
-              description="Transform your daily tasks into epic quests. Each quest is a step toward greatness."
+              title="Criar Missões"
+              description="Transforme suas tarefas diárias em missões épicas. Cada missão é um passo rumo à grandeza."
             />
             <FeatureCard
               icon={<Zap className="w-12 h-12 text-secondary" />}
-              title="Earn XP & Level Up"
-              description="Complete quests to gain experience points. Level up your character and unlock your potential."
+              title="Ganhe XP e Suba de Nível"
+              description="Complete missões para ganhar pontos de experiência. Suba o nível do seu personagem e libere seu potencial."
             />
             <FeatureCard
               icon={<Trophy className="w-12 h-12 text-primary" />}
-              title="Collect Rewards"
-              description="Earn gold coins and epic loot. Build streaks for bonus rewards and special achievements."
+              title="Colete Recompensas"
+              description="Ganhe moedas de ouro e tesouros épicos. Construa sequências para recompensas bônus e conquistas especiais."
             />
             <FeatureCard
               icon={<Users className="w-12 h-12 text-secondary" />}
-              title="Compete & Rise"
-              description="Climb the leaderboard. Compare your progress with friends and become a legend."
+              title="Compete e Cresça"
+              description="Suba no ranking. Compare seu progresso com amigos e torne-se uma lenda."
             />
           </div>
         </div>
@@ -72,14 +72,14 @@ const Landing = () => {
       <section className="py-24 px-4 bg-gradient-card">
         <div className="max-w-4xl mx-auto text-center">
           <h2 className="text-4xl md:text-5xl font-bold mb-6 text-foreground">
-            Ready to Become a Hero?
+            Pronto para Se Tornar um Herói?
           </h2>
           <p className="text-xl text-muted-foreground mb-12">
-            Join thousands of heroes leveling up their lives, one quest at a time.
+            Junte-se a milhares de heróis evoluindo suas vidas, uma missão por vez.
           </p>
           <Link to="/auth">
             <Button size="lg" className="text-xl px-12 py-8 bg-gradient-gold text-card hover:shadow-glow-gold transition-all duration-300 transform hover:scale-105">
-              Begin Your Journey
+              Comece Sua Jornada
             </Button>
           </Link>
         </div>
@@ -88,7 +88,7 @@ const Landing = () => {
       {/* Footer */}
       <footer className="py-8 px-4 border-t border-border">
         <div className="max-w-6xl mx-auto text-center text-muted-foreground">
-          <p>© 2025 TaskHero. Level up your life.</p>
+          <p>© 2025 TaskHero. Evolua sua vida.</p>
         </div>
       </footer>
     </div>

@@ -27,11 +27,11 @@ const Auth = () => {
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!email || !password) {
-      toast.error("Please fill in all fields");
+      toast.error("Por favor, preencha todos os campos");
       return;
     }
     if (password.length < 6) {
-      toast.error("Password must be at least 6 characters");
+      toast.error("A senha deve ter pelo menos 6 caracteres");
       return;
     }
 
@@ -47,7 +47,7 @@ const Auth = () => {
     if (error) {
       toast.error(error.message);
     } else {
-      toast.success("Account created! Welcome, Hero!");
+      toast.success("Conta criada! Bem-vindo, Herói!");
       navigate("/dashboard");
     }
     setLoading(false);
@@ -56,7 +56,7 @@ const Auth = () => {
   const handleSignIn = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!email || !password) {
-      toast.error("Please fill in all fields");
+      toast.error("Por favor, preencha todos os campos");
       return;
     }
 
@@ -69,7 +69,7 @@ const Auth = () => {
     if (error) {
       toast.error(error.message);
     } else {
-      toast.success("Welcome back, Hero!");
+      toast.success("Bem-vindo de volta, Herói!");
       navigate("/dashboard");
     }
     setLoading(false);
@@ -83,14 +83,14 @@ const Auth = () => {
             TaskHero
           </CardTitle>
           <CardDescription className="text-center">
-            Begin your epic journey
+            Comece sua jornada épica
           </CardDescription>
         </CardHeader>
         <CardContent>
           <Tabs defaultValue="signin" className="w-full">
             <TabsList className="grid w-full grid-cols-2 mb-6">
-              <TabsTrigger value="signin">Sign In</TabsTrigger>
-              <TabsTrigger value="signup">Sign Up</TabsTrigger>
+              <TabsTrigger value="signin">Entrar</TabsTrigger>
+              <TabsTrigger value="signup">Cadastrar-se</TabsTrigger>
             </TabsList>
             
             <TabsContent value="signin">
@@ -102,12 +102,12 @@ const Auth = () => {
                     type="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    placeholder="hero@example.com"
+                    placeholder="heroi@exemplo.com"
                     disabled={loading}
                   />
                 </div>
                 <div>
-                  <Label htmlFor="signin-password">Password</Label>
+                  <Label htmlFor="signin-password">Senha</Label>
                   <Input
                     id="signin-password"
                     type="password"
@@ -118,7 +118,7 @@ const Auth = () => {
                   />
                 </div>
                 <Button type="submit" className="w-full bg-gradient-hero" disabled={loading}>
-                  {loading ? "Loading..." : "Sign In"}
+                  {loading ? "Entrando..." : "Entrar"}
                 </Button>
               </form>
             </TabsContent>
@@ -132,12 +132,12 @@ const Auth = () => {
                     type="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    placeholder="hero@example.com"
+                    placeholder="heroi@exemplo.com"
                     disabled={loading}
                   />
                 </div>
                 <div>
-                  <Label htmlFor="signup-password">Password</Label>
+                  <Label htmlFor="signup-password">Senha</Label>
                   <Input
                     id="signup-password"
                     type="password"
@@ -148,7 +148,7 @@ const Auth = () => {
                   />
                 </div>
                 <Button type="submit" className="w-full bg-gradient-hero" disabled={loading}>
-                  {loading ? "Creating Account..." : "Create Account"}
+                  {loading ? "Criando conta..." : "Criar Conta"}
                 </Button>
               </form>
             </TabsContent>

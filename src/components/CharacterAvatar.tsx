@@ -22,7 +22,7 @@ const CharacterAvatar = ({ stats }: CharacterAvatarProps) => {
               <User className="w-16 h-16 text-primary" />
             </div>
             <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 bg-gradient-gold text-card px-4 py-1 rounded-full font-bold text-sm shadow-glow-gold">
-              Level {stats.level}
+              Nível {stats.level}
             </div>
           </div>
         </div>
@@ -42,10 +42,10 @@ const CharacterAvatar = ({ stats }: CharacterAvatarProps) => {
 
         {/* Stats */}
         <div className="space-y-4">
-          <StatRow icon={<Star className="w-5 h-5 text-primary" />} label="Total XP" value={stats.total_xp} />
-          <StatRow icon={<Coins className="w-5 h-5 text-secondary" />} label="Gold" value={stats.gold} />
-          <StatRow icon={<Flame className="w-5 h-5 text-destructive" />} label="Streak" value={`${stats.current_streak} days`} />
-          <StatRow icon={<Star className="w-5 h-5 text-primary" />} label="Quests" value={stats.quests_completed} />
+          <StatRow icon={<Star className="w-5 h-5 text-primary" />} label="XP Total" value={stats.total_xp} />
+          <StatRow icon={<Coins className="w-5 h-5 text-secondary" />} label="Ouro" value={stats.gold} />
+          <StatRow icon={<Flame className="w-5 h-5 text-destructive" />} label="Sequência" value={`${stats.current_streak} dias`} />
+          <StatRow icon={<Star className="w-5 h-5 text-primary" />} label="Missões" value={stats.quests_completed} />
         </div>
       </CardContent>
     </Card>

@@ -22,7 +22,7 @@ const CreateQuestDialog = ({ onQuestCreated }: CreateQuestDialogProps) => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!title.trim()) {
-      toast.error("Please enter a quest title");
+      toast.error("Por favor, insira um título para a missão");
       return;
     }
 
@@ -30,7 +30,7 @@ const CreateQuestDialog = ({ onQuestCreated }: CreateQuestDialogProps) => {
     const { data: { user } } = await supabase.auth.getUser();
     
     if (!user) {
-      toast.error("You must be logged in");
+      toast.error("Você precisa estar logado");
       setLoading(false);
       return;
     }
@@ -48,10 +48,10 @@ const CreateQuestDialog = ({ onQuestCreated }: CreateQuestDialogProps) => {
     });
 
     if (error) {
-      toast.error("Failed to create quest");
+      toast.error("Falha ao criar missão");
       console.error(error);
     } else {
-      toast.success("Quest created!");
+      toast.success("Missão criada!");
       setTitle("");
       setCategory("general");
       setPriority("medium");
@@ -66,57 +66,57 @@ const CreateQuestDialog = ({ onQuestCreated }: CreateQuestDialogProps) => {
       <DialogTrigger asChild>
         <Button className="bg-gradient-hero">
           <Plus className="w-4 h-4 mr-2" />
-          New Quest
+          Nova Missão
         </Button>
       </DialogTrigger>
       <DialogContent className="bg-card border-border">
         <DialogHeader>
-          <DialogTitle className="text-foreground">Create New Quest</DialogTitle>
+          <DialogTitle className="text-foreground">Criar Nova Missão</DialogTitle>
           <DialogDescription className="text-muted-foreground">
-            Add a new quest to your journey
+            Adicione uma nova missão à sua jornada
           </DialogDescription>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <Label htmlFor="title">Quest Title</Label>
+            <Label htmlFor="title">Título da Missão</Label>
             <Input
               id="title"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              placeholder="Enter your quest..."
+              placeholder="Digite sua missão..."
               disabled={loading}
             />
           </div>
           <div>
-            <Label htmlFor="category">Category</Label>
+            <Label htmlFor="category">Categoria</Label>
             <Select value={category} onValueChange={setCategory} disabled={loading}>
               <SelectTrigger>
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="general">General</SelectItem>
-                <SelectItem value="work">Work</SelectItem>
-                <SelectItem value="health">Health</SelectItem>
-                <SelectItem value="learning">Learning</SelectItem>
-                <SelectItem value="personal">Personal</SelectItem>
+                <SelectItem value="general">Geral</SelectItem>
+                <SelectItem value="work">Trabalho</SelectItem>
+                <SelectItem value="health">Saúde</SelectItem>
+                <SelectItem value="learning">Aprendizado</SelectItem>
+                <SelectItem value="personal">Pessoal</SelectItem>
               </SelectContent>
             </Select>
           </div>
           <div>
-            <Label htmlFor="priority">Priority</Label>
+            <Label htmlFor="priority">Prioridade</Label>
             <Select value={priority} onValueChange={setPriority} disabled={loading}>
               <SelectTrigger>
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="low">Low (10 XP, 5 Gold)</SelectItem>
-                <SelectItem value="medium">Medium (20 XP, 10 Gold)</SelectItem>
-                <SelectItem value="high">High (30 XP, 15 Gold)</SelectItem>
+                <SelectItem value="low">Baixa (10 XP, 5 Ouro)</SelectItem>
+                <SelectItem value="medium">Média (20 XP, 10 Ouro)</SelectItem>
+                <SelectItem value="high">Alta (30 XP, 15 Ouro)</SelectItem>
               </SelectContent>
             </Select>
           </div>
           <Button type="submit" className="w-full bg-gradient-hero" disabled={loading}>
-            {loading ? "Creating..." : "Create Quest"}
+            {loading ? "Criando..." : "Criar Missão"}
           </Button>
         </form>
       </DialogContent>
