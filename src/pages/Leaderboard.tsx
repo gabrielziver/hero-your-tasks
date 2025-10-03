@@ -33,30 +33,47 @@ const Leaderboard = () => {
   }, [navigate]);
 
   const loadLeaderboard = async () => {
-    const { data, error } = await supabase
+    const { data: statsData, error: statsError } = await supabase
       .from("user_stats")
-      .select(`
-        user_id,
-        level,
-        total_xp,
-        quests_completed,
-        profiles (username)
-      `)
+      .select("user_id, level, total_xp, quests_completed")
       .order("total_xp", { ascending: false })
       .limit(10);
 
-    if (error) {
-      console.error(error);
-    } else {
-      const formatted = data.map((entry: any) => ({
-        user_id: entry.user_id,
-        username: entry.profiles?.username || "Unknown Hero",
-        level: entry.level,
-        total_xp: entry.total_xp,
-        quests_completed: entry.quests_completed,
-      }));
-      setLeaderboard(formatted);
+    if (statsError) {
+      console.error(statsError);
+      setLoading(false);
+      return;
     }
+
+    if (!statsData || statsData.length === 0) {
+      setLoading(false);
+      return;
+    }
+
+    // Get usernames for all users
+    const userIds = statsData.map(stat => stat.user_id);
+    const { data: profilesData, error: profilesError } = await supabase
+      .from("profiles")
+      .select("id, username")
+      .in("id", userIds);
+
+    if (profilesError) {
+      console.error(profilesError);
+    }
+
+    const profilesMap = new Map(
+      profilesData?.map(profile => [profile.id, profile.username]) || []
+    );
+
+    const formatted = statsData.map((entry) => ({
+      user_id: entry.user_id,
+      username: profilesMap.get(entry.user_id) || "Unknown Hero",
+      level: entry.level,
+      total_xp: entry.total_xp,
+      quests_completed: entry.quests_completed,
+    }));
+
+    setLeaderboard(formatted);
     setLoading(false);
   };
 
