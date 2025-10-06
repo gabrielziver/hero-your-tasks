@@ -3,12 +3,15 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import NavBar from "@/components/NavBar";
 import CreateGroupDialog from "@/components/CreateGroupDialog";
+import CreateGroupQuestDialog from "@/components/CreateGroupQuestDialog";
+import GroupQuestList from "@/components/GroupQuestList";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Trophy, Medal, Award, Copy, Check, User } from "lucide-react";
 import { toast } from "sonner";
 import { Progress } from "@/components/ui/progress";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 interface LeaderboardEntry {
   user_id: string;
@@ -284,8 +287,14 @@ const Leaderboard = () => {
         </div>
 
         {selectedGroup ? (
-          <div className="space-y-4">
-            {leaderboard.map((entry, index) => {
+          <Tabs defaultValue="ranking" className="space-y-6">
+            <TabsList className="grid w-full grid-cols-2">
+              <TabsTrigger value="ranking">Ranking do Grupo</TabsTrigger>
+              <TabsTrigger value="quests">Missões Especiais</TabsTrigger>
+            </TabsList>
+
+            <TabsContent value="ranking" className="space-y-4">
+              {leaderboard.map((entry, index) => {
               const xpProgress = (entry.current_xp / xpForNextLevel(entry.level)) * 100;
               
               return (
@@ -356,15 +365,30 @@ const Leaderboard = () => {
               );
             })}
 
-            {leaderboard.length === 0 && (
-              <Card className="bg-card border-border">
-                <CardContent className="p-12 text-center">
-                  <Trophy className="w-16 h-16 mx-auto mb-4 text-muted-foreground" />
-                  <p className="text-muted-foreground">Nenhum herói neste grupo ainda. Convide amigos!</p>
-                </CardContent>
-              </Card>
-            )}
-          </div>
+              {leaderboard.length === 0 && (
+                <Card className="bg-card border-border">
+                  <CardContent className="p-12 text-center">
+                    <Trophy className="w-16 h-16 mx-auto mb-4 text-muted-foreground" />
+                    <p className="text-muted-foreground">Nenhum herói neste grupo ainda. Convide amigos!</p>
+                  </CardContent>
+                </Card>
+              )}
+            </TabsContent>
+
+            <TabsContent value="quests" className="space-y-4">
+              <div className="flex justify-between items-center mb-4">
+                <div>
+                  <h3 className="text-xl font-bold text-foreground">Missões Especiais</h3>
+                  <p className="text-sm text-muted-foreground">Todos os membros ganham XP ao completar</p>
+                </div>
+                <CreateGroupQuestDialog 
+                  groupId={selectedGroup} 
+                  onQuestCreated={() => {}}
+                />
+              </div>
+              <GroupQuestList groupId={selectedGroup} />
+            </TabsContent>
+          </Tabs>
         ) : (
           <Card className="bg-card border-border">
             <CardContent className="p-12 text-center">

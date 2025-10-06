@@ -50,6 +50,76 @@ export type Database = {
           },
         ]
       }
+      group_quest_completions: {
+        Row: {
+          completed_at: string
+          group_quest_id: string
+          id: string
+          user_id: string
+        }
+        Insert: {
+          completed_at?: string
+          group_quest_id: string
+          id?: string
+          user_id: string
+        }
+        Update: {
+          completed_at?: string
+          group_quest_id?: string
+          id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "group_quest_completions_group_quest_id_fkey"
+            columns: ["group_quest_id"]
+            isOneToOne: false
+            referencedRelation: "group_quests"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      group_quests: {
+        Row: {
+          created_at: string
+          created_by: string
+          description: string | null
+          group_id: string
+          id: string
+          is_active: boolean
+          title: string
+          xp_reward: number
+        }
+        Insert: {
+          created_at?: string
+          created_by: string
+          description?: string | null
+          group_id: string
+          id?: string
+          is_active?: boolean
+          title: string
+          xp_reward?: number
+        }
+        Update: {
+          created_at?: string
+          created_by?: string
+          description?: string | null
+          group_id?: string
+          id?: string
+          is_active?: boolean
+          title?: string
+          xp_reward?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "group_quests_group_id_fkey"
+            columns: ["group_id"]
+            isOneToOne: false
+            referencedRelation: "groups"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       groups: {
         Row: {
           created_at: string
@@ -85,18 +155,21 @@ export type Database = {
       profiles: {
         Row: {
           avatar_color: string | null
+          avatar_url: string | null
           created_at: string | null
           id: string
           username: string
         }
         Insert: {
           avatar_color?: string | null
+          avatar_url?: string | null
           created_at?: string | null
           id: string
           username: string
         }
         Update: {
           avatar_color?: string | null
+          avatar_url?: string | null
           created_at?: string | null
           id?: string
           username?: string
@@ -186,6 +259,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      complete_group_quest: {
+        Args: { quest_id: string }
+        Returns: Json
+      }
       complete_quest: {
         Args: { quest_id: string }
         Returns: Json
