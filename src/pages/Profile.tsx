@@ -7,8 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
-import { User, Lock } from "lucide-react";
-import AvatarSelector from "@/components/AvatarSelector";
+import { User } from "lucide-react";
 
 const Profile = () => {
   const navigate = useNavigate();
@@ -16,7 +15,7 @@ const Profile = () => {
   const [saving, setSaving] = useState(false);
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
-  const [avatarColor, setAvatarColor] = useState("#6C3AE3");
+  const [avatarUrl, setAvatarUrl] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [profile, setProfile] = useState<any>(null);
@@ -46,7 +45,7 @@ const Profile = () => {
     } else {
       setProfile(data);
       setUsername(data.username || "");
-      setAvatarColor(data.avatar_color || "#6C3AE3");
+      setAvatarUrl(data.avatar_url || "");
     }
     setLoading(false);
   };
@@ -66,7 +65,7 @@ const Profile = () => {
       .from("profiles")
       .update({ 
         username,
-        avatar_color: avatarColor,
+        avatar_url: avatarUrl || null
       })
       .eq("id", user.id);
 
@@ -87,7 +86,7 @@ const Profile = () => {
         setSaving(false);
         return;
       }
-      
+
       if (newPassword.length < 6) {
         toast.error("A senha deve ter pelo menos 6 caracteres");
         setSaving(false);
@@ -95,23 +94,19 @@ const Profile = () => {
       }
 
       const { error: passwordError } = await supabase.auth.updateUser({
-        password: newPassword,
+        password: newPassword
       });
 
       if (passwordError) {
         toast.error("Falha ao atualizar senha");
-        console.error(passwordError);
         setSaving(false);
         return;
       }
-
-      setNewPassword("");
-      setConfirmPassword("");
-      toast.success("Perfil e senha atualizados!");
-    } else {
-      toast.success("Perfil atualizado!");
     }
 
+    toast.success("Perfil atualizado!");
+    setNewPassword("");
+    setConfirmPassword("");
     loadProfile(user.id);
     setSaving(false);
   };
@@ -140,17 +135,30 @@ const Profile = () => {
           </CardHeader>
           <CardContent className="space-y-6">
             <div>
-              <Label>Avatar do Herói</Label>
-              <div className="mt-2">
-                <AvatarSelector 
-                  currentColor={avatarColor} 
-                  onSelect={setAvatarColor}
-                />
-              </div>
+              <Label htmlFor="avatarUrl">URL do Avatar RPG</Label>
+              <Input
+                id="avatarUrl"
+                value={avatarUrl}
+                onChange={(e) => setAvatarUrl(e.target.value)}
+                placeholder="https://exemplo.com/avatar.jpg"
+                disabled={saving}
+              />
+              {avatarUrl && (
+                <div className="mt-2">
+                  <img 
+                    src={avatarUrl} 
+                    alt="Avatar preview" 
+                    className="w-24 h-24 rounded-full object-cover border-2 border-primary"
+                    onError={(e) => {
+                      e.currentTarget.src = "";
+                      toast.error("URL de imagem inválida");
+                    }}
+                  />
+                </div>
+              )}
             </div>
-
             <div>
-              <Label htmlFor="username">Nome de Usuário</Label>
+              <Label htmlFor="username">Nome de usuário (Nickname)</Label>
               <Input
                 id="username"
                 value={username}
@@ -159,40 +167,36 @@ const Profile = () => {
                 disabled={saving}
               />
             </div>
-
             <div>
               <Label htmlFor="email">Email</Label>
               <Input id="email" value={email} disabled className="bg-muted" />
             </div>
-
-            <div className="space-y-4 pt-4 border-t border-border">
-              <div className="flex items-center gap-2 text-muted-foreground">
-                <Lock className="w-4 h-4" />
-                <span className="text-sm font-medium">Alterar Senha</span>
-              </div>
-              
-              <div>
-                <Label htmlFor="newPassword">Nova Senha</Label>
-                <Input
-                  id="newPassword"
-                  type="password"
-                  value={newPassword}
-                  onChange={(e) => setNewPassword(e.target.value)}
-                  placeholder="Digite a nova senha (mínimo 6 caracteres)"
-                  disabled={saving}
-                />
-              </div>
-
-              <div>
-                <Label htmlFor="confirmPassword">Confirmar Senha</Label>
-                <Input
-                  id="confirmPassword"
-                  type="password"
-                  value={confirmPassword}
-                  onChange={(e) => setConfirmPassword(e.target.value)}
-                  placeholder="Digite a senha novamente"
-                  disabled={saving}
-                />
+            
+            <div className="border-t border-border pt-6">
+              <h3 className="text-lg font-semibold mb-4 text-foreground">Alterar Senha</h3>
+              <div className="space-y-4">
+                <div>
+                  <Label htmlFor="newPassword">Nova Senha</Label>
+                  <Input
+                    id="newPassword"
+                    type="password"
+                    value={newPassword}
+                    onChange={(e) => setNewPassword(e.target.value)}
+                    placeholder="Mínimo 6 caracteres"
+                    disabled={saving}
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="confirmPassword">Confirmar Senha</Label>
+                  <Input
+                    id="confirmPassword"
+                    type="password"
+                    value={confirmPassword}
+                    onChange={(e) => setConfirmPassword(e.target.value)}
+                    placeholder="Digite a senha novamente"
+                    disabled={saving}
+                  />
+                </div>
               </div>
             </div>
 

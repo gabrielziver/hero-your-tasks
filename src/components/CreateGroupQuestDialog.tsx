@@ -41,8 +41,8 @@ const CreateGroupQuestDialog = ({ groupId, onQuestCreated }: CreateGroupQuestDia
       .insert({
         group_id: groupId,
         created_by: user.id,
-        title: title.trim(),
-        description: description.trim() || null,
+        title,
+        description,
         xp_reward: xpReward,
       });
 
@@ -70,9 +70,9 @@ const CreateGroupQuestDialog = ({ groupId, onQuestCreated }: CreateGroupQuestDia
       </DialogTrigger>
       <DialogContent className="bg-card border-border">
         <DialogHeader>
-          <DialogTitle className="text-foreground">Nova Missão Especial do Grupo</DialogTitle>
+          <DialogTitle className="text-foreground">Criar Missão Especial do Grupo</DialogTitle>
           <DialogDescription className="text-muted-foreground">
-            Todos os membros do grupo ganham XP ao completar esta missão
+            Todos os membros do grupo ganham XP quando alguém completa esta missão
           </DialogDescription>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -82,7 +82,7 @@ const CreateGroupQuestDialog = ({ groupId, onQuestCreated }: CreateGroupQuestDia
               id="title"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              placeholder="Digite o título..."
+              placeholder="Digite o título da missão..."
               disabled={loading}
             />
           </div>
@@ -92,15 +92,14 @@ const CreateGroupQuestDialog = ({ groupId, onQuestCreated }: CreateGroupQuestDia
               id="description"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              placeholder="Detalhes da missão..."
+              placeholder="Descreva a missão..."
               disabled={loading}
-              rows={3}
             />
           </div>
           <div>
-            <Label htmlFor="xp">Recompensa de XP</Label>
+            <Label htmlFor="xpReward">Recompensa de XP (para todos os membros)</Label>
             <Input
-              id="xp"
+              id="xpReward"
               type="number"
               min="10"
               max="500"

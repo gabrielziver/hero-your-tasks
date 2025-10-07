@@ -2,17 +2,21 @@ import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent } from "./ui/card";
 import { Button } from "./ui/button";
-import { Sparkles, Users, CheckCircle2 } from "lucide-react";
+import { Sparkles, Check, Users } from "lucide-react";
 import { toast } from "sonner";
 
 interface GroupQuest {
   id: string;
   title: string;
-  description: string | null;
+  description: string;
   xp_reward: number;
   created_at: string;
+  is_active: boolean;
+}
+
+interface GroupQuestWithCompletion extends GroupQuest {
   completed_by_user: boolean;
-  completions_count: number;
+  completion_count: number;
 }
 
 interface GroupQuestListProps {
@@ -20,15 +24,15 @@ interface GroupQuestListProps {
 }
 
 const GroupQuestList = ({ groupId }: GroupQuestListProps) => {
-  const [quests, setQuests] = useState<GroupQuest[]>([]);
+  const [quests, setQuests] = useState<GroupQuestWithCompletion[]>([]);
   const [loading, setLoading] = useState(true);
-  const [completingId, setCompletingId] = useState<string | null>(null);
+  const [completing, setCompleting] = useState<string | null>(null);
 
   useEffect(() => {
-    loadGroupQuests();
+    loadQuests();
   }, [groupId]);
 
-  const loadGroupQuests = async () => {
+  const loadQuests = async () => {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return;
 
@@ -45,60 +49,66 @@ const GroupQuestList = ({ groupId }: GroupQuestListProps) => {
       return;
     }
 
-    const { data: completionsData } = await supabase
-      .from("group_quest_completions")
-      .select("group_quest_id, user_id")
-      .in("group_quest_id", questsData?.map(q => q.id) || []);
+    // Get completions for these quests
+    const questIds = questsData?.map(q => q.id) || [];
+    
+    if (questIds.length === 0) {
+      setQuests([]);
+      setLoading(false);
+      return;
+    }
 
-    const formatted = questsData?.map(quest => {
+    const { data: completionsData, error: completionsError } = await supabase
+      .from("group_quest_completions")
+      .select("*")
+      .in("group_quest_id", questIds);
+
+    if (completionsError) {
+      console.error(completionsError);
+    }
+
+    const questsWithCompletions = questsData?.map(quest => {
       const completions = completionsData?.filter(c => c.group_quest_id === quest.id) || [];
+      const completedByUser = completions.some(c => c.user_id === user.id);
+      
       return {
-        id: quest.id,
-        title: quest.title,
-        description: quest.description,
-        xp_reward: quest.xp_reward,
-        created_at: quest.created_at,
-        completed_by_user: completions.some(c => c.user_id === user.id),
-        completions_count: completions.length,
+        ...quest,
+        completed_by_user: completedByUser,
+        completion_count: completions.length,
       };
     }) || [];
 
-    setQuests(formatted);
+    setQuests(questsWithCompletions);
     setLoading(false);
   };
 
-  const handleComplete = async (questId: string) => {
-    setCompletingId(questId);
+  const handleCompleteQuest = async (questId: string) => {
+    setCompleting(questId);
     
     const { data, error } = await supabase.rpc("complete_group_quest", {
       quest_id: questId,
     });
 
     if (error) {
-      if (error.message.includes("already completed")) {
-        toast.error("Você já completou esta missão");
-      } else {
-        toast.error("Erro ao completar missão");
-      }
-      console.error(error);
+      toast.error(error.message);
     } else {
-      const result = data as any;
-      toast.success(`🎉 Missão completada! Todos os membros ganharam ${result?.xp_awarded || 50} XP!`);
-      loadGroupQuests();
+      const result = data as { quest_title: string; xp_awarded: number; success: boolean };
+      toast.success(`${result.quest_title} completa! Todos ganharam ${result.xp_awarded} XP!`);
+      loadQuests();
     }
     
-    setCompletingId(null);
+    setCompleting(null);
   };
 
   if (loading) {
-    return <div className="text-center text-muted-foreground">Carregando missões...</div>;
+    return <div className="text-center text-muted-foreground">Carregando missões especiais...</div>;
   }
 
   if (quests.length === 0) {
     return (
       <Card className="bg-card border-border">
-        <CardContent className="p-8 text-center">
-          <Sparkles className="w-12 h-12 mx-auto mb-3 text-muted-foreground" />
+        <CardContent className="p-6 text-center">
+          <Sparkles className="w-12 h-12 mx-auto mb-2 text-muted-foreground" />
           <p className="text-muted-foreground">Nenhuma missão especial ainda</p>
         </CardContent>
       </Card>
@@ -108,50 +118,49 @@ const GroupQuestList = ({ groupId }: GroupQuestListProps) => {
   return (
     <div className="space-y-3">
       {quests.map((quest) => (
-        <Card 
-          key={quest.id} 
+        <Card
+          key={quest.id}
           className={`bg-gradient-card border-border transition-all ${
             quest.completed_by_user ? "opacity-60" : "hover:border-primary"
           }`}
         >
           <CardContent className="p-4">
-            <div className="flex items-start gap-3">
-              <div className="flex-shrink-0 mt-1">
-                <Sparkles className="w-5 h-5 text-secondary" />
-              </div>
-              
-              <div className="flex-1 min-w-0">
-                <h4 className="font-bold text-foreground mb-1">{quest.title}</h4>
+            <div className="flex items-start justify-between gap-4">
+              <div className="flex-1">
+                <div className="flex items-center gap-2 mb-1">
+                  <Sparkles className="w-5 h-5 text-secondary" />
+                  <h3 className="font-bold text-foreground">{quest.title}</h3>
+                </div>
                 {quest.description && (
                   <p className="text-sm text-muted-foreground mb-2">{quest.description}</p>
                 )}
-                
-                <div className="flex items-center gap-4 text-sm">
-                  <span className="text-secondary font-semibold">+{quest.xp_reward} XP</span>
+                <div className="flex items-center gap-3 text-sm">
+                  <span className="bg-gradient-gold bg-clip-text text-transparent font-bold">
+                    +{quest.xp_reward} XP para todos
+                  </span>
                   <span className="flex items-center gap-1 text-muted-foreground">
                     <Users className="w-4 h-4" />
-                    {quest.completions_count} completaram
+                    {quest.completion_count} completaram
                   </span>
                 </div>
               </div>
-
-              <div className="flex-shrink-0">
+              <Button
+                onClick={() => handleCompleteQuest(quest.id)}
+                disabled={quest.completed_by_user || completing === quest.id}
+                variant={quest.completed_by_user ? "outline" : "default"}
+                className={quest.completed_by_user ? "" : "bg-gradient-hero"}
+              >
                 {quest.completed_by_user ? (
-                  <div className="flex items-center gap-2 text-green-500">
-                    <CheckCircle2 className="w-5 h-5" />
-                    <span className="text-sm font-medium">Completa</span>
-                  </div>
+                  <>
+                    <Check className="w-4 h-4 mr-2" />
+                    Completa
+                  </>
+                ) : completing === quest.id ? (
+                  "Completando..."
                 ) : (
-                  <Button
-                    onClick={() => handleComplete(quest.id)}
-                    disabled={completingId === quest.id}
-                    size="sm"
-                    className="bg-gradient-hero"
-                  >
-                    {completingId === quest.id ? "..." : "Completar"}
-                  </Button>
+                  "Completar"
                 )}
-              </div>
+              </Button>
             </div>
           </CardContent>
         </Card>

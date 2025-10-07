@@ -17,6 +17,7 @@ interface LeaderboardEntry {
   user_id: string;
   username: string;
   avatar_color: string;
+  avatar_url: string | null;
   level: number;
   current_xp: number;
   total_xp: number;
@@ -178,7 +179,7 @@ const Leaderboard = () => {
     // Get profiles for all members
     const { data: profilesData, error: profilesError } = await supabase
       .from("profiles")
-      .select("id, username, avatar_color")
+      .select("id, username, avatar_color, avatar_url")
       .in("id", userIds);
 
     if (profilesError) {
@@ -195,6 +196,7 @@ const Leaderboard = () => {
         user_id: entry.user_id,
         username: profile?.username || "Herói Desconhecido",
         avatar_color: profile?.avatar_color || "#6C3AE3",
+        avatar_url: profile?.avatar_url || null,
         level: entry.level,
         current_xp: entry.current_xp,
         total_xp: entry.total_xp,
@@ -311,11 +313,21 @@ const Leaderboard = () => {
                       </div>
                       
                       {/* Avatar */}
-                      <div 
-                        className="w-16 h-16 rounded-full flex items-center justify-center border-2 border-primary"
+                      <div className="w-16 h-16 rounded-full flex items-center justify-center border-2 border-primary overflow-hidden"
                         style={{ backgroundColor: entry.avatar_color }}
                       >
-                        <User className="w-8 h-8 text-white" />
+                        {entry.avatar_url ? (
+                          <img 
+                            src={entry.avatar_url} 
+                            alt={entry.username}
+                            className="w-full h-full object-cover"
+                            onError={(e) => {
+                              e.currentTarget.style.display = 'none';
+                            }}
+                          />
+                        ) : (
+                          <User className="w-8 h-8 text-white" />
+                        )}
                       </div>
 
                       <div className="flex-1 min-w-0">
