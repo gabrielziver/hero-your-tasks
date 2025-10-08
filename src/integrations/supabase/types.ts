@@ -267,6 +267,14 @@ export type Database = {
         Args: { quest_id: string }
         Returns: Json
       }
+      get_user_groups: {
+        Args: { _user_id: string }
+        Returns: string[]
+      }
+      is_group_member: {
+        Args: { _group_id: string; _user_id: string }
+        Returns: boolean
+      }
     }
     Enums: {
       [_ in never]: never
