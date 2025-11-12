@@ -6,6 +6,8 @@ import { Checkbox } from "./ui/checkbox";
 import { Badge } from "./ui/badge";
 import { Sword, Sparkles, Trash2 } from "lucide-react";
 import { Button } from "./ui/button";
+import LevelUpAnimation from "./LevelUpAnimation";
+import QuestCompleteEffect from "./QuestCompleteEffect";
 
 interface Quest {
   id: string;
@@ -25,6 +27,14 @@ interface QuestListProps {
 const QuestList = ({ onQuestCompleted }: QuestListProps) => {
   const [quests, setQuests] = useState<Quest[]>([]);
   const [loading, setLoading] = useState(true);
+  const [showLevelUp, setShowLevelUp] = useState(false);
+  const [newLevel, setNewLevel] = useState(0);
+  const [completeEffect, setCompleteEffect] = useState<{
+    show: boolean;
+    xp: number;
+    gold: number;
+    position: { x: number; y: number };
+  } | null>(null);
 
   useEffect(() => {
     loadQuests();
@@ -49,7 +59,20 @@ const QuestList = ({ onQuestCompleted }: QuestListProps) => {
     setLoading(false);
   };
 
-  const handleCompleteQuest = async (questId: string) => {
+  const handleCompleteQuest = async (questId: string, event?: any) => {
+    // Get click position for effect
+    let position = { x: window.innerWidth / 2, y: window.innerHeight / 2 };
+    
+    if (event && event.target) {
+      const rect = event.target.closest('.quest-card')?.getBoundingClientRect();
+      if (rect) {
+        position = {
+          x: rect.left + rect.width / 2,
+          y: rect.top + rect.height / 2,
+        };
+      }
+    }
+
     const { data, error } = await supabase.rpc("complete_quest", {
       quest_id: questId,
     });
@@ -58,16 +81,37 @@ const QuestList = ({ onQuestCompleted }: QuestListProps) => {
       toast.error(error.message);
     } else {
       const result = data as any;
+      
+      // Show particle effect
+      setCompleteEffect({
+        show: true,
+        xp: result.xp_gained,
+        gold: result.gold_gained,
+        position,
+      });
+      
+      // Show quest completion toast
+      toast.success(`⚔️ Missão Completa! +${result.xp_gained} XP, +${result.gold_gained} Ouro`);
+      
+      // If level up, show epic animation after particle effect
       if (result.level_up) {
-        toast.success(`🎉 Subiu de Nível! Você alcançou o nível ${result.new_level}!`, {
-          duration: 5000,
-        });
-      } else {
-        toast.success(`⚔️ Missão Completa! +${result.xp_gained} XP, +${result.gold_gained} Ouro`);
+        setTimeout(() => {
+          setNewLevel(result.new_level);
+          setShowLevelUp(true);
+        }, 1000);
       }
+      
       loadQuests();
       onQuestCompleted();
     }
+  };
+  
+  const handleLevelUpComplete = () => {
+    setShowLevelUp(false);
+  };
+  
+  const handleEffectComplete = () => {
+    setCompleteEffect(null);
   };
 
   const handleDeleteQuest = async (questId: string) => {
@@ -112,7 +156,21 @@ const QuestList = ({ onQuestCompleted }: QuestListProps) => {
   const completedQuests = quests.filter((q) => q.is_completed);
 
   return (
-    <div className="space-y-6">
+    <>
+      {showLevelUp && (
+        <LevelUpAnimation newLevel={newLevel} onComplete={handleLevelUpComplete} />
+      )}
+      
+      {completeEffect && (
+        <QuestCompleteEffect
+          xpGained={completeEffect.xp}
+          goldGained={completeEffect.gold}
+          position={completeEffect.position}
+          onComplete={handleEffectComplete}
+        />
+      )}
+      
+      <div className="space-y-6">
       {/* Active Quests */}
       <div>
         <h3 className="text-xl font-semibold mb-4 text-foreground">Missões Ativas</h3>
@@ -126,12 +184,12 @@ const QuestList = ({ onQuestCompleted }: QuestListProps) => {
         ) : (
           <div className="space-y-3">
             {activeQuests.map((quest) => (
-              <Card key={quest.id} className={`bg-card border-border hover:border-primary transition-all ${quest.is_boss_quest ? "border-secondary shadow-glow-gold" : ""}`}>
+              <Card key={quest.id} className={`quest-card bg-card border-border hover:border-primary transition-all ${quest.is_boss_quest ? "border-secondary shadow-glow-gold" : ""}`}>
                 <CardContent className="p-4">
                   <div className="flex items-start gap-4">
                     <Checkbox
                       checked={false}
-                      onCheckedChange={() => handleCompleteQuest(quest.id)}
+                      onCheckedChange={(e) => handleCompleteQuest(quest.id, e)}
                       className="mt-1"
                     />
                     <div className="flex-1">
@@ -194,7 +252,8 @@ const QuestList = ({ onQuestCompleted }: QuestListProps) => {
           </div>
         </div>
       )}
-    </div>
+      </div>
+    </>
   );
 };
 

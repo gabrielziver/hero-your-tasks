@@ -4,6 +4,7 @@ import { Card, CardContent } from "./ui/card";
 import { Button } from "./ui/button";
 import { Sparkles, Check, Users } from "lucide-react";
 import { toast } from "sonner";
+import QuestCompleteEffect from "./QuestCompleteEffect";
 
 interface GroupQuest {
   id: string;
@@ -27,6 +28,12 @@ const GroupQuestList = ({ groupId }: GroupQuestListProps) => {
   const [quests, setQuests] = useState<GroupQuestWithCompletion[]>([]);
   const [loading, setLoading] = useState(true);
   const [completing, setCompleting] = useState<string | null>(null);
+  const [completeEffect, setCompleteEffect] = useState<{
+    show: boolean;
+    xp: number;
+    gold: number;
+    position: { x: number; y: number };
+  } | null>(null);
 
   useEffect(() => {
     loadQuests();
@@ -82,8 +89,19 @@ const GroupQuestList = ({ groupId }: GroupQuestListProps) => {
     setLoading(false);
   };
 
-  const handleCompleteQuest = async (questId: string) => {
+  const handleCompleteQuest = async (questId: string, event?: any) => {
     setCompleting(questId);
+    
+    // Get click position for effect
+    let position = { x: window.innerWidth / 2, y: window.innerHeight / 2 };
+    
+    if (event && event.currentTarget) {
+      const rect = event.currentTarget.getBoundingClientRect();
+      position = {
+        x: rect.left + rect.width / 2,
+        y: rect.top + rect.height / 2,
+      };
+    }
     
     const { data, error } = await supabase.rpc("complete_group_quest", {
       quest_id: questId,
@@ -93,11 +111,24 @@ const GroupQuestList = ({ groupId }: GroupQuestListProps) => {
       toast.error(error.message);
     } else {
       const result = data as { quest_title: string; xp_awarded: number; success: boolean };
+      
+      // Show particle effect
+      setCompleteEffect({
+        show: true,
+        xp: result.xp_awarded,
+        gold: 0, // Group quests don't award gold
+        position,
+      });
+      
       toast.success(`${result.quest_title} completa! Todos ganharam ${result.xp_awarded} XP!`);
       loadQuests();
     }
     
     setCompleting(null);
+  };
+  
+  const handleEffectComplete = () => {
+    setCompleteEffect(null);
   };
 
   if (loading) {
@@ -116,7 +147,17 @@ const GroupQuestList = ({ groupId }: GroupQuestListProps) => {
   }
 
   return (
-    <div className="space-y-3">
+    <>
+      {completeEffect && (
+        <QuestCompleteEffect
+          xpGained={completeEffect.xp}
+          goldGained={completeEffect.gold}
+          position={completeEffect.position}
+          onComplete={handleEffectComplete}
+        />
+      )}
+      
+      <div className="space-y-3">
       {quests.map((quest) => (
         <Card
           key={quest.id}
@@ -145,7 +186,7 @@ const GroupQuestList = ({ groupId }: GroupQuestListProps) => {
                 </div>
               </div>
               <Button
-                onClick={() => handleCompleteQuest(quest.id)}
+                onClick={(e) => handleCompleteQuest(quest.id, e)}
                 disabled={quest.completed_by_user || completing === quest.id}
                 variant={quest.completed_by_user ? "outline" : "default"}
                 className={quest.completed_by_user ? "" : "bg-gradient-hero"}
@@ -165,7 +206,8 @@ const GroupQuestList = ({ groupId }: GroupQuestListProps) => {
           </CardContent>
         </Card>
       ))}
-    </div>
+      </div>
+    </>
   );
 };
 
