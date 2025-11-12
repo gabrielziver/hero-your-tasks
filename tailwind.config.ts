@@ -13,6 +13,10 @@ export default {
       },
     },
     extend: {
+      fontFamily: {
+        display: ['Orbitron', 'sans-serif'],
+        body: ['Inter', 'sans-serif'],
+      },
       colors: {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
@@ -22,11 +26,14 @@ export default {
         primary: {
           DEFAULT: "hsl(var(--primary))",
           foreground: "hsl(var(--primary-foreground))",
+          glow: "hsl(var(--primary-glow))",
         },
         secondary: {
           DEFAULT: "hsl(var(--secondary))",
           foreground: "hsl(var(--secondary-foreground))",
         },
+        'magic-pink': "hsl(var(--magic-pink))",
+        gold: "hsl(var(--gold))",
         destructive: {
           DEFAULT: "hsl(var(--destructive))",
           foreground: "hsl(var(--destructive-foreground))",
@@ -50,12 +57,17 @@ export default {
       },
       backgroundImage: {
         'gradient-hero': 'var(--gradient-hero)',
+        'gradient-magic': 'var(--gradient-magic)',
         'gradient-gold': 'var(--gradient-gold)',
         'gradient-card': 'var(--gradient-card)',
+        'gradient-hologram': 'var(--gradient-hologram)',
       },
       boxShadow: {
         'glow-primary': 'var(--glow-primary)',
+        'glow-secondary': 'var(--glow-secondary)',
+        'glow-magic': 'var(--glow-magic)',
         'glow-gold': 'var(--glow-gold)',
+        'glow-inner': 'var(--glow-inner)',
       },
       borderRadius: {
         lg: "var(--radius)",

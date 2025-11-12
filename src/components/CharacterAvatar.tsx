@@ -1,6 +1,5 @@
-import { Card, CardContent } from "./ui/card";
-import { User, Star, Coins, Flame } from "lucide-react";
-import { Progress } from "./ui/progress";
+import { User } from "lucide-react";
+import RadarChart from "./RadarChart";
 
 interface CharacterAvatarProps {
   stats: any;
@@ -12,54 +11,90 @@ const CharacterAvatar = ({ stats }: CharacterAvatarProps) => {
   const xpForNextLevel = stats.level * 100;
   const xpProgress = (stats.current_xp / xpForNextLevel) * 100;
 
+  // Calculate radar stats based on user progress
+  const radarStats = {
+    strength: Math.min((stats.quests_completed / 50) * 100, 100),
+    intelligence: Math.min((stats.level / 20) * 100, 100),
+    willpower: Math.min((stats.current_streak / 30) * 100, 100),
+    charisma: Math.min((stats.level / 15) * 100, 100),
+    creativity: Math.min((stats.quests_completed / 40) * 100, 100),
+    wealth: Math.min((stats.gold / 500) * 100, 100),
+  };
+
   return (
-    <Card className="bg-gradient-card border-border sticky top-8">
-      <CardContent className="p-6">
-        {/* Avatar */}
-        <div className="flex justify-center mb-6">
-          <div className="relative">
-            <div className="w-32 h-32 rounded-full bg-primary/20 flex items-center justify-center border-4 border-primary shadow-glow-primary">
-              <User className="w-16 h-16 text-primary" />
+    <div className="relative">
+      {/* Holographic Panel */}
+      <div className="bg-gradient-hologram backdrop-blur-xl rounded-2xl p-8 hologram-border">
+        {/* Character Circle */}
+        <div className="flex justify-center mb-8">
+          <div className="relative float-animation">
+            <div className="w-40 h-40 rounded-full bg-gradient-hero flex items-center justify-center border-4 border-primary shadow-glow-primary pulse-glow">
+              <User className="w-20 h-20 text-foreground" />
             </div>
-            <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 bg-gradient-gold text-card px-4 py-1 rounded-full font-bold text-sm shadow-glow-gold">
-              Nível {stats.level}
+            <div className="absolute -bottom-3 left-1/2 -translate-x-1/2 bg-gradient-gold px-6 py-2 rounded-full font-display font-bold text-lg shadow-glow-gold text-background">
+              Lv. {stats.level}
+            </div>
+            {/* Floating particles effect */}
+            <div className="absolute inset-0 rounded-full overflow-hidden pointer-events-none">
+              {[...Array(8)].map((_, i) => (
+                <div
+                  key={i}
+                  className="absolute w-1 h-1 bg-primary rounded-full opacity-60"
+                  style={{
+                    left: `${Math.random() * 100}%`,
+                    top: `${Math.random() * 100}%`,
+                    animation: `float ${3 + Math.random() * 2}s ease-in-out infinite`,
+                    animationDelay: `${Math.random() * 2}s`,
+                  }}
+                />
+              ))}
             </div>
           </div>
         </div>
 
         {/* XP Bar */}
-        <div className="mb-6">
-          <div className="flex justify-between text-sm mb-2">
-            <span className="text-muted-foreground">XP</span>
-            <span className="text-foreground font-semibold">
+        <div className="mb-8">
+          <div className="flex justify-between text-sm mb-3 font-display">
+            <span className="text-secondary glow-text">EXPERIENCE</span>
+            <span className="text-foreground font-bold">
               {stats.current_xp} / {xpForNextLevel}
             </span>
           </div>
-          <Progress value={xpProgress} className="h-3 bg-muted">
-            <div className="h-full bg-gradient-hero rounded-full transition-all" style={{ width: `${xpProgress}%` }} />
-          </Progress>
+          <div className="relative h-4 bg-muted rounded-full overflow-hidden hologram-border">
+            <div
+              className="absolute inset-0 bg-gradient-hero shadow-glow-primary transition-all duration-500 ease-out"
+              style={{ width: `${xpProgress}%` }}
+            >
+              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent animate-pulse" />
+            </div>
+          </div>
         </div>
 
-        {/* Stats */}
-        <div className="space-y-4">
-          <StatRow icon={<Star className="w-5 h-5 text-primary" />} label="XP Total" value={stats.total_xp} />
-          <StatRow icon={<Coins className="w-5 h-5 text-secondary" />} label="Ouro" value={stats.gold} />
-          <StatRow icon={<Flame className="w-5 h-5 text-destructive" />} label="Sequência" value={`${stats.current_streak} dias`} />
-          <StatRow icon={<Star className="w-5 h-5 text-primary" />} label="Missões" value={stats.quests_completed} />
+        {/* Radar Chart */}
+        <div className="mb-6">
+          <h3 className="text-center font-display text-sm text-secondary mb-4 glow-text">
+            ATRIBUTOS DO JOGADOR
+          </h3>
+          <RadarChart stats={radarStats} />
         </div>
-      </CardContent>
-    </Card>
+
+        {/* Quick Stats */}
+        <div className="grid grid-cols-2 gap-3 mt-6">
+          <StatBox label="HP" value="100%" color="primary" />
+          <StatBox label="MP" value="100%" color="secondary" />
+          <StatBox label="Gold" value={stats.gold} color="gold" />
+          <StatBox label="Missões" value={stats.quests_completed} color="magic-pink" />
+        </div>
+      </div>
+    </div>
   );
 };
 
-const StatRow = ({ icon, label, value }: { icon: React.ReactNode; label: string; value: any }) => {
+const StatBox = ({ label, value, color }: { label: string; value: any; color: string }) => {
   return (
-    <div className="flex items-center justify-between p-3 bg-background/50 rounded-lg border border-border">
-      <div className="flex items-center gap-3">
-        {icon}
-        <span className="text-muted-foreground">{label}</span>
-      </div>
-      <span className="font-bold text-foreground">{value}</span>
+    <div className={`bg-${color}/10 border border-${color}/30 rounded-lg p-3 backdrop-blur-sm`}>
+      <div className="text-xs text-muted-foreground font-display mb-1">{label}</div>
+      <div className={`text-lg font-display font-bold text-${color}`}>{value}</div>
     </div>
   );
 };
