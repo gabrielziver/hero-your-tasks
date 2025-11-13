@@ -70,16 +70,15 @@ const WeeklyProgressRing = ({ userId }: { userId: string }) => {
   );
 
   const rings = [
-    { label: "💼 Trabalho", value: progress.work, color: "#8B5CF6", offset: 0 },
-    { label: "🧘 Hábitos", value: progress.habits, color: "#67E8F9", offset: 25 },
-    { label: "🎯 Pessoal", value: progress.personal, color: "#F472B6", offset: 50 },
-    { label: "💪 Treinos", value: progress.training, color: "#FACC15", offset: 75 },
+    { label: "💼 Trabalho", value: progress.work, color: "hsl(250 92% 68%)" },
+    { label: "🧘 Hábitos", value: progress.habits, color: "hsl(180 78% 60%)" },
+    { label: "🎯 Pessoal", value: progress.personal, color: "hsl(251 89% 73%)" },
+    { label: "💪 Treinos", value: progress.training, color: "hsl(47 98% 64%)" },
   ];
 
   return (
     <div className="relative w-full h-full flex items-center justify-center">
       <svg viewBox="0 0 200 200" className="w-full h-full">
-        {/* Background circles */}
         {rings.map((ring, index) => {
           const radius = 80 - index * 15;
           const circumference = 2 * Math.PI * radius;
@@ -92,7 +91,7 @@ const WeeklyProgressRing = ({ userId }: { userId: string }) => {
                 cy="100"
                 r={radius}
                 fill="none"
-                stroke="rgba(255,255,255,0.1)"
+                stroke="hsl(220 20% 20%)"
                 strokeWidth="10"
               />
               {/* Progress */}
@@ -108,7 +107,6 @@ const WeeklyProgressRing = ({ userId }: { userId: string }) => {
                 strokeDashoffset={circumference - (ring.value / 100) * circumference}
                 transform="rotate(-90 100 100)"
                 style={{
-                  filter: `drop-shadow(0 0 8px ${ring.color})`,
                   transition: "stroke-dashoffset 1s ease",
                 }}
               />
@@ -119,7 +117,7 @@ const WeeklyProgressRing = ({ userId }: { userId: string }) => {
       
       {/* Center text */}
       <div className="absolute inset-0 flex flex-col items-center justify-center">
-        <div className="text-4xl font-display font-bold text-primary glow-text">
+        <div className="text-4xl font-display font-bold text-accent">
           {totalProgress}%
         </div>
         <div className="text-xs text-muted-foreground mt-1">Concluído</div>
@@ -131,10 +129,7 @@ const WeeklyProgressRing = ({ userId }: { userId: string }) => {
           <div key={ring.label} className="flex items-center gap-2">
             <div
               className="w-3 h-3 rounded-full"
-              style={{
-                backgroundColor: ring.color,
-                boxShadow: `0 0 8px ${ring.color}`,
-              }}
+              style={{ backgroundColor: ring.color }}
             />
             <span className="text-muted-foreground">{ring.label}</span>
           </div>

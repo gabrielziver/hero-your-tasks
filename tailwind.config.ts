@@ -14,8 +14,8 @@ export default {
     },
     extend: {
       fontFamily: {
-        display: ['Orbitron', 'sans-serif'],
-        body: ['Inter', 'sans-serif'],
+        display: ["Orbitron", "system-ui", "sans-serif"],
+        body: ["Inter", "Poppins", "system-ui", "sans-serif"],
       },
       colors: {
         border: "hsl(var(--border))",
@@ -26,14 +26,11 @@ export default {
         primary: {
           DEFAULT: "hsl(var(--primary))",
           foreground: "hsl(var(--primary-foreground))",
-          glow: "hsl(var(--primary-glow))",
         },
         secondary: {
           DEFAULT: "hsl(var(--secondary))",
           foreground: "hsl(var(--secondary-foreground))",
         },
-        'magic-pink': "hsl(var(--magic-pink))",
-        gold: "hsl(var(--gold))",
         destructive: {
           DEFAULT: "hsl(var(--destructive))",
           foreground: "hsl(var(--destructive-foreground))",
@@ -54,20 +51,12 @@ export default {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
+        gold: "hsl(var(--gold))",
       },
       backgroundImage: {
-        'gradient-hero': 'var(--gradient-hero)',
-        'gradient-magic': 'var(--gradient-magic)',
-        'gradient-gold': 'var(--gradient-gold)',
-        'gradient-card': 'var(--gradient-card)',
-        'gradient-hologram': 'var(--gradient-hologram)',
-      },
-      boxShadow: {
-        'glow-primary': 'var(--glow-primary)',
-        'glow-secondary': 'var(--glow-secondary)',
-        'glow-magic': 'var(--glow-magic)',
-        'glow-gold': 'var(--glow-gold)',
-        'glow-inner': 'var(--glow-inner)',
+        "gradient-hero": "var(--gradient-hero)",
+        "gradient-accent": "var(--gradient-accent)",
+        "gradient-gold": "var(--gradient-gold)",
       },
       borderRadius: {
         lg: "var(--radius)",

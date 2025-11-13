@@ -11,9 +11,10 @@ import { toast } from "sonner";
 interface CreateGroupQuestDialogProps {
   groupId: string;
   onQuestCreated: () => void;
+  children?: React.ReactNode;
 }
 
-const CreateGroupQuestDialog = ({ groupId, onQuestCreated }: CreateGroupQuestDialogProps) => {
+const CreateGroupQuestDialog = ({ groupId, onQuestCreated, children }: CreateGroupQuestDialogProps) => {
   const [open, setOpen] = useState(false);
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
@@ -63,10 +64,12 @@ const CreateGroupQuestDialog = ({ groupId, onQuestCreated }: CreateGroupQuestDia
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button className="bg-gradient-hero">
-          <Sparkles className="w-4 h-4 mr-2" />
-          Criar Missão Especial
-        </Button>
+        {children || (
+          <Button className="bg-gradient-hero">
+            <Sparkles className="w-4 h-4 mr-2" />
+            Criar Missão Especial
+          </Button>
+        )}
       </DialogTrigger>
       <DialogContent className="bg-card border-border">
         <DialogHeader>

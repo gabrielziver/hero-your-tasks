@@ -1,17 +1,16 @@
-import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { toast } from "sonner";
+import { useNavigate } from "react-router-dom";
 import CharacterAvatar from "@/components/CharacterAvatar";
 import QuestList from "@/components/QuestList";
-import CreateQuestDialog from "@/components/CreateQuestDialog";
-import CreateGroupQuestDialog from "@/components/CreateGroupQuestDialog";
 import GroupQuestList from "@/components/GroupQuestList";
 import WeeklyProgressRing from "@/components/WeeklyProgressRing";
-import StreakDisplay from "@/components/StreakDisplay";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Sparkles, Plus, BarChart3, Trophy, User as UserIcon } from "lucide-react";
+import CreateQuestDialog from "@/components/CreateQuestDialog";
+import CreateGroupQuestDialog from "@/components/CreateGroupQuestDialog";
+import NavBar from "@/components/NavBar";
 import { Button } from "@/components/ui/button";
+import { Plus, Users, Flame } from "lucide-react";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -20,7 +19,6 @@ const Dashboard = () => {
   const [groups, setGroups] = useState<any[]>([]);
   const [selectedGroup, setSelectedGroup] = useState<string>("");
   const [loading, setLoading] = useState(true);
-  const [groupQuestKey, setGroupQuestKey] = useState(0);
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -58,7 +56,6 @@ const Dashboard = () => {
       .single();
 
     if (error) {
-      toast.error("Falha ao carregar estatísticas");
       console.error(error);
     } else {
       setStats(data);
@@ -96,7 +93,13 @@ const Dashboard = () => {
     }
   };
 
-  const refreshStats = () => {
+  const handleQuestCompleted = () => {
+    if (user) {
+      loadStats(user.id);
+    }
+  };
+
+  const handleQuestCreated = () => {
     if (user) {
       loadStats(user.id);
     }
@@ -105,200 +108,169 @@ const Dashboard = () => {
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
-        <div className="text-xl text-foreground">Carregando sua missão...</div>
+        <div className="text-xl text-foreground">Carregando...</div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-background relative overflow-hidden">
-      {/* Animated background particles */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        {[...Array(20)].map((_, i) => (
-          <div
-            key={i}
-            className="absolute w-1 h-1 bg-primary rounded-full opacity-30"
-            style={{
-              left: `${Math.random() * 100}%`,
-              top: `${Math.random() * 100}%`,
-              animation: `float ${5 + Math.random() * 10}s ease-in-out infinite`,
-              animationDelay: `${Math.random() * 5}s`,
-            }}
-          />
-        ))}
-      </div>
-
-      {/* Header */}
-      <header className="relative border-b border-border/50 backdrop-blur-xl bg-background/80">
-        <div className="container mx-auto px-4 py-6">
+    <div className="min-h-screen bg-background text-foreground pb-24">
+      {/* Compact Header */}
+      <header className="sticky top-0 z-40 bg-card border-b border-border">
+        <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
-            {/* Logo */}
-            <div className="flex items-center gap-3">
-              <div className="w-12 h-12 rounded-full bg-gradient-hero flex items-center justify-center shadow-glow-primary">
-                <Sparkles className="w-6 h-6 text-foreground" />
-              </div>
-              <h1 className="text-3xl font-display font-black text-foreground glow-text">
-                TASK LEVEL
-              </h1>
-            </div>
-
-            {/* User info & gold */}
+            <h1 className="text-2xl font-display font-bold text-primary">
+              Task Level
+            </h1>
             <div className="flex items-center gap-4">
-              <div className="flex items-center gap-2 bg-gradient-gold px-4 py-2 rounded-full shadow-glow-gold">
-                <span className="text-lg font-display font-bold text-background">
+              <div className="flex items-center gap-2 bg-muted px-3 py-1.5 rounded-full">
+                <span className="text-lg">💰</span>
+                <span className="text-gold font-display font-bold">
                   {stats?.gold || 0}
                 </span>
-                <span className="text-sm text-background/80">GOLD</span>
               </div>
-              <Button variant="ghost" size="icon" className="rounded-full" onClick={() => navigate('/profile')}>
-                <UserIcon className="w-5 h-5" />
-              </Button>
+              <div className="flex items-center gap-2 bg-muted px-3 py-1.5 rounded-full">
+                <Flame className="w-4 h-4 text-accent" />
+                <span className="text-accent font-display font-bold">
+                  {stats?.current_streak || 0}
+                </span>
+              </div>
             </div>
           </div>
         </div>
       </header>
 
-      <div className="container mx-auto px-4 py-8 relative z-10">
-        <div className="grid grid-cols-1 xl:grid-cols-12 gap-6">
-          {/* Left Sidebar - Character Avatar */}
-          <div className="xl:col-span-4">
-            <CharacterAvatar stats={stats} />
+      {/* Main Content */}
+      <div className="container mx-auto px-4 py-6 space-y-6">
+        {/* Top Section: Avatar + Weekly Progress */}
+        <div className="flex items-center gap-6 bg-card rounded-2xl p-6 border border-border hover:border-primary/30 transition-colors cursor-pointer">
+          <CharacterAvatar stats={stats} />
+          <div className="flex-1 h-48">
+            <WeeklyProgressRing userId={user?.id || ""} />
           </div>
+        </div>
 
-          {/* Center Panel - Main Content */}
-          <div className="xl:col-span-5 space-y-6">
-            {/* Weekly Progress Ring */}
-            <div className="bg-gradient-hologram backdrop-blur-xl rounded-2xl p-8 hologram-border">
-              <h3 className="text-center font-display text-lg text-secondary mb-6 glow-text">
-                PROGRESSO SEMANAL
-              </h3>
-              <div className="h-80">
-                {user && <WeeklyProgressRing userId={user.id} />}
-              </div>
-            </div>
-
-            {/* Personal Quests Section */}
-            <div className="bg-gradient-hologram backdrop-blur-xl rounded-2xl p-6 hologram-border">
-              <div className="flex items-center justify-between mb-4">
-                <h2 className="text-xl font-display font-bold text-foreground">MINHAS MISSÕES</h2>
-                <CreateQuestDialog onQuestCreated={refreshStats} />
-              </div>
-              <QuestList onQuestCompleted={refreshStats} />
-            </div>
-
-            {/* Group Quests Section */}
-            {groups.length > 0 && (
-              <div className="bg-gradient-hologram backdrop-blur-xl rounded-2xl p-6 hologram-border">
-                <div className="flex items-center justify-between mb-4">
-                  <h2 className="text-xl font-display font-bold text-foreground">MISSÕES EM GRUPO</h2>
-                  <div className="flex items-center gap-2">
-                    <Select value={selectedGroup} onValueChange={setSelectedGroup}>
-                      <SelectTrigger className="w-[200px]">
-                        <SelectValue placeholder="Selecione um grupo" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {groups.map((group) => (
-                          <SelectItem key={group.id} value={group.id}>
-                            {group.name}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                    {selectedGroup && (
-                      <CreateGroupQuestDialog
-                        groupId={selectedGroup}
-                        onQuestCreated={() => setGroupQuestKey((prev) => prev + 1)}
-                      />
-                    )}
-                  </div>
-                </div>
-                {selectedGroup && (
-                  <GroupQuestList key={groupQuestKey} groupId={selectedGroup} />
-                )}
-              </div>
-            )}
+        {/* XP Bar */}
+        <div className="bg-card rounded-2xl p-4 border border-border hover:border-primary/30 transition-colors">
+          <div className="flex justify-between text-sm mb-2">
+            <span className="text-muted-foreground font-medium">XP</span>
+            <span className="text-foreground font-bold">
+              {stats?.current_xp || 0} / {stats?.level ? stats.level * 100 : 100}
+            </span>
           </div>
+          <div className="relative h-3 bg-muted rounded-full overflow-hidden">
+            <div
+              className="absolute inset-0 bg-gradient-hero transition-all duration-500"
+              style={{ 
+                width: `${stats ? (stats.current_xp / (stats.level * 100)) * 100 : 0}%` 
+              }}
+            />
+          </div>
+        </div>
 
-          {/* Right Sidebar - Streak & Actions */}
-          <div className="xl:col-span-3 space-y-6">
-            {/* Streak Display */}
-            <div className="bg-gradient-hologram backdrop-blur-xl rounded-2xl p-6 hologram-border">
-              <h3 className="text-center font-display text-lg text-secondary mb-6 glow-text">
-                SEQUÊNCIA ÉPICA
-              </h3>
-              <StreakDisplay currentStreak={stats?.current_streak || 0} />
-            </div>
+        {/* Personal Quests */}
+        <div className="bg-card rounded-2xl p-6 border border-border hover:border-primary/30 transition-colors">
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-xl font-display font-bold text-primary">
+              Suas Missões
+            </h2>
+            <CreateQuestDialog onQuestCreated={handleQuestCreated}>
+              <Button size="sm" className="gap-2 bg-primary hover:bg-primary/90 transition-colors">
+                <Plus className="w-4 h-4" />
+                Nova
+              </Button>
+            </CreateQuestDialog>
+          </div>
+          <QuestList onQuestCompleted={handleQuestCompleted} />
+        </div>
 
-            {/* Quick Actions */}
-            <div className="bg-gradient-hologram backdrop-blur-xl rounded-2xl p-6 hologram-border space-y-3">
-              <h3 className="font-display text-sm text-secondary mb-4 glow-text">
-                AÇÕES RÁPIDAS
-              </h3>
-              <Button
-                className="w-full bg-gradient-hero hover:opacity-90 shadow-glow-primary font-display"
-              >
-                <Plus className="w-4 h-4 mr-2" />
-                Nova Missão
-              </Button>
-              <Button
-                variant="outline"
-                className="w-full font-display border-primary/30 hover:bg-primary/10"
-              >
-                <BarChart3 className="w-4 h-4 mr-2" />
-                Relatórios
-              </Button>
-              <Button
-                variant="outline"
-                className="w-full font-display border-secondary/30 hover:bg-secondary/10"
-                onClick={() => navigate('/leaderboard')}
-              >
-                <Trophy className="w-4 h-4 mr-2" />
-                Ranking
+        {/* Group Quests */}
+        <div className="bg-card rounded-2xl p-6 border border-border hover:border-secondary/30 transition-colors">
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center gap-2">
+              <Users className="w-5 h-5 text-secondary" />
+              <h2 className="text-xl font-display font-bold text-secondary">
+                Missões em Grupo
+              </h2>
+            </div>
+            <div className="flex items-center gap-2">
+              {groups.length > 0 && (
+                <Select value={selectedGroup} onValueChange={setSelectedGroup}>
+                  <SelectTrigger className="w-[140px] bg-muted border-border h-9">
+                    <SelectValue placeholder="Grupo" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {groups.map((group) => (
+                      <SelectItem key={group.id} value={group.id}>
+                        {group.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              )}
+              {selectedGroup && (
+                <CreateGroupQuestDialog 
+                  groupId={selectedGroup} 
+                  onQuestCreated={handleQuestCreated}
+                >
+                  <Button size="sm" className="gap-2 bg-secondary hover:bg-secondary/90 transition-colors">
+                    <Plus className="w-4 h-4" />
+                    Nova
+                  </Button>
+                </CreateGroupQuestDialog>
+              )}
+            </div>
+          </div>
+          {selectedGroup && <GroupQuestList groupId={selectedGroup} />}
+          {groups.length === 0 && (
+            <div className="text-center py-8 text-muted-foreground">
+              <p className="mb-4">Você ainda não faz parte de nenhum grupo.</p>
+              <Button variant="outline" onClick={() => navigate("/profile")}>
+                Criar ou Participar de um Grupo
               </Button>
             </div>
+          )}
+        </div>
 
-            {/* Skill Points Panel */}
-            <div className="bg-gradient-hologram backdrop-blur-xl rounded-2xl p-6 hologram-border">
-              <h3 className="font-display text-sm text-secondary mb-4 glow-text">
-                SKILL POINTS
-              </h3>
-              <div className="text-center">
-                <div className="text-4xl font-display font-black text-primary glow-text mb-2">
-                  {stats?.total_xp || 0}
-                </div>
-                <div className="text-xs text-muted-foreground">Pontos disponíveis</div>
-              </div>
-              
-              {/* Progress by category */}
-              <div className="mt-6 space-y-3">
-                <ProgressBar label="Produtividade" value={72} color="primary" />
-                <ProgressBar label="Saúde" value={64} color="secondary" />
-                <ProgressBar label="Criatividade" value={58} color="magic-pink" />
-              </div>
-            </div>
+        {/* Skill Progress */}
+        <div className="bg-card rounded-2xl p-6 border border-border hover:border-accent/30 transition-colors">
+          <h3 className="font-display font-bold text-lg text-primary mb-4">
+            Progresso de Habilidades
+          </h3>
+          <div className="space-y-3">
+            <ProgressBar label="💼 Produtividade" value={72} color="primary" />
+            <ProgressBar label="🧘 Bem-estar" value={64} color="secondary" />
+            <ProgressBar label="🎨 Criatividade" value={58} color="accent" />
+            <ProgressBar label="💪 Força" value={80} color="gold" />
           </div>
         </div>
       </div>
+
+      {/* Bottom Navigation */}
+      <NavBar />
     </div>
   );
 };
 
+// Progress Bar Component
 const ProgressBar = ({ label, value, color }: { label: string; value: number; color: string }) => {
+  const colorMap: Record<string, string> = {
+    primary: "bg-primary",
+    secondary: "bg-secondary",
+    accent: "bg-accent",
+    gold: "bg-gold",
+  };
+
   return (
     <div>
-      <div className="flex justify-between text-xs mb-1">
-        <span className="text-muted-foreground">{label}</span>
-        <span className="text-foreground font-display font-bold">{value}%</span>
+      <div className="flex justify-between text-xs mb-1.5">
+        <span className="text-foreground font-medium">{label}</span>
+        <span className="text-muted-foreground">{value}%</span>
       </div>
       <div className="h-2 bg-muted rounded-full overflow-hidden">
         <div
-          className={`h-full transition-all duration-500`}
-          style={{ 
-            width: `${value}%`,
-            background: color === 'primary' ? 'hsl(var(--primary))' : 
-                       color === 'secondary' ? 'hsl(var(--secondary))' : 
-                       'hsl(var(--magic-pink))'
-          }}
+          className={`h-full ${colorMap[color]} rounded-full transition-all duration-500`}
+          style={{ width: `${value}%` }}
         />
       </div>
     </div>

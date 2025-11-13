@@ -10,9 +10,10 @@ import { toast } from "sonner";
 
 interface CreateQuestDialogProps {
   onQuestCreated: () => void;
+  children?: React.ReactNode;
 }
 
-const CreateQuestDialog = ({ onQuestCreated }: CreateQuestDialogProps) => {
+const CreateQuestDialog = ({ onQuestCreated, children }: CreateQuestDialogProps) => {
   const [open, setOpen] = useState(false);
   const [title, setTitle] = useState("");
   const [category, setCategory] = useState("general");
@@ -64,10 +65,12 @@ const CreateQuestDialog = ({ onQuestCreated }: CreateQuestDialogProps) => {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button className="bg-gradient-hero">
-          <Plus className="w-4 h-4 mr-2" />
-          Nova Missão
-        </Button>
+        {children || (
+          <Button className="bg-gradient-hero">
+            <Plus className="w-4 h-4 mr-2" />
+            Nova Missão
+          </Button>
+        )}
       </DialogTrigger>
       <DialogContent className="bg-card border-border">
         <DialogHeader>
