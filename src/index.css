@@ -96,4 +96,19 @@ All colors MUST be HSL.
   .streak-pulse {
     animation: streak-pulse 2s ease-in-out infinite;
   }
+
+  /* Mobile responsive utilities */
+  @media (max-width: 640px) {
+    .container {
+      padding-left: 1rem;
+      padding-right: 1rem;
+    }
+  }
+}
+
+@layer base {
+  body {
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
 }

@@ -21,10 +21,11 @@ interface Quest {
 }
 
 interface QuestListProps {
-  onQuestCompleted: () => void;
+  onQuestCompleted?: () => void;
+  filterCompleted?: boolean;
 }
 
-const QuestList = ({ onQuestCompleted }: QuestListProps) => {
+const QuestList = ({ onQuestCompleted, filterCompleted }: QuestListProps) => {
   const [quests, setQuests] = useState<Quest[]>([]);
   const [loading, setLoading] = useState(true);
   const [showLevelUp, setShowLevelUp] = useState(false);
@@ -38,7 +39,7 @@ const QuestList = ({ onQuestCompleted }: QuestListProps) => {
 
   useEffect(() => {
     loadQuests();
-  }, []);
+  }, [filterCompleted]);
 
   const loadQuests = async () => {
     const { data: { user } } = await supabase.auth.getUser();
@@ -54,7 +55,11 @@ const QuestList = ({ onQuestCompleted }: QuestListProps) => {
       toast.error("Falha ao carregar missões");
       console.error(error);
     } else {
-      setQuests(data || []);
+      let filteredData = data || [];
+      if (filterCompleted !== undefined) {
+        filteredData = filteredData.filter(q => q.is_completed === filterCompleted);
+      }
+      setQuests(filteredData);
     }
     setLoading(false);
   };
@@ -102,7 +107,9 @@ const QuestList = ({ onQuestCompleted }: QuestListProps) => {
       }
       
       loadQuests();
-      onQuestCompleted();
+      if (onQuestCompleted) {
+        onQuestCompleted();
+      }
     }
   };
   

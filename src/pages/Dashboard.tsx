@@ -143,9 +143,9 @@ const Dashboard = () => {
       {/* Main Content */}
       <div className="container mx-auto px-4 py-6 space-y-6">
         {/* Top Section: Avatar + Weekly Progress */}
-        <div className="flex items-center gap-6 bg-card rounded-2xl p-6 border border-border hover:border-primary/30 transition-colors cursor-pointer">
+        <div className="flex flex-col sm:flex-row items-center gap-6 bg-card rounded-2xl p-6 border border-border hover:border-primary/30 transition-colors">
           <CharacterAvatar stats={stats} />
-          <div className="flex-1 h-48">
+          <div className="flex-1 w-full sm:h-48">
             <WeeklyProgressRing userId={user?.id || ""} />
           </div>
         </div>

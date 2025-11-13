@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
@@ -7,12 +7,14 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
-import { User } from "lucide-react";
+import { User, Upload } from "lucide-react";
 
 const Profile = () => {
   const navigate = useNavigate();
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [uploading, setUploading] = useState(false);
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [avatarUrl, setAvatarUrl] = useState("");
@@ -48,6 +50,52 @@ const Profile = () => {
       setAvatarUrl(data.avatar_url || "");
     }
     setLoading(false);
+  };
+
+  const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    // Validate file type
+    if (!file.type.startsWith('image/')) {
+      toast.error("Por favor, selecione uma imagem");
+      return;
+    }
+
+    // Validate file size (max 5MB)
+    if (file.size > 5 * 1024 * 1024) {
+      toast.error("A imagem deve ter no máximo 5MB");
+      return;
+    }
+
+    setUploading(true);
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return;
+
+    try {
+      const fileExt = file.name.split('.').pop();
+      const filePath = `${user.id}/avatar-${Date.now()}.${fileExt}`;
+
+      // Upload to Supabase Storage
+      const { error: uploadError } = await supabase.storage
+        .from('avatars')
+        .upload(filePath, file);
+
+      if (uploadError) throw uploadError;
+
+      // Get public URL
+      const { data: { publicUrl } } = supabase.storage
+        .from('avatars')
+        .getPublicUrl(filePath);
+
+      setAvatarUrl(publicUrl);
+      toast.success("Imagem carregada com sucesso!");
+    } catch (error: any) {
+      console.error('Upload error:', error);
+      toast.error("Erro ao fazer upload da imagem");
+    } finally {
+      setUploading(false);
+    }
   };
 
   const handleSave = async () => {
@@ -135,27 +183,46 @@ const Profile = () => {
           </CardHeader>
           <CardContent className="space-y-6">
             <div>
-              <Label htmlFor="avatarUrl">URL do Avatar RPG</Label>
-              <Input
-                id="avatarUrl"
-                value={avatarUrl}
-                onChange={(e) => setAvatarUrl(e.target.value)}
-                placeholder="https://exemplo.com/avatar.jpg"
-                disabled={saving}
-              />
-              {avatarUrl && (
-                <div className="mt-2">
+              <Label>Avatar do Herói</Label>
+              <div className="mt-2 flex items-center gap-4">
+                {avatarUrl ? (
                   <img 
                     src={avatarUrl} 
-                    alt="Avatar preview" 
+                    alt="Avatar" 
                     className="w-24 h-24 rounded-full object-cover border-2 border-primary"
                     onError={(e) => {
                       e.currentTarget.src = "";
-                      toast.error("URL de imagem inválida");
                     }}
                   />
+                ) : (
+                  <div className="w-24 h-24 rounded-full bg-gradient-hero flex items-center justify-center border-2 border-primary">
+                    <User className="w-12 h-12 text-foreground" />
+                  </div>
+                )}
+                <div className="flex flex-col gap-2">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={() => fileInputRef.current?.click()}
+                    disabled={uploading || saving}
+                    className="gap-2"
+                  >
+                    <Upload className="w-4 h-4" />
+                    {uploading ? "Enviando..." : "Escolher Imagem"}
+                  </Button>
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    accept="image/*"
+                    onChange={handleFileUpload}
+                    className="hidden"
+                  />
+                  <p className="text-xs text-muted-foreground">
+                    JPG, PNG ou WEBP (max 5MB)
+                  </p>
                 </div>
-              )}
+              </div>
             </div>
             <div>
               <Label htmlFor="username">Nome de usuário (Nickname)</Label>

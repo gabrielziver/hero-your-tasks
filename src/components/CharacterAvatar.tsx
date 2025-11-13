@@ -1,4 +1,5 @@
 import { User } from "lucide-react";
+import { Link } from "react-router-dom";
 import RadarChart from "./RadarChart";
 
 interface CharacterAvatarProps {
@@ -22,14 +23,14 @@ const CharacterAvatar = ({ stats }: CharacterAvatarProps) => {
   };
 
   return (
-    <div className="relative w-32 h-32">
-      <div className="w-full h-full rounded-full bg-gradient-hero flex items-center justify-center border-2 border-primary transition-transform hover:scale-105">
+    <Link to="/profile" className="relative w-32 h-32 block group">
+      <div className="w-full h-full rounded-full bg-gradient-hero flex items-center justify-center border-2 border-primary transition-all group-hover:scale-105 group-hover:border-accent cursor-pointer">
         <User className="w-16 h-16 text-foreground" />
       </div>
-      <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 bg-gradient-gold px-4 py-1 rounded-full font-display font-bold text-sm text-background">
+      <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 bg-gradient-gold px-4 py-1 rounded-full font-display font-bold text-sm text-background group-hover:scale-105 transition-transform">
         Lv. {stats.level}
       </div>
-    </div>
+    </Link>
   );
 };
 
