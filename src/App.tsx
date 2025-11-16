@@ -9,6 +9,7 @@ import Quiz from "./pages/Quiz";
 import DiagnosticResult from "./pages/DiagnosticResult";
 import TrialOffer from "./pages/TrialOffer";
 import Plans from "./pages/Plans";
+import Install from "./pages/Install";
 import Dashboard from "./pages/Dashboard";
 import Profile from "./pages/Profile";
 import Leaderboard from "./pages/Leaderboard";
@@ -30,6 +31,7 @@ const App = () => (
           <Route path="/diagnostic-result" element={<DiagnosticResult />} />
           <Route path="/trial-offer" element={<TrialOffer />} />
           <Route path="/plans" element={<Plans />} />
+          <Route path="/install" element={<Install />} />
           <Route path="/auth" element={<Auth />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/profile" element={<Profile />} />
