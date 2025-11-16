@@ -1,106 +1,63 @@
 import { Button } from "@/components/ui/button";
-import { Link } from "react-router-dom";
-import { Sword, Trophy, Zap, Users } from "lucide-react";
-import heroBanner from "@/assets/hero-banner.jpg";
+import { Link, useNavigate } from "react-router-dom";
+import { useEffect } from "react";
+import { supabase } from "@/integrations/supabase/client";
 
 const Landing = () => {
-  return (
-    <div className="min-h-screen bg-background">
-      {/* Hero Section */}
-      <section className="relative h-screen flex items-center justify-center overflow-hidden">
-        <div 
-          className="absolute inset-0 bg-cover bg-center opacity-30"
-          style={{ backgroundImage: `url(${heroBanner})` }}
-        />
-        <div className="absolute inset-0 bg-gradient-to-b from-background via-background/80 to-background" />
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const checkUser = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session) {
+        // Verifica se já completou o onboarding
+        const { data: profile } = await supabase
+          .from('profiles')
+          .select('username')
+          .eq('id', session.user.id)
+          .single();
         
-        <div className="relative z-10 text-center px-4 max-w-4xl mx-auto">
-          <h1 className="text-6xl md:text-8xl font-bold mb-6 bg-gradient-hero bg-clip-text text-transparent drop-shadow-lg">
-            TaskHero
+        if (profile) {
+          navigate('/dashboard');
+        }
+      }
+    };
+    checkUser();
+  }, [navigate]);
+
+  return (
+    <div className="min-h-screen bg-background flex items-center justify-center p-4">
+      <div className="max-w-2xl w-full text-center space-y-8">
+        <div className="space-y-4">
+          <h1 className="text-5xl md:text-7xl font-bold bg-gradient-hero bg-clip-text text-transparent">
+            Task Level
           </h1>
-          <p className="text-2xl md:text-3xl mb-4 text-foreground font-semibold">
-            Transforme suas tarefas em missões.
+          <p className="text-2xl md:text-3xl font-semibold text-foreground">
+            Organize sua vida como um herói em evolução.
           </p>
-          <p className="text-xl md:text-2xl mb-12 text-muted-foreground">
-            Suba de nível na vida.
-          </p>
-          <Link to="/auth">
-            <Button size="lg" className="text-xl px-12 py-8 bg-gradient-hero hover:shadow-glow-primary transition-all duration-300 transform hover:scale-105">
-              Começar Grátis
-            </Button>
-          </Link>
         </div>
 
-        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 animate-bounce">
-          <Zap className="w-8 h-8 text-primary" />
-        </div>
-      </section>
+        <div className="bg-card border border-border rounded-2xl p-8 space-y-6">
+          <p className="text-lg text-muted-foreground leading-relaxed">
+            O Task Level é um sistema de produtividade inspirado em pessoas altamente bem-sucedidas, 
+            baseado em estudos de performance, hábitos comprovados e psicologia comportamental.
+          </p>
 
-      {/* Features Section */}
-      <section className="py-24 px-4">
-        <div className="max-w-6xl mx-auto">
-          <h2 className="text-4xl md:text-5xl font-bold text-center mb-16 text-foreground">
-            Como Funciona
-          </h2>
-          
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-            <FeatureCard
-              icon={<Sword className="w-12 h-12 text-primary" />}
-              title="Criar Missões"
-              description="Transforme suas tarefas diárias em missões épicas. Cada missão é um passo rumo à grandeza."
-            />
-            <FeatureCard
-              icon={<Zap className="w-12 h-12 text-secondary" />}
-              title="Ganhe XP e Suba de Nível"
-              description="Complete missões para ganhar pontos de experiência. Suba o nível do seu personagem e libere seu potencial."
-            />
-            <FeatureCard
-              icon={<Trophy className="w-12 h-12 text-primary" />}
-              title="Colete Recompensas"
-              description="Ganhe moedas de ouro e tesouros épicos. Construa sequências para recompensas bônus e conquistas especiais."
-            />
-            <FeatureCard
-              icon={<Users className="w-12 h-12 text-secondary" />}
-              title="Compete e Cresça"
-              description="Suba no ranking. Compare seu progresso com amigos e torne-se uma lenda."
-            />
+          <div className="space-y-4 pt-4">
+            <Link to="/quiz">
+              <Button size="lg" className="w-full text-lg py-6 bg-gradient-hero">
+                Começar Quiz
+              </Button>
+            </Link>
+            
+            <Link to="/auth">
+              <Button variant="outline" size="lg" className="w-full text-lg py-6">
+                Já tenho conta / Entrar
+              </Button>
+            </Link>
           </div>
         </div>
-      </section>
-
-      {/* CTA Section */}
-      <section className="py-24 px-4 bg-gradient-card">
-        <div className="max-w-4xl mx-auto text-center">
-          <h2 className="text-4xl md:text-5xl font-bold mb-6 text-foreground">
-            Pronto para Se Tornar um Herói?
-          </h2>
-          <p className="text-xl text-muted-foreground mb-12">
-            Junte-se a milhares de heróis evoluindo suas vidas, uma missão por vez.
-          </p>
-          <Link to="/auth">
-            <Button size="lg" className="text-xl px-12 py-8 bg-gradient-gold text-card hover:shadow-glow-gold transition-all duration-300 transform hover:scale-105">
-              Comece Sua Jornada
-            </Button>
-          </Link>
-        </div>
-      </section>
-
-      {/* Footer */}
-      <footer className="py-8 px-4 border-t border-border">
-        <div className="max-w-6xl mx-auto text-center text-muted-foreground">
-          <p>© 2025 TaskHero. Evolua sua vida.</p>
-        </div>
-      </footer>
-    </div>
-  );
-};
-
-const FeatureCard = ({ icon, title, description }: { icon: React.ReactNode; title: string; description: string }) => {
-  return (
-    <div className="bg-card border border-border rounded-xl p-6 hover:border-primary transition-all duration-300 hover:shadow-glow-primary transform hover:-translate-y-2">
-      <div className="mb-4 flex justify-center">{icon}</div>
-      <h3 className="text-xl font-bold mb-3 text-foreground">{title}</h3>
-      <p className="text-muted-foreground">{description}</p>
+      </div>
     </div>
   );
 };

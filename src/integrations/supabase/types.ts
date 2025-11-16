@@ -259,18 +259,9 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      complete_group_quest: {
-        Args: { quest_id: string }
-        Returns: Json
-      }
-      complete_quest: {
-        Args: { quest_id: string }
-        Returns: Json
-      }
-      get_user_groups: {
-        Args: { _user_id: string }
-        Returns: string[]
-      }
+      complete_group_quest: { Args: { quest_id: string }; Returns: Json }
+      complete_quest: { Args: { quest_id: string }; Returns: Json }
+      get_user_groups: { Args: { _user_id: string }; Returns: string[] }
       is_group_member: {
         Args: { _group_id: string; _user_id: string }
         Returns: boolean

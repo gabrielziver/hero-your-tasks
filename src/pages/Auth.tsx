@@ -24,6 +24,20 @@ const Auth = () => {
     checkUser();
   }, [navigate]);
 
+  const handleGoogleSignIn = async () => {
+    setLoading(true);
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: 'google',
+      options: {
+        redirectTo: `${window.location.origin}/dashboard`,
+      },
+    });
+    if (error) {
+      toast.error(error.message);
+      setLoading(false);
+    }
+  };
+
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!email || !password) {
@@ -80,13 +94,41 @@ const Auth = () => {
       <Card className="w-full max-w-md bg-card border-border">
         <CardHeader>
           <CardTitle className="text-3xl font-bold text-center bg-gradient-hero bg-clip-text text-transparent">
-            TaskHero
+            Task Level
           </CardTitle>
           <CardDescription className="text-center">
-            Comece sua jornada épica
+            Entre na sua conta
           </CardDescription>
         </CardHeader>
-        <CardContent>
+        <CardContent className="space-y-6">
+          <div className="space-y-3">
+            <Button
+              onClick={handleGoogleSignIn}
+              disabled={loading}
+              className="w-full py-6 bg-white hover:bg-gray-100 text-gray-900 border border-gray-300"
+              size="lg"
+            >
+              Entrar com Google
+            </Button>
+            
+            <Button
+              disabled
+              className="w-full py-6 bg-black hover:bg-gray-900 text-white"
+              size="lg"
+            >
+              Entrar com Apple
+            </Button>
+          </div>
+
+          <div className="relative">
+            <div className="absolute inset-0 flex items-center">
+              <span className="w-full border-t border-border" />
+            </div>
+            <div className="relative flex justify-center text-xs uppercase">
+              <span className="bg-card px-2 text-muted-foreground">Ou</span>
+            </div>
+          </div>
+
           <Tabs defaultValue="signin" className="w-full">
             <TabsList className="grid w-full grid-cols-2 mb-6">
               <TabsTrigger value="signin">Entrar</TabsTrigger>
