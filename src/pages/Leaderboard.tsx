@@ -5,6 +5,7 @@ import NavBar from "@/components/NavBar";
 import CreateGroupDialog from "@/components/CreateGroupDialog";
 import CreateGroupQuestDialog from "@/components/CreateGroupQuestDialog";
 import GroupQuestList from "@/components/GroupQuestList";
+import GroupProgressQuest from "@/components/GroupProgressQuest";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Trophy, Medal, Award, Copy, Check, User } from "lucide-react";
@@ -387,8 +388,10 @@ const Leaderboard = () => {
               )}
             </TabsContent>
 
-            <TabsContent value="quests" className="space-y-4">
-              <div className="flex justify-between items-center mb-4">
+            <TabsContent value="quests" className="space-y-6">
+              <GroupProgressQuest groupId={selectedGroup} />
+              
+              <div className="flex justify-between items-center">
                 <div>
                   <h3 className="text-xl font-bold text-foreground">Missões Especiais</h3>
                   <p className="text-sm text-muted-foreground">Todos os membros ganham XP ao completar</p>
