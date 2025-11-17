@@ -3,7 +3,7 @@ import { Button } from "./ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "./ui/dialog";
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
-import { Users } from "lucide-react";
+import { Users, Copy, Check } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
@@ -15,6 +15,8 @@ const CreateGroupDialog = ({ onGroupCreated }: CreateGroupDialogProps) => {
   const [open, setOpen] = useState(false);
   const [groupName, setGroupName] = useState("");
   const [loading, setLoading] = useState(false);
+  const [createdGroup, setCreatedGroup] = useState<{ id: string; name: string; invite_code: string } | null>(null);
+  const [copied, setCopied] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -62,15 +64,30 @@ const CreateGroupDialog = ({ onGroupCreated }: CreateGroupDialogProps) => {
       console.error(memberError);
     } else {
       toast.success("Grupo criado!");
+      setCreatedGroup(groupData);
       setGroupName("");
-      setOpen(false);
       onGroupCreated();
     }
     setLoading(false);
   };
 
+  const copyInviteLink = () => {
+    if (!createdGroup) return;
+    const inviteLink = `${window.location.origin}/leaderboard?invite=${createdGroup.invite_code}`;
+    navigator.clipboard.writeText(inviteLink);
+    setCopied(true);
+    toast.success("Link copiado!");
+    setTimeout(() => setCopied(false), 2000);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+    setCreatedGroup(null);
+    setCopied(false);
+  };
+
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <Dialog open={open} onOpenChange={handleClose}>
       <DialogTrigger asChild>
         <Button className="bg-gradient-hero">
           <Users className="w-4 h-4 mr-2" />
@@ -79,26 +96,73 @@ const CreateGroupDialog = ({ onGroupCreated }: CreateGroupDialogProps) => {
       </DialogTrigger>
       <DialogContent className="bg-card border-border">
         <DialogHeader>
-          <DialogTitle className="text-foreground">Criar Novo Grupo</DialogTitle>
+          <DialogTitle className="text-foreground">
+            {createdGroup ? "Grupo Criado!" : "Criar Novo Grupo"}
+          </DialogTitle>
           <DialogDescription className="text-muted-foreground">
-            Crie um grupo e convide amigos para competir
+            {createdGroup 
+              ? "Compartilhe o link abaixo para convidar amigos"
+              : "Crie um grupo e convide amigos para competir"
+            }
           </DialogDescription>
         </DialogHeader>
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <Label htmlFor="groupName">Nome do Grupo</Label>
-            <Input
-              id="groupName"
-              value={groupName}
-              onChange={(e) => setGroupName(e.target.value)}
-              placeholder="Digite o nome do grupo..."
-              disabled={loading}
-            />
+        
+        {createdGroup ? (
+          <div className="space-y-4">
+            <div className="p-4 bg-muted rounded-lg">
+              <p className="text-sm font-medium mb-2">Nome do Grupo:</p>
+              <p className="text-lg font-bold text-primary">{createdGroup.name}</p>
+            </div>
+            
+            <div className="p-4 bg-muted rounded-lg">
+              <p className="text-sm font-medium mb-2">Código de Convite:</p>
+              <p className="text-lg font-mono font-bold text-primary break-all">
+                {createdGroup.invite_code}
+              </p>
+            </div>
+
+            <Button 
+              onClick={copyInviteLink} 
+              className="w-full bg-gradient-hero"
+            >
+              {copied ? (
+                <>
+                  <Check className="w-4 h-4 mr-2" />
+                  Link Copiado!
+                </>
+              ) : (
+                <>
+                  <Copy className="w-4 h-4 mr-2" />
+                  Copiar Link de Convite
+                </>
+              )}
+            </Button>
+
+            <Button 
+              onClick={handleClose} 
+              variant="outline"
+              className="w-full"
+            >
+              Fechar
+            </Button>
           </div>
-          <Button type="submit" className="w-full bg-gradient-hero" disabled={loading}>
-            {loading ? "Criando..." : "Criar Grupo"}
-          </Button>
-        </form>
+        ) : (
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div>
+              <Label htmlFor="groupName">Nome do Grupo</Label>
+              <Input
+                id="groupName"
+                value={groupName}
+                onChange={(e) => setGroupName(e.target.value)}
+                placeholder="Digite o nome do grupo..."
+                disabled={loading}
+              />
+            </div>
+            <Button type="submit" className="w-full bg-gradient-hero" disabled={loading}>
+              {loading ? "Criando..." : "Criar Grupo"}
+            </Button>
+          </form>
+        )}
       </DialogContent>
     </Dialog>
   );
