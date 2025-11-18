@@ -11,40 +11,80 @@ const questions = [
     id: 1,
     question: "Com que frequência você planeja seu dia?",
     options: [
-      { value: "1", label: "Nunca", score: 1 },
-      { value: "2", label: "Às vezes", score: 2 },
-      { value: "3", label: "Quase sempre", score: 3 },
-      { value: "4", label: "Todos os dias", score: 4 },
+      { value: "1", label: "Nunca", score: 0 },
+      { value: "2", label: "Às vezes", score: 25 },
+      { value: "3", label: "Quase sempre", score: 50 },
+      { value: "4", label: "Todos os dias", score: 100 },
     ],
   },
   {
     id: 2,
     question: "Quantas vezes você cumpre tudo o que planeja?",
     options: [
-      { value: "1", label: "Quase nunca", score: 1 },
-      { value: "2", label: "Poucas vezes", score: 2 },
-      { value: "3", label: "A maioria das vezes", score: 3 },
-      { value: "4", label: "Sempre", score: 4 },
+      { value: "1", label: "Quase nunca", score: 0 },
+      { value: "2", label: "Poucas vezes", score: 25 },
+      { value: "3", label: "A maioria das vezes", score: 50 },
+      { value: "4", label: "Sempre", score: 100 },
     ],
   },
   {
     id: 3,
-    question: "O quanto você se perde em distrações?",
+    question: "O quanto você se perde em distrações (celular, redes sociais, etc.)?",
     options: [
-      { value: "1", label: "Muito fácil", score: 1 },
-      { value: "2", label: "Moderadamente", score: 2 },
-      { value: "3", label: "Pouco", score: 3 },
-      { value: "4", label: "Quase nunca", score: 4 },
+      { value: "1", label: "Muito fácil", score: 0 },
+      { value: "2", label: "Moderadamente", score: 25 },
+      { value: "3", label: "Pouco", score: 50 },
+      { value: "4", label: "Quase nunca", score: 100 },
     ],
   },
   {
     id: 4,
-    question: "Como você definiria sua disciplina atual?",
+    question: "Como você definiria sua disciplina hoje?",
     options: [
-      { value: "1", label: "Muito baixa", score: 1 },
-      { value: "2", label: "Baixa", score: 2 },
-      { value: "3", label: "Média", score: 3 },
-      { value: "4", label: "Alta", score: 4 },
+      { value: "1", label: "Muito baixa", score: 0 },
+      { value: "2", label: "Baixa", score: 25 },
+      { value: "3", label: "Média", score: 50 },
+      { value: "4", label: "Alta", score: 100 },
+    ],
+  },
+  {
+    id: 5,
+    question: "Você sente que já deixou passar oportunidades por falta de organização?",
+    options: [
+      { value: "1", label: "Sim, muitas", score: 0 },
+      { value: "2", label: "Algumas", score: 33 },
+      { value: "3", label: "Poucas", score: 66 },
+      { value: "4", label: "Quase nenhuma", score: 100 },
+    ],
+  },
+  {
+    id: 6,
+    question: "Em relação ao seu corpo e saúde, você:",
+    options: [
+      { value: "1", label: "Nunca segue um plano", score: 0 },
+      { value: "2", label: "Começa e para", score: 25 },
+      { value: "3", label: "Mantém por um tempo", score: 50 },
+      { value: "4", label: "Consegue seguir com consistência", score: 100 },
+    ],
+  },
+  {
+    id: 7,
+    question: "Em relação à sua vida financeira, você:",
+    options: [
+      { value: "1", label: "Nunca sabe para onde o dinheiro vai", score: 0 },
+      { value: "2", label: "Tem alguma noção, mas não anota", score: 25 },
+      { value: "3", label: "Tenta controlar, mas não é consistente", score: 50 },
+      { value: "4", label: "Tem tudo bem controlado", score: 100 },
+    ],
+  },
+  {
+    id: 8,
+    question: "Você acredita que um método estruturado e gamificado poderia te ajudar a manter os hábitos no longo prazo?",
+    options: [
+      { value: "1", label: "Sim, preciso disso urgente", score: 100 },
+      { value: "2", label: "Sim, ajudaria bastante", score: 75 },
+      { value: "3", label: "Talvez, dependendo de como for", score: 40 },
+      { value: "4", label: "Não tenho certeza", score: 0 },
     ],
   },
 ];
@@ -74,7 +114,8 @@ const Quiz = () => {
     } else {
       // Calcula o resultado e redireciona
       const totalScore = Object.values({ ...answers, [currentQuestion]: selectedOption?.score || 0 }).reduce((a, b) => a + b, 0);
-      const percentage = Math.round((totalScore / 16) * 100);
+      const maxScore = 800; // 8 perguntas * 100 pontos máximos
+      const percentage = Math.round((totalScore / maxScore) * 100);
       navigate(`/diagnostic-result?score=${percentage}`);
     }
   };
@@ -92,7 +133,7 @@ const Quiz = () => {
         </div>
 
         <div className="space-y-4">
-          <div className="flex justify-between text-sm text-muted-foreground mb-2">
+          <div className="flex justify-between text-sm text-muted-foreground">
             <span>Pergunta {currentQuestion + 1} de {questions.length}</span>
             <span>{Math.round(progress)}%</span>
           </div>

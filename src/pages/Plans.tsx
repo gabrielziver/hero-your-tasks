@@ -19,101 +19,64 @@ const Plans = () => {
           <h1 className="text-4xl md:text-5xl font-bold text-foreground">
             Escolha seu plano após os 3 dias grátis
           </h1>
-          <p className="text-muted-foreground text-lg">
-            Você não será cobrado agora. A cobrança acontece apenas após os 3 dias grátis.
-          </p>
         </div>
 
-        <div className="grid md:grid-cols-2 gap-8">
-          {/* Plano Anual */}
-          <Card className="relative bg-card border-2 border-primary p-8 space-y-6">
-            <Badge className="absolute -top-3 left-1/2 -translate-x-1/2 bg-primary text-white">
-              Recomendado
-            </Badge>
-
-            <div className="text-center space-y-2">
-              <Sparkles className="w-12 h-12 mx-auto text-primary" />
-              <h2 className="text-3xl font-bold text-foreground">Plano Anual</h2>
-              <div className="space-y-1">
-                <p className="text-4xl font-bold text-primary">R$ 149,90</p>
-                <p className="text-muted-foreground">por ano</p>
-                <Badge variant="secondary" className="bg-primary/10 text-primary">
-                  Economize 60%
-                </Badge>
+        <Card className="bg-card border-border p-8 space-y-6">
+          <div className="space-y-4">
+            <div className="inline-flex items-center gap-2 bg-gradient-gold px-4 py-2 rounded-full">
+              <span className="text-sm font-bold text-background">Plano Principal</span>
+            </div>
+            <h2 className="text-3xl font-bold text-foreground">Plano Mensal MVP</h2>
+            <div className="space-y-2">
+              <div className="flex items-baseline gap-2">
+                <span className="text-4xl font-bold text-primary">R$ 9,90</span>
+                <span className="text-muted-foreground">/mês</span>
               </div>
             </div>
+          </div>
 
-            <ul className="space-y-3">
-              <li className="flex items-center space-x-3">
-                <Check className="w-5 h-5 text-primary" />
-                <span className="text-foreground">Acesso total ao sistema</span>
-              </li>
-              <li className="flex items-center space-x-3">
-                <Check className="w-5 h-5 text-primary" />
-                <span className="text-foreground">Skins exclusivas</span>
-              </li>
-              <li className="flex items-center space-x-3">
-                <Check className="w-5 h-5 text-primary" />
-                <span className="text-foreground">Relatórios avançados</span>
-              </li>
-              <li className="flex items-center space-x-3">
-                <Check className="w-5 h-5 text-primary" />
-                <span className="text-foreground">Boost +10% XP</span>
-              </li>
-              <li className="flex items-center space-x-3">
-                <Check className="w-5 h-5 text-primary" />
-                <span className="text-foreground">Badge Pro X</span>
-              </li>
-            </ul>
+          <ul className="space-y-3">
+            <li className="flex items-center space-x-3">
+              <div className="w-2 h-2 rounded-full bg-primary" />
+              <span className="text-muted-foreground">Acesso total ao app</span>
+            </li>
+            <li className="flex items-center space-x-3">
+              <div className="w-2 h-2 rounded-full bg-primary" />
+              <span className="text-muted-foreground">Sem anúncios</span>
+            </li>
+            <li className="flex items-center space-x-3">
+              <div className="w-2 h-2 rounded-full bg-primary" />
+              <span className="text-muted-foreground">Acesso à loja e recompensas</span>
+            </li>
+            <li className="flex items-center space-x-3">
+              <div className="w-2 h-2 rounded-full bg-primary" />
+              <span className="text-muted-foreground">Participar de grupos de metas com ranking</span>
+            </li>
+            <li className="flex items-center space-x-3">
+              <div className="w-2 h-2 rounded-full bg-primary" />
+              <span className="text-muted-foreground">Método completo de organização anual (PDF por e-mail)</span>
+            </li>
+            <li className="flex items-center space-x-3">
+              <div className="w-2 h-2 rounded-full bg-primary" />
+              <span className="text-muted-foreground">Aplicação prática do método (checklists e missões gamificadas)</span>
+            </li>
+          </ul>
 
-            <Button
-              onClick={handleSelectPlan}
-              className="w-full py-6 text-lg bg-gradient-hero"
-              size="lg"
-            >
-              Selecionar plano anual
-            </Button>
-          </Card>
+          <Button
+            onClick={handleSelectPlan}
+            className="w-full py-6 text-lg bg-gradient-hero"
+            size="lg"
+          >
+            Selecionar plano R$ 9,90/mês
+          </Button>
+        </Card>
 
-          {/* Plano Mensal */}
-          <Card className="bg-card border-border p-8 space-y-6">
-            <div className="text-center space-y-2">
-              <Zap className="w-12 h-12 mx-auto text-accent" />
-              <h2 className="text-3xl font-bold text-foreground">Plano Mensal</h2>
-              <div className="space-y-1">
-                <p className="text-4xl font-bold text-accent">R$ 29,90</p>
-                <p className="text-muted-foreground">por mês</p>
-              </div>
-            </div>
-
-            <ul className="space-y-3">
-              <li className="flex items-center space-x-3">
-                <Check className="w-5 h-5 text-accent" />
-                <span className="text-foreground">Acesso total ao sistema</span>
-              </li>
-              <li className="flex items-center space-x-3">
-                <Check className="w-5 h-5 text-accent" />
-                <span className="text-foreground">Sem anúncios</span>
-              </li>
-              <li className="flex items-center space-x-3">
-                <Check className="w-5 h-5 text-accent" />
-                <span className="text-foreground">Loja completa</span>
-              </li>
-            </ul>
-
-            <Button
-              onClick={handleSelectPlan}
-              variant="outline"
-              className="w-full py-6 text-lg border-accent text-accent hover:bg-accent hover:text-background"
-              size="lg"
-            >
-              Selecionar plano mensal
-            </Button>
-          </Card>
-        </div>
-
-        <p className="text-center text-muted-foreground">
+        <p className="text-sm text-muted-foreground text-center max-w-md mx-auto">
           Você não será cobrado agora. A cobrança acontece apenas após os 3 dias grátis.
+        </p>
+        
+        <p className="text-xs text-muted-foreground text-center max-w-2xl mx-auto mt-4">
+          O método Task Level é baseado em Hábitos Atômicos e será entregue por e-mail após a confirmação da assinatura.
         </p>
       </div>
     </div>

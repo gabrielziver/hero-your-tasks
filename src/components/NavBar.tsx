@@ -1,5 +1,5 @@
 import { Link, useLocation } from "react-router-dom";
-import { Home, Target, Flame, Trophy, Settings } from "lucide-react";
+import { Home, Target, Flame, ShoppingBag, Brain } from "lucide-react";
 
 const NavBar = () => {
   const location = useLocation();
@@ -8,10 +8,10 @@ const NavBar = () => {
 
   const navItems = [
     { path: "/dashboard", icon: Home, label: "Home" },
-    { path: "/quests", icon: Target, label: "Missões" },
+    { path: "/shop", icon: ShoppingBag, label: "Loja" },
     { path: "/streak", icon: Flame, label: "Streak", isCenter: true },
-    { path: "/leaderboard", icon: Trophy, label: "Ranking" },
-    { path: "/profile", icon: Settings, label: "Config" },
+    { path: "/finance", icon: Target, label: "Finanças" },
+    { path: "/ai", icon: Brain, label: "IA" },
   ];
 
   return (

@@ -27,11 +27,11 @@ const DiagnosticResult = () => {
 
   const getMessage = () => {
     if (score <= 45) {
-      return "Você tem um enorme potencial de crescimento. Com a estrutura certa, sua evolução pode acelerar rapidamente.";
+      return "Hoje você está longe do seu potencial. Com um método profissional de organização, sua evolução pode acelerar muito em poucas semanas.";
     } else if (score <= 70) {
-      return "Você já possui uma base, mas precisa de organização profissional para alcançar resultados consistentes.";
+      return "Você já tem uma base de organização, mas ainda falta um método estruturado e acompanhamento para destravar seus próximos níveis.";
     } else {
-      return "Seu foco é bom, mas falta uma estratégia forte para atingir objetivos maiores.";
+      return "Você tem disciplina, mas falta estratégia e sistema para transformar esforço em resultado previsível.";
     }
   };
 
@@ -84,14 +84,15 @@ const DiagnosticResult = () => {
             </div>
 
             <div className="w-full space-y-4">
-              <p className="text-lg text-foreground text-center leading-relaxed">
+              <p className="text-lg text-muted-foreground leading-relaxed text-center">
                 {getMessage()}
               </p>
 
-              <div className="bg-muted/30 rounded-lg p-4 border border-border">
-                <p className="text-sm text-muted-foreground text-center">
-                  Este diagnóstico é baseado em estudos reais de alta performance, 
-                  psicologia comportamental e hábitos de pessoas bem-sucedidas mundialmente.
+              <div className="bg-muted/30 rounded-lg p-6 border border-border">
+                <p className="text-sm text-muted-foreground text-center leading-relaxed">
+                  Este diagnóstico é inspirado em estudos reais sobre hábitos, desempenho e 
+                  rotinas de pessoas bem-sucedidas. O próximo passo é usar esse método na 
+                  prática dentro do Task Level.
                 </p>
               </div>
             </div>
