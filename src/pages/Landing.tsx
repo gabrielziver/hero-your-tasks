@@ -44,14 +44,16 @@ const Landing = () => {
             Task Level
           </h1>
           <p className="text-2xl md:text-3xl font-semibold text-foreground">
-            Organize sua vida como um herói em evolução.
+            Organize sua vida como o personagem principal de um RPG
           </p>
         </div>
 
         <div className="bg-card border border-border rounded-2xl p-8 space-y-6">
           <p className="text-lg text-muted-foreground leading-relaxed">
-            O Task Level é um sistema de produtividade inspirado em pessoas altamente bem-sucedidas, 
-            baseado em estudos de performance, hábitos comprovados e psicologia comportamental.
+            O Task Level é baseado em estudos de performance, hábitos e psicologia comportamental, 
+            inspirado em rotinas de pessoas altamente bem-sucedidas. Pessoas que usam um método 
+            estruturado de organização aumentam muito mais as chances de melhorar corpo, saúde, 
+            finanças e projetos pessoais ao longo do tempo.
           </p>
 
           <div className="space-y-4 pt-4">

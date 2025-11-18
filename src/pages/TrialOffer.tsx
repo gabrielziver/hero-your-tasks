@@ -14,17 +14,18 @@ const TrialOffer = () => {
             <Sparkles className="w-10 h-10 text-white" />
           </div>
           <h1 className="text-4xl md:text-5xl font-bold text-foreground">
-            Seu Plano Ideal Está Pronto
+            Ative seu teste grátis de 3 dias
           </h1>
         </div>
 
         <Card className="bg-card border-border p-8 space-y-8">
           <div className="space-y-6">
             <p className="text-lg text-foreground text-center leading-relaxed">
-              Com base no seu diagnóstico, criamos um plano de evolução personalizado. 
-              Experimente tudo agora com <span className="font-bold text-primary">3 dias grátis</span> por{" "}
-              <span className="font-bold text-primary">R$0,00</span>. 
-              Nada será cobrado neste momento.
+              Você terá <span className="font-bold text-primary">3 dias completos</span> para 
+              testar o método Task Level, sem cobrança agora. Se você gostar, continua 
+              automaticamente pagando apenas{" "}
+              <span className="font-bold text-primary">R$ 9,90</span> para continuar usando 
+              todos os recursos.
             </p>
 
             <div className="bg-muted/30 rounded-lg p-6 border border-border space-y-4">
@@ -62,7 +63,7 @@ const TrialOffer = () => {
             </Button>
 
             <p className="text-sm text-muted-foreground text-center">
-              Você só será cobrado após os 3 dias. Cancele quando quiser.
+              Nada será cobrado agora. A cobrança só acontece 3 dias depois. Cancele quando quiser antes do prazo.
             </p>
           </div>
         </Card>

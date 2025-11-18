@@ -15,6 +15,10 @@ import Profile from "./pages/Profile";
 import Leaderboard from "./pages/Leaderboard";
 import Streak from "./pages/Streak";
 import Quests from "./pages/Quests";
+import Shop from "./pages/Shop";
+import Finance from "./pages/Finance";
+import AIAssistant from "./pages/AIAssistant";
+import Method from "./pages/Method";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -38,6 +42,10 @@ const App = () => (
           <Route path="/leaderboard" element={<Leaderboard />} />
           <Route path="/streak" element={<Streak />} />
           <Route path="/quests" element={<Quests />} />
+          <Route path="/shop" element={<Shop />} />
+          <Route path="/finance" element={<Finance />} />
+          <Route path="/ai" element={<AIAssistant />} />
+          <Route path="/method" element={<Method />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
