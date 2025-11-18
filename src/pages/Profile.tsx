@@ -4,10 +4,12 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import NavBar from "@/components/NavBar";
 import NotificationSettings from "@/components/NotificationSettings";
+import AvatarCreator, { AvatarConfig } from "@/components/AvatarCreator";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { User, Upload } from "lucide-react";
 
 const Profile = () => {
@@ -22,6 +24,7 @@ const Profile = () => {
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [profile, setProfile] = useState<any>(null);
+  const [avatarConfig, setAvatarConfig] = useState<AvatarConfig | null>(null);
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -49,8 +52,35 @@ const Profile = () => {
       setProfile(data);
       setUsername(data.username || "");
       setAvatarUrl(data.avatar_url || "");
+      // Load avatar config if exists
+      if (data.avatar_color) {
+        try {
+          setAvatarConfig(JSON.parse(data.avatar_color));
+        } catch (e) {
+          console.error("Failed to parse avatar config:", e);
+        }
+      }
     }
     setLoading(false);
+  };
+
+  const handleAvatarSave = async (config: AvatarConfig) => {
+    setSaving(true);
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return;
+
+    const { error } = await supabase
+      .from("profiles")
+      .update({ avatar_color: JSON.stringify(config) })
+      .eq("id", user.id);
+
+    if (error) {
+      toast.error("Erro ao salvar avatar");
+    } else {
+      setAvatarConfig(config);
+      toast.success("Avatar salvo com sucesso!");
+    }
+    setSaving(false);
   };
 
   const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -172,107 +202,125 @@ const Profile = () => {
   }
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background pb-24">
       <NavBar />
       <div className="container mx-auto px-4 py-8 max-w-2xl">
-        <Card className="bg-gradient-card border-border">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-3 text-foreground">
-              <User className="w-6 h-6 text-primary" />
-              Perfil do Herói
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-6">
-            <div>
-              <Label>Avatar do Herói</Label>
-              <div className="mt-2 flex items-center gap-4">
-                {avatarUrl ? (
-                  <img 
-                    src={avatarUrl} 
-                    alt="Avatar" 
-                    className="w-24 h-24 rounded-full object-cover border-2 border-primary"
-                    onError={(e) => {
-                      e.currentTarget.src = "";
-                    }}
-                  />
-                ) : (
-                  <div className="w-24 h-24 rounded-full bg-gradient-hero flex items-center justify-center border-2 border-primary">
-                    <User className="w-12 h-12 text-foreground" />
+        <h1 className="text-2xl font-display font-bold text-primary mb-6">Perfil do Herói</h1>
+        
+        <Tabs defaultValue="account" className="w-full">
+          <TabsList className="grid w-full grid-cols-2 mb-6">
+            <TabsTrigger value="account">Conta</TabsTrigger>
+            <TabsTrigger value="avatar">Avatar 2D</TabsTrigger>
+          </TabsList>
+          
+          <TabsContent value="account">
+            <Card className="bg-card border-border">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-3 text-foreground">
+                  <User className="w-6 h-6 text-primary" />
+                  Informações da Conta
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                <div>
+                  <Label>Avatar do Herói</Label>
+                  <div className="mt-2 flex items-center gap-4">
+                    {avatarUrl ? (
+                      <img 
+                        src={avatarUrl} 
+                        alt="Avatar" 
+                        className="w-24 h-24 rounded-full object-cover border-2 border-primary"
+                        onError={(e) => {
+                          e.currentTarget.src = "";
+                        }}
+                      />
+                    ) : (
+                      <div className="w-24 h-24 rounded-full bg-gradient-hero flex items-center justify-center border-2 border-primary">
+                        <User className="w-12 h-12 text-foreground" />
+                      </div>
+                    )}
+                    <div className="flex flex-col gap-2">
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        onClick={() => fileInputRef.current?.click()}
+                        disabled={uploading || saving}
+                        className="gap-2"
+                      >
+                        <Upload className="w-4 h-4" />
+                        {uploading ? "Enviando..." : "Escolher Imagem"}
+                      </Button>
+                      <input
+                        ref={fileInputRef}
+                        type="file"
+                        accept="image/*"
+                        onChange={handleFileUpload}
+                        className="hidden"
+                      />
+                      <p className="text-xs text-muted-foreground">
+                        JPG, PNG ou WEBP (max 5MB)
+                      </p>
+                    </div>
                   </div>
-                )}
-                <div className="flex flex-col gap-2">
-                  <Button
-                    type="button"
-                    variant="outline"
-                    size="sm"
-                    onClick={() => fileInputRef.current?.click()}
-                    disabled={uploading || saving}
-                    className="gap-2"
-                  >
-                    <Upload className="w-4 h-4" />
-                    {uploading ? "Enviando..." : "Escolher Imagem"}
-                  </Button>
-                  <input
-                    ref={fileInputRef}
-                    type="file"
-                    accept="image/*"
-                    onChange={handleFileUpload}
-                    className="hidden"
-                  />
-                  <p className="text-xs text-muted-foreground">
-                    JPG, PNG ou WEBP (max 5MB)
-                  </p>
                 </div>
-              </div>
-            </div>
-            <div>
-              <Label htmlFor="username">Nome de usuário (Nickname)</Label>
-              <Input
-                id="username"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-                placeholder="Digite o nome do seu herói"
-                disabled={saving}
-              />
-            </div>
-            <div>
-              <Label htmlFor="email">Email</Label>
-              <Input id="email" value={email} disabled className="bg-muted" />
-            </div>
-            
-            <div className="border-t border-border pt-6">
-              <h3 className="text-lg font-semibold mb-4 text-foreground">Alterar Senha</h3>
-              <div className="space-y-4">
                 <div>
-                  <Label htmlFor="newPassword">Nova Senha</Label>
+                  <Label htmlFor="username">Nome de usuário (Nickname)</Label>
                   <Input
-                    id="newPassword"
-                    type="password"
-                    value={newPassword}
-                    onChange={(e) => setNewPassword(e.target.value)}
-                    placeholder="Mínimo 6 caracteres"
+                    id="username"
+                    value={username}
+                    onChange={(e) => setUsername(e.target.value)}
+                    placeholder="Digite o nome do seu herói"
                     disabled={saving}
                   />
                 </div>
                 <div>
-                  <Label htmlFor="confirmPassword">Confirmar Senha</Label>
-                  <Input
-                    id="confirmPassword"
-                    type="password"
-                    value={confirmPassword}
-                    onChange={(e) => setConfirmPassword(e.target.value)}
-                    placeholder="Digite a senha novamente"
-                    disabled={saving}
-                  />
+                  <Label htmlFor="email">Email</Label>
+                  <Input id="email" value={email} disabled className="bg-muted" />
                 </div>
-              </div>
-            </div>
+                
+                <div className="border-t border-border pt-6">
+                  <h3 className="text-lg font-semibold mb-4 text-foreground">Alterar Senha</h3>
+                  <div className="space-y-4">
+                    <div>
+                      <Label htmlFor="newPassword">Nova Senha</Label>
+                      <Input
+                        id="newPassword"
+                        type="password"
+                        value={newPassword}
+                        onChange={(e) => setNewPassword(e.target.value)}
+                        placeholder="Mínimo 6 caracteres"
+                        disabled={saving}
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="confirmPassword">Confirmar Senha</Label>
+                      <Input
+                        id="confirmPassword"
+                        type="password"
+                        value={confirmPassword}
+                        onChange={(e) => setConfirmPassword(e.target.value)}
+                        placeholder="Digite a senha novamente"
+                        disabled={saving}
+                      />
+                    </div>
+                  </div>
+                </div>
 
-            <Button onClick={handleSave} disabled={saving} className="w-full bg-gradient-hero">
-              {saving ? "Salvando..." : "Salvar Perfil"}
-            </Button>
-          </CardContent>
-        </Card>
+                <Button onClick={handleSave} disabled={saving} className="w-full bg-gradient-hero">
+                  {saving ? "Salvando..." : "Salvar Perfil"}
+                </Button>
+              </CardContent>
+            </Card>
+          </TabsContent>
+          
+          <TabsContent value="avatar">
+            <AvatarCreator 
+              onSave={handleAvatarSave} 
+              initialConfig={avatarConfig || undefined}
+            />
+          </TabsContent>
+        </Tabs>
 
         <div className="mt-8">
           <NotificationSettings />
