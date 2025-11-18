@@ -168,6 +168,19 @@ const Dashboard = () => {
           </div>
         </div>
 
+        {/* Skill Progress */}
+        <div className="bg-card rounded-2xl p-6 border border-border hover:border-accent/30 transition-colors">
+          <h3 className="font-display font-bold text-lg text-primary mb-4">
+            Progresso de Habilidades
+          </h3>
+          <div className="space-y-3">
+            <ProgressBar label="💼 Produtividade" value={72} color="primary" />
+            <ProgressBar label="🧘 Bem-estar" value={64} color="secondary" />
+            <ProgressBar label="🎨 Criatividade" value={58} color="accent" />
+            <ProgressBar label="💪 Força" value={80} color="gold" />
+          </div>
+        </div>
+
         {/* Personal Quests */}
         <div className="bg-card rounded-2xl p-6 border border-border hover:border-primary/30 transition-colors">
           <div className="flex items-center justify-between mb-4">
@@ -230,19 +243,6 @@ const Dashboard = () => {
               </Button>
             </div>
           )}
-        </div>
-
-        {/* Skill Progress */}
-        <div className="bg-card rounded-2xl p-6 border border-border hover:border-accent/30 transition-colors">
-          <h3 className="font-display font-bold text-lg text-primary mb-4">
-            Progresso de Habilidades
-          </h3>
-          <div className="space-y-3">
-            <ProgressBar label="💼 Produtividade" value={72} color="primary" />
-            <ProgressBar label="🧘 Bem-estar" value={64} color="secondary" />
-            <ProgressBar label="🎨 Criatividade" value={58} color="accent" />
-            <ProgressBar label="💪 Força" value={80} color="gold" />
-          </div>
         </div>
       </div>
 
