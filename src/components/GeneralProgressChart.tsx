@@ -1,0 +1,254 @@
+import { useEffect, useState } from "react";
+import { supabase } from "@/integrations/supabase/client";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+
+interface CategoryProgress {
+  work: number;
+  habits: number;
+  personal: number;
+  training: number;
+}
+
+interface DailyStats {
+  date: string;
+  completed: number;
+}
+
+const GeneralProgressChart = ({ userId }: { userId: string }) => {
+  const [progress, setProgress] = useState<CategoryProgress>({
+    work: 0,
+    habits: 0,
+    personal: 0,
+    training: 0,
+  });
+  const [period, setPeriod] = useState<"day" | "week" | "month">("week");
+  const [dailyStats, setDailyStats] = useState<DailyStats[]>([]);
+
+  useEffect(() => {
+    loadWeeklyProgress();
+    loadDailyStats();
+  }, [userId, period]);
+
+  const loadWeeklyProgress = async () => {
+    const startOfWeek = new Date();
+    startOfWeek.setDate(startOfWeek.getDate() - startOfWeek.getDay());
+    startOfWeek.setHours(0, 0, 0, 0);
+
+    const { data: quests } = await supabase
+      .from("quests")
+      .select("category, is_completed")
+      .eq("user_id", userId)
+      .gte("created_at", startOfWeek.toISOString());
+
+    if (quests) {
+      const categories: CategoryProgress = {
+        work: 0,
+        habits: 0,
+        personal: 0,
+        training: 0,
+      };
+
+      const counts: any = {
+        work: { total: 0, completed: 0 },
+        habits: { total: 0, completed: 0 },
+        personal: { total: 0, completed: 0 },
+        training: { total: 0, completed: 0 },
+      };
+
+      quests.forEach((quest) => {
+        const cat = quest.category as keyof CategoryProgress;
+        if (counts[cat]) {
+          counts[cat].total++;
+          if (quest.is_completed) counts[cat].completed++;
+        }
+      });
+
+      Object.keys(counts).forEach((key) => {
+        const cat = key as keyof CategoryProgress;
+        if (counts[cat].total > 0) {
+          categories[cat] = (counts[cat].completed / counts[cat].total) * 100;
+        }
+      });
+
+      setProgress(categories);
+    }
+  };
+
+  const loadDailyStats = async () => {
+    const daysToLoad = period === "day" ? 1 : period === "week" ? 7 : 30;
+    const startDate = new Date();
+    startDate.setDate(startDate.getDate() - daysToLoad);
+    startDate.setHours(0, 0, 0, 0);
+
+    const { data: quests } = await supabase
+      .from("quests")
+      .select("completed_at, is_completed")
+      .eq("user_id", userId)
+      .eq("is_completed", true)
+      .gte("completed_at", startDate.toISOString());
+
+    if (quests) {
+      const stats: Record<string, number> = {};
+      
+      for (let i = 0; i < daysToLoad; i++) {
+        const date = new Date();
+        date.setDate(date.getDate() - i);
+        const dateKey = date.toISOString().split("T")[0];
+        stats[dateKey] = 0;
+      }
+
+      quests.forEach((quest) => {
+        if (quest.completed_at) {
+          const dateKey = quest.completed_at.split("T")[0];
+          if (stats[dateKey] !== undefined) {
+            stats[dateKey]++;
+          }
+        }
+      });
+
+      const statsArray = Object.entries(stats)
+        .map(([date, completed]) => ({ date, completed }))
+        .sort((a, b) => a.date.localeCompare(b.date));
+
+      setDailyStats(statsArray);
+    }
+  };
+
+  const totalProgress = Math.round(
+    (progress.work + progress.habits + progress.personal + progress.training) / 4
+  );
+
+  const rings = [
+    { label: "💼 Trabalho", value: progress.work, color: "hsl(250 92% 68%)" },
+    { label: "🧘 Hábitos", value: progress.habits, color: "hsl(180 78% 60%)" },
+    { label: "🎯 Pessoal", value: progress.personal, color: "hsl(251 89% 73%)" },
+    { label: "💪 Treinos", value: progress.training, color: "hsl(47 98% 64%)" },
+  ];
+
+  const maxCompleted = Math.max(...dailyStats.map(s => s.completed), 1);
+
+  return (
+    <div className="w-full space-y-6">
+      {/* Progress Rings */}
+      <div className="bg-card rounded-2xl p-6 border border-border">
+        <h3 className="font-display font-bold text-sm text-muted-foreground mb-4">
+          Progresso
+        </h3>
+        <div className="relative w-full h-48 flex items-center justify-center">
+          <svg viewBox="0 0 200 200" className="w-full h-full max-w-[200px]">
+            {rings.map((ring, index) => {
+              const radius = 80 - index * 15;
+              const circumference = 2 * Math.PI * radius;
+              
+              return (
+                <g key={`ring-${index}`}>
+                  <circle
+                    cx="100"
+                    cy="100"
+                    r={radius}
+                    fill="none"
+                    stroke="hsl(220 20% 20%)"
+                    strokeWidth="10"
+                  />
+                  <circle
+                    cx="100"
+                    cy="100"
+                    r={radius}
+                    fill="none"
+                    stroke={ring.color}
+                    strokeWidth="10"
+                    strokeLinecap="round"
+                    strokeDasharray={circumference}
+                    strokeDashoffset={circumference - (ring.value / 100) * circumference}
+                    transform="rotate(-90 100 100)"
+                    style={{
+                      transition: "stroke-dashoffset 1s ease",
+                    }}
+                  />
+                </g>
+              );
+            })}
+          </svg>
+          
+          <div className="absolute inset-0 flex flex-col items-center justify-center">
+            <div className="text-4xl font-display font-bold text-accent">
+              {totalProgress}%
+            </div>
+            <div className="text-xs text-muted-foreground mt-1">Concluído</div>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-2 gap-3 mt-6">
+          {rings.map((ring) => (
+            <div key={ring.label} className="flex items-center gap-2">
+              <div
+                className="w-3 h-3 rounded-full flex-shrink-0"
+                style={{ backgroundColor: ring.color }}
+              />
+              <div className="flex items-center justify-between flex-1 min-w-0">
+                <span className="text-xs text-foreground truncate">{ring.label}</span>
+                <span className="text-xs text-muted-foreground ml-2 flex-shrink-0">
+                  {Math.round(ring.value)}%
+                </span>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Bar Chart */}
+      <div className="bg-card rounded-2xl p-6 border border-border">
+        <div className="flex items-center justify-between mb-6">
+          <h3 className="font-display font-bold text-sm text-muted-foreground">
+            Total
+          </h3>
+          <Tabs value={period} onValueChange={(v) => setPeriod(v as any)}>
+            <TabsList className="bg-muted h-8">
+              <TabsTrigger value="day" className="text-xs h-7 px-3">
+                Dia
+              </TabsTrigger>
+              <TabsTrigger value="week" className="text-xs h-7 px-3">
+                Semana
+              </TabsTrigger>
+              <TabsTrigger value="month" className="text-xs h-7 px-3">
+                Mês
+              </TabsTrigger>
+            </TabsList>
+          </Tabs>
+        </div>
+
+        <div className="h-40 flex items-end justify-between gap-1">
+          {dailyStats.map((stat, index) => {
+            const height = (stat.completed / maxCompleted) * 100;
+            const isToday = stat.date === new Date().toISOString().split("T")[0];
+            
+            return (
+              <div
+                key={stat.date}
+                className="flex-1 flex flex-col items-center gap-2"
+              >
+                <div
+                  className="w-full rounded-t-md transition-all duration-500"
+                  style={{
+                    height: `${height}%`,
+                    background: isToday
+                      ? "var(--gradient-accent)"
+                      : "hsl(220 20% 25%)",
+                    minHeight: stat.completed > 0 ? "8px" : "0px",
+                  }}
+                />
+                <span className="text-[10px] text-muted-foreground">
+                  {period === "day"
+                    ? "Hoje"
+                    : new Date(stat.date).getDate()}
+                </span>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default GeneralProgressChart;

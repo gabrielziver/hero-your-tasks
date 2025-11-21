@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import CharacterAvatar from "@/components/CharacterAvatar";
 import QuestList from "@/components/QuestList";
 import GroupQuestList from "@/components/GroupQuestList";
-import WeeklyProgressRing from "@/components/WeeklyProgressRing";
+import GeneralProgressChart from "@/components/GeneralProgressChart";
 import CreateQuestDialog from "@/components/CreateQuestDialog";
 import CreateGroupQuestDialog from "@/components/CreateGroupQuestDialog";
 import NavBar from "@/components/NavBar";
@@ -142,12 +142,12 @@ const Dashboard = () => {
 
       {/* Main Content */}
       <div className="container mx-auto px-4 py-6 space-y-6">
-        {/* Top Section: Avatar + Weekly Progress */}
-        <div className="flex flex-col sm:flex-row items-center gap-6 bg-card rounded-2xl p-6 border border-border hover:border-primary/30 transition-colors">
-          <CharacterAvatar stats={stats} />
-          <div className="flex-1 w-full sm:h-48">
-            <WeeklyProgressRing userId={user?.id || ""} />
+        {/* Top Section: Avatar + General Progress */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <div className="bg-card rounded-2xl p-6 border border-border hover:border-primary/30 transition-colors flex items-center justify-center">
+            <CharacterAvatar stats={stats} />
           </div>
+          <GeneralProgressChart userId={user?.id || ""} />
         </div>
 
         {/* XP Bar */}
