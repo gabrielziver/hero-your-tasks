@@ -78,36 +78,36 @@ const WeeklyCalendar = ({ userId }: { userId: string }) => {
   };
 
   return (
-    <div className="bg-card rounded-2xl p-6 border border-border">
-      <div className="flex items-center justify-between gap-2 overflow-x-auto">
+    <div className="bg-card rounded-2xl p-4 sm:p-6 border border-border">
+      <div className="grid grid-cols-7 gap-1 sm:gap-2">
         {weekDays.map((day, index) => (
           <div
             key={index}
-            className={`flex flex-col items-center min-w-[60px] gap-2 ${
-              day.isToday ? "scale-110" : ""
+            className={`flex flex-col items-center gap-1 sm:gap-2 ${
+              day.isToday ? "scale-105 sm:scale-110" : ""
             }`}
           >
-            <span className="text-xs text-muted-foreground font-medium">
+            <span className="text-[10px] sm:text-xs text-muted-foreground font-medium">
               {day.dayName}
             </span>
             <div
               className={`
-                text-xl font-display font-bold transition-all
+                text-base sm:text-xl font-display font-bold transition-all
                 ${hasCompletedTasks(day) ? "text-foreground" : "text-muted-foreground/40"}
-                ${day.isToday ? "text-primary scale-110" : ""}
+                ${day.isToday ? "text-primary" : ""}
               `}
             >
               {day.dayNumber}
             </div>
             {hasCompletedTasks(day) ? (
               <Flame 
-                className={`w-5 h-5 transition-all ${
+                className={`w-4 h-4 sm:w-5 sm:h-5 transition-all ${
                   day.isToday ? "text-primary" : "text-primary/80"
                 }`}
                 fill="currentColor"
               />
             ) : (
-              <div className="w-5 h-5" />
+              <div className="w-4 h-4 sm:w-5 sm:h-5" />
             )}
           </div>
         ))}
