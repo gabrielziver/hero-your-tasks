@@ -117,10 +117,10 @@ const GeneralProgressChart = ({ userId }: { userId: string }) => {
   );
 
   const rings = [
-    { label: "💼 Trabalho", value: progress.work, color: "hsl(250 92% 68%)" },
-    { label: "🧘 Hábitos", value: progress.habits, color: "hsl(180 78% 60%)" },
-    { label: "🎯 Pessoal", value: progress.personal, color: "hsl(251 89% 73%)" },
-    { label: "💪 Treinos", value: progress.training, color: "hsl(47 98% 64%)" },
+    { label: "💼 Trabalho", value: progress.work, color: "hsl(280 85% 65%)" },
+    { label: "🧘 Hábitos", value: progress.habits, color: "hsl(330 75% 70%)" },
+    { label: "🎯 Pessoal", value: progress.personal, color: "hsl(200 80% 60%)" },
+    { label: "💪 Treinos", value: progress.training, color: "hsl(47 95% 65%)" },
   ];
 
   const maxCompleted = Math.max(...dailyStats.map(s => s.completed), 1);
@@ -135,7 +135,7 @@ const GeneralProgressChart = ({ userId }: { userId: string }) => {
         <div className="flex flex-col sm:flex-row items-center gap-6 sm:gap-8">
           {/* Circular Progress - Left */}
           <div className="relative w-32 h-32 sm:w-48 sm:h-48 flex-shrink-0">
-            <svg viewBox="0 0 200 200" className="w-full h-full">
+            <svg viewBox="0 0 200 200" className="w-full h-full -rotate-90">
               {rings.map((ring, index) => {
                 const radius = 80 - index * 15;
                 const circumference = 2 * Math.PI * radius;
@@ -147,8 +147,9 @@ const GeneralProgressChart = ({ userId }: { userId: string }) => {
                       cy="100"
                       r={radius}
                       fill="none"
-                      stroke="hsl(220 20% 20%)"
-                      strokeWidth="10"
+                      stroke="hsl(220 15% 20%)"
+                      strokeWidth="12"
+                      opacity="0.3"
                     />
                     <circle
                       cx="100"
@@ -156,13 +157,13 @@ const GeneralProgressChart = ({ userId }: { userId: string }) => {
                       r={radius}
                       fill="none"
                       stroke={ring.color}
-                      strokeWidth="10"
+                      strokeWidth="12"
                       strokeLinecap="round"
                       strokeDasharray={circumference}
                       strokeDashoffset={circumference - (ring.value / 100) * circumference}
-                      transform="rotate(-90 100 100)"
                       style={{
                         transition: "stroke-dashoffset 1s ease",
+                        filter: "drop-shadow(0 0 4px currentColor)",
                       }}
                     />
                   </g>
@@ -171,10 +172,10 @@ const GeneralProgressChart = ({ userId }: { userId: string }) => {
             </svg>
             
             <div className="absolute inset-0 flex flex-col items-center justify-center">
-              <div className="text-2xl sm:text-4xl font-display font-bold text-accent">
-                {totalProgress}%
+              <div className="text-xs sm:text-sm text-muted-foreground font-medium">Progresso</div>
+              <div className="text-lg sm:text-2xl font-display font-bold text-foreground mt-1">
+                Semanal
               </div>
-              <div className="text-[10px] sm:text-xs text-muted-foreground mt-1">Concluído</div>
             </div>
           </div>
 
