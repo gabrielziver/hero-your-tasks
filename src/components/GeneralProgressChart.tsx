@@ -133,9 +133,9 @@ const GeneralProgressChart = ({ userId }: { userId: string }) => {
           Progresso Semanal
         </h3>
         
-        <div className="flex flex-col items-center gap-4 sm:gap-6">
+        <div className="flex flex-col sm:flex-row items-center sm:items-start gap-4 sm:gap-8">
           {/* Multi-ring Radial Chart */}
-          <div className="relative w-44 h-44 sm:w-52 sm:h-52">
+          <div className="relative w-44 h-44 sm:w-48 sm:h-48 flex-shrink-0">
             <svg viewBox="0 0 200 200" className="w-full h-full -rotate-90">
               {rings.map((ring, index) => {
                 const radius = 85 - index * 18;
@@ -181,8 +181,8 @@ const GeneralProgressChart = ({ userId }: { userId: string }) => {
             </div>
           </div>
 
-          {/* Legend Below */}
-          <div className="grid grid-cols-2 gap-x-6 gap-y-2 w-full max-w-xs">
+          {/* Legend */}
+          <div className="grid grid-cols-2 gap-x-6 gap-y-3 w-full max-w-xs sm:max-w-none sm:flex-1 sm:grid-cols-1">
             {rings.map((ring) => (
               <div key={ring.label} className="flex items-center gap-2">
                 <div
