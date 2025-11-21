@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 interface CategoryProgress {
   work: number;
@@ -21,13 +20,12 @@ const GeneralProgressChart = ({ userId }: { userId: string }) => {
     personal: 0,
     training: 0,
   });
-  const [period, setPeriod] = useState<"day" | "week" | "month">("week");
   const [dailyStats, setDailyStats] = useState<DailyStats[]>([]);
 
   useEffect(() => {
     loadWeeklyProgress();
     loadDailyStats();
-  }, [userId, period]);
+  }, [userId]);
 
   const loadWeeklyProgress = async () => {
     const startOfWeek = new Date();
@@ -75,7 +73,7 @@ const GeneralProgressChart = ({ userId }: { userId: string }) => {
   };
 
   const loadDailyStats = async () => {
-    const daysToLoad = period === "day" ? 1 : period === "week" ? 7 : 30;
+    const daysToLoad = 7; // Fixed to week view
     const startDate = new Date();
     startDate.setDate(startDate.getDate() - daysToLoad);
     startDate.setHours(0, 0, 0, 0);
@@ -202,24 +200,9 @@ const GeneralProgressChart = ({ userId }: { userId: string }) => {
 
       {/* Bar Chart */}
       <div className="bg-card rounded-2xl p-6 border border-border">
-        <div className="flex items-center justify-between mb-6">
-          <h3 className="font-display font-bold text-sm text-muted-foreground">
-            Total
-          </h3>
-          <Tabs value={period} onValueChange={(v) => setPeriod(v as any)}>
-            <TabsList className="bg-muted h-8">
-              <TabsTrigger value="day" className="text-xs h-7 px-3">
-                Dia
-              </TabsTrigger>
-              <TabsTrigger value="week" className="text-xs h-7 px-3">
-                Semana
-              </TabsTrigger>
-              <TabsTrigger value="month" className="text-xs h-7 px-3">
-                Mês
-              </TabsTrigger>
-            </TabsList>
-          </Tabs>
-        </div>
+        <h3 className="font-display font-bold text-sm text-muted-foreground mb-6">
+          Semana
+        </h3>
 
         <div className="h-40 flex items-end justify-between gap-1">
           {dailyStats.map((stat, index) => {
@@ -242,9 +225,7 @@ const GeneralProgressChart = ({ userId }: { userId: string }) => {
                   }}
                 />
                 <span className="text-[10px] text-muted-foreground">
-                  {period === "day"
-                    ? "Hoje"
-                    : new Date(stat.date).getDate()}
+                  {new Date(stat.date).getDate()}
                 </span>
               </div>
             );
