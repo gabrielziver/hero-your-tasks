@@ -8,6 +8,7 @@ import GeneralProgressChart from "@/components/GeneralProgressChart";
 import WeeklyCalendar from "@/components/WeeklyCalendar";
 import CreateQuestDialog from "@/components/CreateQuestDialog";
 import CreateGroupQuestDialog from "@/components/CreateGroupQuestDialog";
+import SkillProgressBars from "@/components/SkillProgressBars";
 import NavBar from "@/components/NavBar";
 import { Button } from "@/components/ui/button";
 import { Plus, Users, Flame } from "lucide-react";
@@ -97,6 +98,8 @@ const Dashboard = () => {
   const handleQuestCompleted = () => {
     if (user) {
       loadStats(user.id);
+      // Força recarregamento dos componentes de progresso
+      window.dispatchEvent(new Event('questCompleted'));
     }
   };
 
@@ -180,12 +183,7 @@ const Dashboard = () => {
           <h3 className="font-display font-bold text-lg text-primary mb-4">
             Progresso de Habilidades
           </h3>
-          <div className="space-y-3">
-            <ProgressBar label="💼 Produtividade" value={72} color="primary" />
-            <ProgressBar label="🧘 Bem-estar" value={64} color="secondary" />
-            <ProgressBar label="🎨 Criatividade" value={58} color="accent" />
-            <ProgressBar label="💪 Força" value={80} color="gold" />
-          </div>
+          <SkillProgressBars userId={user?.id || ""} />
         </div>
 
         {/* Personal Quests */}
@@ -265,31 +263,6 @@ const Dashboard = () => {
 
       {/* Bottom Navigation */}
       <NavBar />
-    </div>
-  );
-};
-
-// Progress Bar Component
-const ProgressBar = ({ label, value, color }: { label: string; value: number; color: string }) => {
-  const colorMap: Record<string, string> = {
-    primary: "bg-primary",
-    secondary: "bg-secondary",
-    accent: "bg-accent",
-    gold: "bg-gold",
-  };
-
-  return (
-    <div>
-      <div className="flex justify-between text-xs mb-1.5">
-        <span className="text-foreground font-medium">{label}</span>
-        <span className="text-muted-foreground">{value}%</span>
-      </div>
-      <div className="h-2 bg-muted rounded-full overflow-hidden">
-        <div
-          className={`h-full ${colorMap[color]} rounded-full transition-all duration-500`}
-          style={{ width: `${value}%` }}
-        />
-      </div>
     </div>
   );
 };

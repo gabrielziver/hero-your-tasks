@@ -16,7 +16,7 @@ interface CreateQuestDialogProps {
 const CreateQuestDialog = ({ onQuestCreated, children }: CreateQuestDialogProps) => {
   const [open, setOpen] = useState(false);
   const [title, setTitle] = useState("");
-  const [category, setCategory] = useState("general");
+  const [category, setCategory] = useState("produtividade");
   const [priority, setPriority] = useState("medium");
   const [loading, setLoading] = useState(false);
 
@@ -54,7 +54,7 @@ const CreateQuestDialog = ({ onQuestCreated, children }: CreateQuestDialogProps)
     } else {
       toast.success("Missão criada!");
       setTitle("");
-      setCategory("general");
+      setCategory("produtividade");
       setPriority("medium");
       setOpen(false);
       onQuestCreated();
@@ -97,11 +97,10 @@ const CreateQuestDialog = ({ onQuestCreated, children }: CreateQuestDialogProps)
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="general">Geral</SelectItem>
-                <SelectItem value="work">Trabalho</SelectItem>
-                <SelectItem value="health">Saúde</SelectItem>
-                <SelectItem value="learning">Aprendizado</SelectItem>
-                <SelectItem value="personal">Pessoal</SelectItem>
+                <SelectItem value="produtividade">💼 Produtividade</SelectItem>
+                <SelectItem value="bem-estar">🧘 Bem-estar</SelectItem>
+                <SelectItem value="criatividade">🎨 Criatividade</SelectItem>
+                <SelectItem value="forca">💪 Força</SelectItem>
               </SelectContent>
             </Select>
           </div>

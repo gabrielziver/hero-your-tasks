@@ -2,10 +2,10 @@ import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 
 interface CategoryProgress {
-  work: number;
-  habits: number;
-  personal: number;
-  training: number;
+  produtividade: number;
+  "bem-estar": number;
+  criatividade: number;
+  forca: number;
 }
 
 interface DailyStats {
@@ -15,16 +15,28 @@ interface DailyStats {
 
 const GeneralProgressChart = ({ userId }: { userId: string }) => {
   const [progress, setProgress] = useState<CategoryProgress>({
-    work: 0,
-    habits: 0,
-    personal: 0,
-    training: 0,
+    produtividade: 0,
+    "bem-estar": 0,
+    criatividade: 0,
+    forca: 0,
   });
   const [dailyStats, setDailyStats] = useState<DailyStats[]>([]);
 
   useEffect(() => {
     loadWeeklyProgress();
     loadDailyStats();
+    
+    // Listener para recarregar quando uma missão é completada
+    const handleQuestCompleted = () => {
+      loadWeeklyProgress();
+      loadDailyStats();
+    };
+    
+    window.addEventListener('questCompleted', handleQuestCompleted);
+    
+    return () => {
+      window.removeEventListener('questCompleted', handleQuestCompleted);
+    };
   }, [userId]);
 
   const loadWeeklyProgress = async () => {
@@ -40,32 +52,30 @@ const GeneralProgressChart = ({ userId }: { userId: string }) => {
 
     if (quests) {
       const categories: CategoryProgress = {
-        work: 0,
-        habits: 0,
-        personal: 0,
-        training: 0,
+        produtividade: 0,
+        "bem-estar": 0,
+        criatividade: 0,
+        forca: 0,
       };
 
       const counts: any = {
-        work: { total: 0, completed: 0 },
-        habits: { total: 0, completed: 0 },
-        personal: { total: 0, completed: 0 },
-        training: { total: 0, completed: 0 },
+        produtividade: 0,
+        "bem-estar": 0,
+        criatividade: 0,
+        forca: 0,
       };
 
       quests.forEach((quest) => {
         const cat = quest.category as keyof CategoryProgress;
-        if (counts[cat]) {
-          counts[cat].total++;
-          if (quest.is_completed) counts[cat].completed++;
+        if (counts[cat] !== undefined && quest.is_completed) {
+          counts[cat]++;
         }
       });
 
+      // Cada 10 missões completadas = 100%
       Object.keys(counts).forEach((key) => {
         const cat = key as keyof CategoryProgress;
-        if (counts[cat].total > 0) {
-          categories[cat] = (counts[cat].completed / counts[cat].total) * 100;
-        }
+        categories[cat] = Math.min((counts[cat] / 10) * 100, 100);
       });
 
       setProgress(categories);
@@ -113,14 +123,14 @@ const GeneralProgressChart = ({ userId }: { userId: string }) => {
   };
 
   const totalProgress = Math.round(
-    (progress.work + progress.habits + progress.personal + progress.training) / 4
+    (progress.produtividade + progress["bem-estar"] + progress.criatividade + progress.forca) / 4
   );
 
   const rings = [
-    { label: "Trabalho", value: progress.work, color: "#8B5CF6" },
-    { label: "Hábitos", value: progress.habits, color: "#F472B6" },
-    { label: "Pessoal", value: progress.personal, color: "#38BDF8" },
-    { label: "Treinos", value: progress.training, color: "#FACC15" },
+    { label: "Produtividade", value: progress.produtividade, color: "#8B5CF6" },
+    { label: "Bem-estar", value: progress["bem-estar"], color: "#F472B6" },
+    { label: "Criatividade", value: progress.criatividade, color: "#38BDF8" },
+    { label: "Força", value: progress.forca, color: "#FACC15" },
   ];
 
   const maxCompleted = Math.max(...dailyStats.map(s => s.completed), 1);
