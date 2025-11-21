@@ -126,15 +126,15 @@ const GeneralProgressChart = ({ userId }: { userId: string }) => {
   const maxCompleted = Math.max(...dailyStats.map(s => s.completed), 1);
 
   return (
-    <div className="w-full space-y-6">
+    <div className="w-full space-y-4 sm:space-y-6">
       {/* Progress Rings */}
-      <div className="bg-card rounded-2xl p-6 border border-border">
-        <h3 className="font-display font-bold text-sm text-muted-foreground mb-4">
+      <div className="bg-card rounded-2xl p-4 sm:p-6 border border-border">
+        <h3 className="font-display font-bold text-xs sm:text-sm text-muted-foreground mb-4">
           Progresso
         </h3>
-        <div className="flex items-center gap-8">
+        <div className="flex flex-col sm:flex-row items-center gap-6 sm:gap-8">
           {/* Circular Progress - Left */}
-          <div className="relative w-48 h-48 flex-shrink-0">
+          <div className="relative w-32 h-32 sm:w-48 sm:h-48 flex-shrink-0">
             <svg viewBox="0 0 200 200" className="w-full h-full">
               {rings.map((ring, index) => {
                 const radius = 80 - index * 15;
@@ -171,24 +171,24 @@ const GeneralProgressChart = ({ userId }: { userId: string }) => {
             </svg>
             
             <div className="absolute inset-0 flex flex-col items-center justify-center">
-              <div className="text-4xl font-display font-bold text-accent">
+              <div className="text-2xl sm:text-4xl font-display font-bold text-accent">
                 {totalProgress}%
               </div>
-              <div className="text-xs text-muted-foreground mt-1">Concluído</div>
+              <div className="text-[10px] sm:text-xs text-muted-foreground mt-1">Concluído</div>
             </div>
           </div>
 
           {/* Legend - Right */}
-          <div className="flex-1 space-y-4">
+          <div className="flex-1 w-full space-y-3 sm:space-y-4">
             {rings.map((ring) => (
-              <div key={ring.label} className="flex items-center gap-3">
+              <div key={ring.label} className="flex items-center gap-2 sm:gap-3">
                 <div
-                  className="w-3 h-3 rounded-full flex-shrink-0"
+                  className="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full flex-shrink-0"
                   style={{ backgroundColor: ring.color }}
                 />
                 <div className="flex items-center justify-between flex-1 min-w-0">
-                  <span className="text-sm text-foreground font-medium">{ring.label}</span>
-                  <span className="text-sm text-muted-foreground ml-4 flex-shrink-0">
+                  <span className="text-xs sm:text-sm text-foreground font-medium">{ring.label}</span>
+                  <span className="text-xs sm:text-sm text-muted-foreground ml-2 sm:ml-4 flex-shrink-0">
                     {Math.round(ring.value)}%
                   </span>
                 </div>
@@ -199,12 +199,12 @@ const GeneralProgressChart = ({ userId }: { userId: string }) => {
       </div>
 
       {/* Bar Chart */}
-      <div className="bg-card rounded-2xl p-6 border border-border">
-        <h3 className="font-display font-bold text-sm text-muted-foreground mb-6">
+      <div className="bg-card rounded-2xl p-4 sm:p-6 border border-border">
+        <h3 className="font-display font-bold text-xs sm:text-sm text-muted-foreground mb-4 sm:mb-6">
           Semana
         </h3>
 
-        <div className="h-40 flex items-end justify-between gap-1">
+        <div className="h-32 sm:h-40 flex items-end justify-between gap-1">
           {dailyStats.map((stat, index) => {
             const height = (stat.completed / maxCompleted) * 100;
             const isToday = stat.date === new Date().toISOString().split("T")[0];
@@ -212,7 +212,7 @@ const GeneralProgressChart = ({ userId }: { userId: string }) => {
             return (
               <div
                 key={stat.date}
-                className="flex-1 flex flex-col items-center gap-2"
+                className="flex-1 flex flex-col items-center gap-1.5 sm:gap-2"
               >
                 <div
                   className="w-full rounded-t-md transition-all duration-500"
@@ -224,7 +224,7 @@ const GeneralProgressChart = ({ userId }: { userId: string }) => {
                     minHeight: stat.completed > 0 ? "8px" : "0px",
                   }}
                 />
-                <span className="text-[10px] text-muted-foreground">
+                <span className="text-[9px] sm:text-[10px] text-muted-foreground">
                   {new Date(stat.date).getDate()}
                 </span>
               </div>
