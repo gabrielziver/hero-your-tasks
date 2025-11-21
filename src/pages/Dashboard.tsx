@@ -194,14 +194,24 @@ const Dashboard = () => {
             <h2 className="text-xl font-display font-bold text-primary">
               Suas Missões
             </h2>
-            <CreateQuestDialog onQuestCreated={handleQuestCreated}>
-              <Button size="sm" className="gap-2 bg-primary hover:bg-primary/90 transition-colors">
-                <Plus className="w-4 h-4" />
-                Nova
+            <div className="flex items-center gap-2">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => navigate("/quests")}
+                className="text-xs"
+              >
+                Ver Todas
               </Button>
-            </CreateQuestDialog>
+              <CreateQuestDialog onQuestCreated={handleQuestCreated}>
+                <Button size="sm" className="gap-2 bg-primary hover:bg-primary/90 transition-colors">
+                  <Plus className="w-4 h-4" />
+                  Nova
+                </Button>
+              </CreateQuestDialog>
+            </div>
           </div>
-          <QuestList onQuestCompleted={handleQuestCompleted} />
+          <QuestList onQuestCompleted={handleQuestCompleted} maxDisplay={4} />
         </div>
 
         {/* Group Quests */}
