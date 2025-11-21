@@ -117,10 +117,10 @@ const GeneralProgressChart = ({ userId }: { userId: string }) => {
   );
 
   const rings = [
-    { label: "💼 Trabalho", value: progress.work, color: "hsl(280 85% 65%)" },
-    { label: "🧘 Hábitos", value: progress.habits, color: "hsl(330 75% 70%)" },
-    { label: "🎯 Pessoal", value: progress.personal, color: "hsl(200 80% 60%)" },
-    { label: "💪 Treinos", value: progress.training, color: "hsl(47 95% 65%)" },
+    { label: "Trabalho", value: progress.work, color: "#8B5CF6" },
+    { label: "Hábitos", value: progress.habits, color: "#F472B6" },
+    { label: "Pessoal", value: progress.personal, color: "#38BDF8" },
+    { label: "Treinos", value: progress.training, color: "#FACC15" },
   ];
 
   const maxCompleted = Math.max(...dailyStats.map(s => s.completed), 1);
@@ -128,42 +128,43 @@ const GeneralProgressChart = ({ userId }: { userId: string }) => {
   return (
     <div className="w-full space-y-4 sm:space-y-6">
       {/* Progress Rings */}
-      <div className="bg-card rounded-2xl p-4 sm:p-6 border border-border">
-        <h3 className="font-display font-bold text-xs sm:text-sm text-muted-foreground mb-4">
-          Progresso
+      <div className="rounded-2xl p-6 sm:p-8" style={{ backgroundColor: '#13131A' }}>
+        <h3 className="font-display font-bold text-sm sm:text-base text-muted-foreground mb-6">
+          Progresso Semanal
         </h3>
-        <div className="flex flex-col sm:flex-row items-center gap-6 sm:gap-8">
-          {/* Circular Progress - Left */}
-          <div className="relative w-32 h-32 sm:w-48 sm:h-48 flex-shrink-0">
+        
+        <div className="flex flex-col items-center gap-8">
+          {/* Multi-ring Radial Chart */}
+          <div className="relative w-56 h-56 sm:w-64 sm:h-64">
             <svg viewBox="0 0 200 200" className="w-full h-full -rotate-90">
               {rings.map((ring, index) => {
-                const radius = 80 - index * 15;
+                const radius = 85 - index * 18;
                 const circumference = 2 * Math.PI * radius;
                 
                 return (
                   <g key={`ring-${index}`}>
+                    {/* Background ring */}
                     <circle
                       cx="100"
                       cy="100"
                       r={radius}
                       fill="none"
-                      stroke="hsl(220 15% 20%)"
-                      strokeWidth="12"
-                      opacity="0.3"
+                      stroke="#1F1F28"
+                      strokeWidth="14"
                     />
+                    {/* Progress ring */}
                     <circle
                       cx="100"
                       cy="100"
                       r={radius}
                       fill="none"
                       stroke={ring.color}
-                      strokeWidth="12"
+                      strokeWidth="14"
                       strokeLinecap="round"
                       strokeDasharray={circumference}
                       strokeDashoffset={circumference - (ring.value / 100) * circumference}
                       style={{
-                        transition: "stroke-dashoffset 1s ease",
-                        filter: "drop-shadow(0 0 4px currentColor)",
+                        transition: "stroke-dashoffset 0.8s cubic-bezier(0.4, 0, 0.2, 1)",
                       }}
                     />
                   </g>
@@ -171,28 +172,27 @@ const GeneralProgressChart = ({ userId }: { userId: string }) => {
               })}
             </svg>
             
+            {/* Center percentage */}
             <div className="absolute inset-0 flex flex-col items-center justify-center">
-              <div className="text-xs sm:text-sm text-muted-foreground font-medium">Progresso</div>
-              <div className="text-lg sm:text-2xl font-display font-bold text-foreground mt-1">
-                Semanal
+              <div className="text-4xl sm:text-5xl font-display font-bold text-foreground">
+                {totalProgress}%
               </div>
+              <div className="text-xs sm:text-sm text-muted-foreground mt-1">Total</div>
             </div>
           </div>
 
-          {/* Legend - Right */}
-          <div className="flex-1 w-full space-y-3 sm:space-y-4">
+          {/* Legend Below */}
+          <div className="grid grid-cols-2 gap-x-8 gap-y-3 w-full max-w-sm">
             {rings.map((ring) => (
-              <div key={ring.label} className="flex items-center gap-2 sm:gap-3">
+              <div key={ring.label} className="flex items-center gap-2">
                 <div
-                  className="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full flex-shrink-0"
+                  className="w-3 h-3 rounded-full flex-shrink-0"
                   style={{ backgroundColor: ring.color }}
                 />
-                <div className="flex items-center justify-between flex-1 min-w-0">
-                  <span className="text-xs sm:text-sm text-foreground font-medium">{ring.label}</span>
-                  <span className="text-xs sm:text-sm text-muted-foreground ml-2 sm:ml-4 flex-shrink-0">
-                    {Math.round(ring.value)}%
-                  </span>
-                </div>
+                <span className="text-sm text-foreground font-medium">{ring.label}</span>
+                <span className="text-sm text-muted-foreground ml-auto">
+                  {Math.round(ring.value)}%
+                </span>
               </div>
             ))}
           </div>
