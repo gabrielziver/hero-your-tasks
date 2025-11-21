@@ -134,65 +134,69 @@ const GeneralProgressChart = ({ userId }: { userId: string }) => {
         <h3 className="font-display font-bold text-sm text-muted-foreground mb-4">
           Progresso
         </h3>
-        <div className="relative w-full h-48 flex items-center justify-center">
-          <svg viewBox="0 0 200 200" className="w-full h-full max-w-[200px]">
-            {rings.map((ring, index) => {
-              const radius = 80 - index * 15;
-              const circumference = 2 * Math.PI * radius;
-              
-              return (
-                <g key={`ring-${index}`}>
-                  <circle
-                    cx="100"
-                    cy="100"
-                    r={radius}
-                    fill="none"
-                    stroke="hsl(220 20% 20%)"
-                    strokeWidth="10"
-                  />
-                  <circle
-                    cx="100"
-                    cy="100"
-                    r={radius}
-                    fill="none"
-                    stroke={ring.color}
-                    strokeWidth="10"
-                    strokeLinecap="round"
-                    strokeDasharray={circumference}
-                    strokeDashoffset={circumference - (ring.value / 100) * circumference}
-                    transform="rotate(-90 100 100)"
-                    style={{
-                      transition: "stroke-dashoffset 1s ease",
-                    }}
-                  />
-                </g>
-              );
-            })}
-          </svg>
-          
-          <div className="absolute inset-0 flex flex-col items-center justify-center">
-            <div className="text-4xl font-display font-bold text-accent">
-              {totalProgress}%
-            </div>
-            <div className="text-xs text-muted-foreground mt-1">Concluído</div>
-          </div>
-        </div>
-
-        <div className="grid grid-cols-2 gap-3 mt-6">
-          {rings.map((ring) => (
-            <div key={ring.label} className="flex items-center gap-2">
-              <div
-                className="w-3 h-3 rounded-full flex-shrink-0"
-                style={{ backgroundColor: ring.color }}
-              />
-              <div className="flex items-center justify-between flex-1 min-w-0">
-                <span className="text-xs text-foreground truncate">{ring.label}</span>
-                <span className="text-xs text-muted-foreground ml-2 flex-shrink-0">
-                  {Math.round(ring.value)}%
-                </span>
+        <div className="flex items-center gap-8">
+          {/* Circular Progress - Left */}
+          <div className="relative w-48 h-48 flex-shrink-0">
+            <svg viewBox="0 0 200 200" className="w-full h-full">
+              {rings.map((ring, index) => {
+                const radius = 80 - index * 15;
+                const circumference = 2 * Math.PI * radius;
+                
+                return (
+                  <g key={`ring-${index}`}>
+                    <circle
+                      cx="100"
+                      cy="100"
+                      r={radius}
+                      fill="none"
+                      stroke="hsl(220 20% 20%)"
+                      strokeWidth="10"
+                    />
+                    <circle
+                      cx="100"
+                      cy="100"
+                      r={radius}
+                      fill="none"
+                      stroke={ring.color}
+                      strokeWidth="10"
+                      strokeLinecap="round"
+                      strokeDasharray={circumference}
+                      strokeDashoffset={circumference - (ring.value / 100) * circumference}
+                      transform="rotate(-90 100 100)"
+                      style={{
+                        transition: "stroke-dashoffset 1s ease",
+                      }}
+                    />
+                  </g>
+                );
+              })}
+            </svg>
+            
+            <div className="absolute inset-0 flex flex-col items-center justify-center">
+              <div className="text-4xl font-display font-bold text-accent">
+                {totalProgress}%
               </div>
+              <div className="text-xs text-muted-foreground mt-1">Concluído</div>
             </div>
-          ))}
+          </div>
+
+          {/* Legend - Right */}
+          <div className="flex-1 space-y-4">
+            {rings.map((ring) => (
+              <div key={ring.label} className="flex items-center gap-3">
+                <div
+                  className="w-3 h-3 rounded-full flex-shrink-0"
+                  style={{ backgroundColor: ring.color }}
+                />
+                <div className="flex items-center justify-between flex-1 min-w-0">
+                  <span className="text-sm text-foreground font-medium">{ring.label}</span>
+                  <span className="text-sm text-muted-foreground ml-4 flex-shrink-0">
+                    {Math.round(ring.value)}%
+                  </span>
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
 
