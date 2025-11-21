@@ -5,6 +5,7 @@ import CharacterAvatar from "@/components/CharacterAvatar";
 import QuestList from "@/components/QuestList";
 import GroupQuestList from "@/components/GroupQuestList";
 import GeneralProgressChart from "@/components/GeneralProgressChart";
+import WeeklyCalendar from "@/components/WeeklyCalendar";
 import CreateQuestDialog from "@/components/CreateQuestDialog";
 import CreateGroupQuestDialog from "@/components/CreateGroupQuestDialog";
 import NavBar from "@/components/NavBar";
@@ -142,6 +143,9 @@ const Dashboard = () => {
 
       {/* Main Content */}
       <div className="container mx-auto px-4 py-6 space-y-6">
+        {/* Weekly Calendar */}
+        <WeeklyCalendar userId={user?.id || ""} />
+
         {/* Top Section: Avatar + General Progress */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           <div className="bg-card rounded-2xl p-6 border border-border hover:border-primary/30 transition-colors flex items-center justify-center">
