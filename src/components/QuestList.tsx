@@ -23,9 +23,10 @@ interface Quest {
 interface QuestListProps {
   onQuestCompleted?: () => void;
   filterCompleted?: boolean;
+  maxDisplay?: number;
 }
 
-const QuestList = ({ onQuestCompleted, filterCompleted }: QuestListProps) => {
+const QuestList = ({ onQuestCompleted, filterCompleted, maxDisplay }: QuestListProps) => {
   const [quests, setQuests] = useState<Quest[]>([]);
   const [loading, setLoading] = useState(true);
   const [showLevelUp, setShowLevelUp] = useState(false);
@@ -161,6 +162,10 @@ const QuestList = ({ onQuestCompleted, filterCompleted }: QuestListProps) => {
 
   const activeQuests = quests.filter((q) => !q.is_completed);
   const completedQuests = quests.filter((q) => q.is_completed);
+  
+  // Limit display if maxDisplay is set
+  const displayedActiveQuests = maxDisplay ? activeQuests.slice(0, maxDisplay) : activeQuests;
+  const displayedCompletedQuests = maxDisplay ? completedQuests.slice(0, maxDisplay) : completedQuests;
 
   return (
     <>
@@ -190,7 +195,7 @@ const QuestList = ({ onQuestCompleted, filterCompleted }: QuestListProps) => {
           </Card>
         ) : (
           <div className="space-y-3">
-            {activeQuests.map((quest) => (
+            {displayedActiveQuests.map((quest) => (
               <Card key={quest.id} className={`quest-card bg-card border-border hover:border-primary transition-all ${quest.is_boss_quest ? "border-secondary shadow-glow-gold" : ""}`}>
                 <CardContent className="p-4">
                   <div className="flex items-start gap-4">
@@ -240,11 +245,11 @@ const QuestList = ({ onQuestCompleted, filterCompleted }: QuestListProps) => {
       </div>
 
       {/* Completed Quests */}
-      {completedQuests.length > 0 && (
+      {completedQuests.length > 0 && !maxDisplay && (
         <div>
           <h3 className="text-xl font-semibold mb-4 text-muted-foreground">Missões Completas</h3>
           <div className="space-y-3">
-            {completedQuests.map((quest) => (
+            {displayedCompletedQuests.map((quest) => (
               <Card key={quest.id} className="bg-muted/20 border-border opacity-60">
                 <CardContent className="p-4">
                   <div className="flex items-start gap-4">
