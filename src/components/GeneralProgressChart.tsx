@@ -128,14 +128,14 @@ const GeneralProgressChart = ({ userId }: { userId: string }) => {
   return (
     <div className="w-full space-y-4 sm:space-y-6">
       {/* Progress Rings */}
-      <div className="rounded-2xl p-6 sm:p-8" style={{ backgroundColor: '#13131A' }}>
-        <h3 className="font-display font-bold text-sm sm:text-base text-muted-foreground mb-6">
+      <div className="bg-card rounded-2xl p-4 sm:p-6 border border-border">
+        <h3 className="font-display font-bold text-xs sm:text-sm text-muted-foreground mb-4">
           Progresso Semanal
         </h3>
         
-        <div className="flex flex-col items-center gap-8">
+        <div className="flex flex-col items-center gap-4 sm:gap-6">
           {/* Multi-ring Radial Chart */}
-          <div className="relative w-56 h-56 sm:w-64 sm:h-64">
+          <div className="relative w-44 h-44 sm:w-52 sm:h-52">
             <svg viewBox="0 0 200 200" className="w-full h-full -rotate-90">
               {rings.map((ring, index) => {
                 const radius = 85 - index * 18;
@@ -174,23 +174,23 @@ const GeneralProgressChart = ({ userId }: { userId: string }) => {
             
             {/* Center percentage */}
             <div className="absolute inset-0 flex flex-col items-center justify-center">
-              <div className="text-4xl sm:text-5xl font-display font-bold text-foreground">
+              <div className="text-3xl sm:text-4xl font-display font-bold text-foreground">
                 {totalProgress}%
               </div>
-              <div className="text-xs sm:text-sm text-muted-foreground mt-1">Total</div>
+              <div className="text-[10px] sm:text-xs text-muted-foreground mt-1">Total</div>
             </div>
           </div>
 
           {/* Legend Below */}
-          <div className="grid grid-cols-2 gap-x-8 gap-y-3 w-full max-w-sm">
+          <div className="grid grid-cols-2 gap-x-6 gap-y-2 w-full max-w-xs">
             {rings.map((ring) => (
               <div key={ring.label} className="flex items-center gap-2">
                 <div
-                  className="w-3 h-3 rounded-full flex-shrink-0"
+                  className="w-2.5 h-2.5 rounded-full flex-shrink-0"
                   style={{ backgroundColor: ring.color }}
                 />
-                <span className="text-sm text-foreground font-medium">{ring.label}</span>
-                <span className="text-sm text-muted-foreground ml-auto">
+                <span className="text-xs sm:text-sm text-foreground font-medium">{ring.label}</span>
+                <span className="text-xs sm:text-sm text-muted-foreground ml-auto">
                   {Math.round(ring.value)}%
                 </span>
               </div>
