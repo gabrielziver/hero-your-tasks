@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { Flame } from "lucide-react";
 
 interface DayData {
   date: Date;
@@ -57,7 +58,7 @@ const WeeklyCalendar = ({ userId }: { userId: string }) => {
       }) || [];
       
       const completedCount = dayQuests.filter((q) => q.is_completed).length;
-      const totalCount = dayQuests.length;
+      const totalCount = completedCount; // Only count completed tasks for streak
       
       days.push({
         date,
@@ -72,14 +73,8 @@ const WeeklyCalendar = ({ userId }: { userId: string }) => {
     setWeekDays(days);
   };
 
-  const getIndicatorColor = (day: DayData) => {
-    if (day.totalCount === 0) return "bg-muted";
-    
-    const completionRate = day.completedCount / day.totalCount;
-    
-    if (completionRate === 1) return "bg-green-500";
-    if (completionRate >= 0.5) return "bg-yellow-500";
-    return "bg-red-400";
+  const hasCompletedTasks = (day: DayData) => {
+    return day.completedCount > 0;
   };
 
   return (
@@ -88,28 +83,32 @@ const WeeklyCalendar = ({ userId }: { userId: string }) => {
         {weekDays.map((day, index) => (
           <div
             key={index}
-            className={`flex flex-col items-center min-w-[60px] ${
+            className={`flex flex-col items-center min-w-[60px] gap-2 ${
               day.isToday ? "scale-110" : ""
             }`}
           >
-            <span className="text-xs text-muted-foreground font-medium mb-1">
+            <span className="text-xs text-muted-foreground font-medium">
               {day.dayName}
             </span>
             <div
               className={`
-                text-xl font-display font-bold mb-2 transition-all
-                ${day.isToday ? "text-primary scale-110" : "text-foreground"}
+                text-xl font-display font-bold transition-all
+                ${hasCompletedTasks(day) ? "text-foreground" : "text-muted-foreground/40"}
+                ${day.isToday ? "text-primary scale-110" : ""}
               `}
             >
               {day.dayNumber}
             </div>
-            <div
-              className={`
-                w-2 h-2 rounded-full transition-all
-                ${getIndicatorColor(day)}
-                ${day.isToday ? "ring-2 ring-primary ring-offset-2 ring-offset-card" : ""}
-              `}
-            />
+            {hasCompletedTasks(day) ? (
+              <Flame 
+                className={`w-5 h-5 transition-all ${
+                  day.isToday ? "text-primary" : "text-primary/80"
+                }`}
+                fill="currentColor"
+              />
+            ) : (
+              <div className="w-5 h-5" />
+            )}
           </div>
         ))}
       </div>
