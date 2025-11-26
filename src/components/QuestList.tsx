@@ -115,8 +115,11 @@ const QuestList = ({ onQuestCompleted, filterCompleted, maxDisplay }: QuestListP
         position,
       });
       
-      // Show quest completion toast
-      toast.success(`⚔️ Missão Completa! +${result.xp_gained} XP, +${result.gold_gained} Ouro`);
+      // Show quest completion toast with XP multiplier
+      const multiplierText = result.xp_multiplier > 1 
+        ? ` (${result.xp_multiplier}x Streak Bonus!)`
+        : "";
+      toast.success(`⚔️ Missão Completa! +${result.xp_gained} XP${multiplierText}, +${result.gold_gained} Ouro`);
       
       // If level up, show epic animation after particle effect
       if (result.level_up) {

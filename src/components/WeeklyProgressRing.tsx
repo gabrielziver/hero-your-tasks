@@ -18,6 +18,14 @@ const WeeklyProgressRing = ({ userId }: { userId: string }) => {
 
   useEffect(() => {
     loadWeeklyProgress();
+
+    // Listen for quest completions to refresh
+    const handleQuestComplete = () => {
+      loadWeeklyProgress();
+    };
+
+    window.addEventListener('questCompleted', handleQuestComplete);
+    return () => window.removeEventListener('questCompleted', handleQuestComplete);
   }, [userId]);
 
   const loadWeeklyProgress = async () => {
@@ -57,7 +65,9 @@ const WeeklyProgressRing = ({ userId }: { userId: string }) => {
       Object.keys(counts).forEach((key) => {
         const cat = key as keyof CategoryProgress;
         if (counts[cat].total > 0) {
-          categories[cat] = (counts[cat].completed / counts[cat].total) * 100;
+          // Only reach 100% after 10+ tasks
+          const percentage = (counts[cat].completed / Math.max(counts[cat].total, 10)) * 100;
+          categories[cat] = Math.min(percentage, 100);
         }
       });
 
@@ -70,10 +80,10 @@ const WeeklyProgressRing = ({ userId }: { userId: string }) => {
   );
 
   const rings = [
-    { label: "💼 Trabalho", value: progress.work, color: "hsl(250 92% 68%)" },
-    { label: "🧘 Hábitos", value: progress.habits, color: "hsl(180 78% 60%)" },
-    { label: "🎯 Pessoal", value: progress.personal, color: "hsl(251 89% 73%)" },
-    { label: "💪 Treinos", value: progress.training, color: "hsl(47 98% 64%)" },
+    { label: "💼 Trabalho", value: progress.work, color: "#A88CFF" },
+    { label: "🧘 Hábitos", value: progress.habits, color: "#FF6EC7" },
+    { label: "🎯 Pessoal", value: progress.personal, color: "#6CE0FF" },
+    { label: "💪 Treinos", value: progress.training, color: "#FFD34E" },
   ];
 
   return (

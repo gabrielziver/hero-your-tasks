@@ -158,27 +158,39 @@ export type Database = {
           avatar_url: string | null
           character_images: Json | null
           created_at: string | null
+          creativity: number | null
+          focus: number | null
           id: string
           selected_character: string | null
+          strength: number | null
           username: string
+          vitality: number | null
         }
         Insert: {
           avatar_color?: string | null
           avatar_url?: string | null
           character_images?: Json | null
           created_at?: string | null
+          creativity?: number | null
+          focus?: number | null
           id: string
           selected_character?: string | null
+          strength?: number | null
           username: string
+          vitality?: number | null
         }
         Update: {
           avatar_color?: string | null
           avatar_url?: string | null
           character_images?: Json | null
           created_at?: string | null
+          creativity?: number | null
+          focus?: number | null
           id?: string
           selected_character?: string | null
+          strength?: number | null
           username?: string
+          vitality?: number | null
         }
         Relationships: []
       }
@@ -251,6 +263,36 @@ export type Database = {
           trend_indicator?: string | null
           user_id?: string
           xp_reward?: number
+        }
+        Relationships: []
+      }
+      user_mounts: {
+        Row: {
+          created_at: string
+          id: string
+          is_equipped: boolean
+          mount_image: string | null
+          mount_name: string | null
+          mount_type: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          is_equipped?: boolean
+          mount_image?: string | null
+          mount_name?: string | null
+          mount_type: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          is_equipped?: boolean
+          mount_image?: string | null
+          mount_name?: string | null
+          mount_type?: string
+          user_id?: string
         }
         Relationships: []
       }

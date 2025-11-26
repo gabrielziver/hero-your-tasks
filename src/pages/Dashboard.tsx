@@ -6,6 +6,7 @@ import QuestList from "@/components/QuestList";
 import GroupQuestList from "@/components/GroupQuestList";
 import GeneralProgressChart from "@/components/GeneralProgressChart";
 import WeeklyCalendar from "@/components/WeeklyCalendar";
+import WeeklyProgressRing from "@/components/WeeklyProgressRing";
 import CreateQuestDialog from "@/components/CreateQuestDialog";
 import CreateGroupQuestDialog from "@/components/CreateGroupQuestDialog";
 import SkillProgressBars from "@/components/SkillProgressBars";
@@ -13,6 +14,8 @@ import CharacterSelector from "@/components/CharacterSelector";
 import PetSelector from "@/components/PetSelector";
 import PetDisplay from "@/components/PetDisplay";
 import PetEvolutionToast from "@/components/PetEvolutionToast";
+import MountSelector from "@/components/MountSelector";
+import CharacterAttributes from "@/components/CharacterAttributes";
 import NavBar from "@/components/NavBar";
 import { Button } from "@/components/ui/button";
 import { Plus, Users, Flame, TrendingUp } from "lucide-react";
@@ -180,9 +183,10 @@ const Dashboard = () => {
         {/* Weekly Progress Tabs - Calendar + Charts */}
         <Tabs defaultValue="calendar" className="w-full">
           <div className="bg-card rounded-2xl border border-border">
-            <TabsList className="w-full grid grid-cols-2 rounded-b-none">
-              <TabsTrigger value="calendar">Calendário Semanal</TabsTrigger>
-              <TabsTrigger value="progress">Progresso Semanal</TabsTrigger>
+            <TabsList className="w-full grid grid-cols-3 rounded-b-none">
+              <TabsTrigger value="calendar">Calendário</TabsTrigger>
+              <TabsTrigger value="progress">Gráficos</TabsTrigger>
+              <TabsTrigger value="rings">Anéis</TabsTrigger>
             </TabsList>
             
             <TabsContent value="calendar" className="m-0 p-4 sm:p-6">
@@ -191,6 +195,12 @@ const Dashboard = () => {
             
             <TabsContent value="progress" className="m-0 p-4 sm:p-6 space-y-4">
               <GeneralProgressChart userId={user?.id || ""} hideWrapper />
+            </TabsContent>
+            
+            <TabsContent value="rings" className="m-0 p-4 sm:p-6">
+              <div className="h-80 flex items-center justify-center">
+                <WeeklyProgressRing userId={user?.id || ""} />
+              </div>
             </TabsContent>
           </div>
         </Tabs>
@@ -213,6 +223,10 @@ const Dashboard = () => {
                 <PetSelector
                   userId={user?.id || ""}
                   onPetSelected={() => window.location.reload()}
+                />
+                <MountSelector
+                  userId={user?.id || ""}
+                  onMountSelected={() => window.location.reload()}
                 />
               </div>
               
@@ -243,11 +257,18 @@ const Dashboard = () => {
             </div>
 
             {/* Right: Skill Progress */}
-            <div>
-              <h3 className="font-display font-bold text-lg text-primary mb-4">
-                Progresso de Habilidades
-              </h3>
-              <SkillProgressBars userId={user?.id || ""} />
+            <div className="space-y-4">
+              <div>
+                <h3 className="font-display font-bold text-lg text-primary mb-4">
+                  Progresso de Habilidades
+                </h3>
+                <SkillProgressBars userId={user?.id || ""} />
+              </div>
+              
+              {/* Character Attributes */}
+              {user && (
+                <CharacterAttributes userId={user.id} />
+              )}
             </div>
           </div>
         </div>
