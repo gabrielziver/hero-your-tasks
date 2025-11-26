@@ -1,9 +1,6 @@
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { Card, CardContent } from "./ui/card";
-import { Checkbox } from "./ui/checkbox";
-import { Badge } from "./ui/badge";
 import { Sword, Sparkles, Trash2 } from "lucide-react";
 import { Button } from "./ui/button";
 import LevelUpAnimation from "./LevelUpAnimation";
@@ -163,14 +160,18 @@ const QuestList = ({ onQuestCompleted, filterCompleted, maxDisplay }: QuestListP
     }
   };
 
-  const getPriorityColor = (priority: string) => {
-    switch (priority) {
-      case "high":
-        return "bg-destructive/20 text-destructive border-destructive/50";
-      case "medium":
-        return "bg-secondary/20 text-secondary border-secondary/50";
+  const getCategoryColor = (category: string) => {
+    switch (category) {
+      case "produtividade":
+        return "#A88CFF";
+      case "bem-estar":
+        return "#FF6EC7";
+      case "criatividade":
+        return "#6CE0FF";
+      case "forca":
+        return "#FFD34E";
       default:
-        return "bg-primary/20 text-primary border-primary/50";
+        return "#A88CFF";
     }
   };
 
@@ -253,101 +254,122 @@ const QuestList = ({ onQuestCompleted, filterCompleted, maxDisplay }: QuestListP
       <div>
         <h3 className="text-xl font-semibold mb-4 text-foreground">Missões Ativas</h3>
         {activeQuests.length === 0 ? (
-          <Card className="bg-card border-border">
-            <CardContent className="p-8 text-center">
-              <Sparkles className="w-12 h-12 mx-auto mb-4 text-muted-foreground" />
-              <p className="text-muted-foreground">Sem missões ativas. Crie sua primeira missão para começar!</p>
-            </CardContent>
-          </Card>
+          <div className="relative bg-[#12141C] rounded-xl overflow-hidden p-8 text-center">
+            <Sparkles className="w-12 h-12 mx-auto mb-4 text-muted-foreground" />
+            <p className="text-muted-foreground">Sem missões ativas. Crie sua primeira missão para começar!</p>
+          </div>
         ) : (
-          <div className="space-y-3">
+          <div className="space-y-2">
             {displayedActiveQuests.map((quest) => (
-              <Card key={quest.id} className={`quest-card bg-card border-border hover:border-primary transition-all ${quest.is_boss_quest ? "border-secondary" : ""}`}>
-                <CardContent className="p-4">
-                  <div className="flex items-start gap-4">
-                    <Checkbox
-                      checked={false}
-                      onCheckedChange={(e) => handleCompleteQuest(quest.id, e)}
-                      className="mt-1"
-                    />
-                    <div className="flex-1">
-                      <div className="flex items-start justify-between gap-4">
-                        <div className="flex-1">
-                           <div className="flex items-center gap-2 mb-2">
-                             {quest.is_boss_quest && <Sword className="w-5 h-5 text-secondary" />}
-                             <span className="text-xl">{getCategoryIcon(quest.category)}</span>
-                             <h4 className="font-semibold text-foreground">{quest.title}</h4>
-                             {quest.is_recurring && (
-                               <Badge variant="outline" className="bg-accent/10 text-accent border-accent/30 text-xs ml-auto">
-                                 Hábito
-                               </Badge>
-                             )}
-                           </div>
-                          
-                          {quest.is_recurring && (
-                            <div className="mb-3 space-y-2">
-                              {/* Ícones estilo Nectar */}
-                              <div className="flex items-center gap-3 text-sm">
-                                {/* Streak */}
-                                <div className="flex items-center gap-1 bg-accent/10 px-2 py-1 rounded-lg border border-accent/20">
-                                  <span className="text-base">🔥</span>
-                                  <span className="font-semibold text-accent">{quest.current_streak || 0}</span>
-                                  <span className="text-muted-foreground text-xs">dias</span>
-                                </div>
-                                
-                                {/* Progresso mensal */}
-                                {quest.recurrence_type === "monthly" && (
-                                  <div className="flex items-center gap-1 bg-primary/10 px-2 py-1 rounded-lg border border-primary/20">
-                                    <span className="text-base">✔️</span>
-                                    <span className="font-semibold text-primary">
-                                      {getMonthlyProgress(quest)?.current || 0}/{getMonthlyProgress(quest)?.target || 30}
-                                    </span>
-                                  </div>
-                                )}
-                                
-                                {/* Frequência */}
-                                <div className="flex items-center gap-1 bg-muted/50 px-2 py-1 rounded-lg border border-border">
-                                  <span className="text-base">📅</span>
-                                  <span className="text-xs text-muted-foreground">
-                                    {quest.recurrence_type === "daily" ? "Diário" :
-                                     quest.recurrence_type === "weekly" ? getDayNames(quest.recurrence_days) :
-                                     "Mensal"}
-                                  </span>
-                                </div>
-                              </div>
-                            </div>
-                          )}
-                          
-                          <div className="flex flex-wrap gap-2">
-                            <Badge variant="outline" className="bg-muted text-muted-foreground border-border">
-                              {getCategoryLabel(quest.category)}
-                            </Badge>
-                            {!quest.is_recurring && (
-                              <Badge variant="outline" className={getPriorityColor(quest.priority)}>
-                                {getPriorityLabel(quest.priority)}
-                              </Badge>
-                            )}
-                            <Badge variant="outline" className="bg-primary/10 text-primary border-primary/20">
-                              +{quest.xp_reward} XP
-                            </Badge>
-                            <Badge variant="outline" className="bg-gold/10 text-gold border-gold/20">
-                              +{quest.gold_reward} 💰
-                            </Badge>
-                          </div>
-                        </div>
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          onClick={() => handleDeleteQuest(quest.id)}
-                          className="text-muted-foreground hover:text-destructive"
-                        >
-                          <Trash2 className="w-4 h-4" />
-                        </Button>
-                      </div>
-                    </div>
+              <div
+                key={quest.id}
+                className="quest-card group relative bg-[#12141C] rounded-xl overflow-hidden hover:bg-[#1a1c24] transition-all"
+              >
+                {/* Colored Left Border */}
+                <div
+                  className="absolute left-0 top-0 bottom-0 w-1.5"
+                  style={{ backgroundColor: getCategoryColor(quest.category) }}
+                />
+                
+                {/* Card Content */}
+                <div className="flex items-center gap-3 p-3 pl-5">
+                  {/* Category Icon (Small) */}
+                  <div className="flex-shrink-0">
+                    <span className="text-lg">{getCategoryIcon(quest.category)}</span>
                   </div>
-                </CardContent>
-              </Card>
+                  
+                  {/* Main Content */}
+                  <div className="flex-1 min-w-0">
+                    {/* Title Row */}
+                    <div className="flex items-center gap-2 mb-1">
+                      {quest.is_boss_quest && (
+                        <Sword className="w-4 h-4 flex-shrink-0" style={{ color: getCategoryColor(quest.category) }} />
+                      )}
+                      <h4 className="font-medium text-sm text-foreground truncate">
+                        {quest.title}
+                      </h4>
+                      {quest.is_recurring && (
+                        <span className="flex-shrink-0 text-xs text-muted-foreground bg-muted px-1.5 py-0.5 rounded">
+                          Hábito
+                        </span>
+                      )}
+                    </div>
+                    
+                    {/* Stats Row - Compact */}
+                    {quest.is_recurring ? (
+                      <div className="flex items-center gap-2 text-xs">
+                        {/* Streak */}
+                        <div className="flex items-center gap-1">
+                          <span>🔥</span>
+                          <span className="font-semibold" style={{ color: getCategoryColor(quest.category) }}>
+                            {quest.current_streak || 0}
+                          </span>
+                        </div>
+                        
+                        {/* Monthly Progress */}
+                        {quest.recurrence_type === "monthly" && (
+                          <>
+                            <span className="text-muted-foreground">•</span>
+                            <div className="flex items-center gap-1">
+                              <span>✔️</span>
+                              <span className="text-muted-foreground">
+                                {getMonthlyProgress(quest)?.current || 0}/{getMonthlyProgress(quest)?.target || 30}
+                              </span>
+                            </div>
+                          </>
+                        )}
+                        
+                        {/* Frequency */}
+                        <span className="text-muted-foreground">•</span>
+                        <div className="flex items-center gap-1">
+                          <span>📅</span>
+                          <span className="text-muted-foreground">
+                            {quest.recurrence_type === "daily" ? "Diário" :
+                             quest.recurrence_type === "weekly" ? getDayNames(quest.recurrence_days) :
+                             "Mensal"}
+                          </span>
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                        <span>{getCategoryLabel(quest.category)}</span>
+                        <span>•</span>
+                        <span className="capitalize">{getPriorityLabel(quest.priority)}</span>
+                        <span>•</span>
+                        <span>+{quest.xp_reward} XP</span>
+                        <span>•</span>
+                        <span>+{quest.gold_reward} 💰</span>
+                      </div>
+                    )}
+                  </div>
+                  
+                  {/* Right Actions */}
+                  <div className="flex items-center gap-2 flex-shrink-0">
+                    {/* Delete Button (Hidden by default, shows on hover) */}
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => handleDeleteQuest(quest.id)}
+                      className="opacity-0 group-hover:opacity-100 transition-opacity h-8 w-8 text-muted-foreground hover:text-destructive hover:bg-destructive/10"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </Button>
+                    
+                    {/* Complete Button */}
+                    <Button
+                      size="sm"
+                      onClick={(e) => handleCompleteQuest(quest.id, e)}
+                      className="h-8 px-3 text-xs font-medium"
+                      style={{
+                        backgroundColor: getCategoryColor(quest.category),
+                        color: '#000',
+                      }}
+                    >
+                      ✓ Completar
+                    </Button>
+                  </div>
+                </div>
+              </div>
             ))}
           </div>
         )}
@@ -357,18 +379,33 @@ const QuestList = ({ onQuestCompleted, filterCompleted, maxDisplay }: QuestListP
       {completedQuests.length > 0 && !maxDisplay && (
         <div>
           <h3 className="text-xl font-semibold mb-4 text-muted-foreground">Missões Completas</h3>
-          <div className="space-y-3">
+          <div className="space-y-2">
             {displayedCompletedQuests.map((quest) => (
-              <Card key={quest.id} className="bg-muted/20 border-border opacity-60">
-                <CardContent className="p-4">
-                  <div className="flex items-start gap-4">
-                    <Checkbox checked={true} disabled className="mt-1" />
-                    <div className="flex-1">
-                      <h4 className="font-semibold text-muted-foreground line-through">{quest.title}</h4>
-                    </div>
+              <div
+                key={quest.id}
+                className="relative bg-[#12141C] rounded-xl overflow-hidden opacity-50"
+              >
+                {/* Colored Left Border */}
+                <div
+                  className="absolute left-0 top-0 bottom-0 w-1.5 opacity-50"
+                  style={{ backgroundColor: getCategoryColor(quest.category) }}
+                />
+                
+                {/* Card Content */}
+                <div className="flex items-center gap-3 p-3 pl-5">
+                  {/* Checkmark */}
+                  <div className="flex-shrink-0 text-muted-foreground">
+                    <span className="text-lg">✓</span>
                   </div>
-                </CardContent>
-              </Card>
+                  
+                  {/* Title */}
+                  <div className="flex-1 min-w-0">
+                    <h4 className="font-medium text-sm text-muted-foreground line-through truncate">
+                      {quest.title}
+                    </h4>
+                  </div>
+                </div>
+              </div>
             ))}
           </div>
         </div>
