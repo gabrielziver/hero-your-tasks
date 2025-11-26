@@ -68,6 +68,8 @@ const CreateQuestDialog = ({ onQuestCreated, children }: CreateQuestDialogProps)
       setSelectedDays([]);
       setOpen(false);
       onQuestCreated();
+      // Dispara evento para atualização em tempo real
+      window.dispatchEvent(new Event('questCreated'));
     }
     setLoading(false);
   };

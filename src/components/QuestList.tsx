@@ -46,6 +46,19 @@ const QuestList = ({ onQuestCompleted, filterCompleted, maxDisplay }: QuestListP
 
   useEffect(() => {
     loadQuests();
+
+    // Atualiza em tempo real quando uma missão é criada ou completada
+    const handleQuestUpdate = () => {
+      loadQuests();
+    };
+
+    window.addEventListener('questCreated', handleQuestUpdate);
+    window.addEventListener('questCompleted', handleQuestUpdate);
+
+    return () => {
+      window.removeEventListener('questCreated', handleQuestUpdate);
+      window.removeEventListener('questCompleted', handleQuestUpdate);
+    };
   }, [filterCompleted]);
 
   const loadQuests = async () => {
