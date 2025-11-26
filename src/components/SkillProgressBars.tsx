@@ -8,7 +8,7 @@ interface SkillProgress {
   forca: number;
 }
 
-const SkillProgressBars = ({ userId }: { userId: string }) => {
+const SkillProgressBars = ({ userId, compact = false }: { userId: string; compact?: boolean }) => {
   const [progress, setProgress] = useState<SkillProgress>({
     produtividade: 0,
     "bem-estar": 0,
@@ -71,6 +71,27 @@ const SkillProgressBars = ({ userId }: { userId: string }) => {
     { label: "🎨 Criatividade", value: progress.criatividade, color: "bg-[#38BDF8]" },
     { label: "💪 Força", value: progress.forca, color: "bg-[#FACC15]" },
   ];
+
+  if (compact) {
+    return (
+      <div className="grid grid-cols-2 gap-2">
+        {skills.map((skill) => (
+          <div key={skill.label}>
+            <div className="flex justify-between text-xs mb-1">
+              <span className="text-foreground font-medium text-[10px]">{skill.label}</span>
+              <span className="text-muted-foreground text-[10px]">{Math.round(skill.value)}%</span>
+            </div>
+            <div className="h-1.5 bg-muted rounded-full overflow-hidden">
+              <div
+                className={`h-full ${skill.color} rounded-full transition-all duration-500`}
+                style={{ width: `${skill.value}%` }}
+              />
+            </div>
+          </div>
+        ))}
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-3">

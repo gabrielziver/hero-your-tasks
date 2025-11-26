@@ -155,66 +155,42 @@ const Dashboard = () => {
       </header>
 
       {/* Main Content */}
-      <div className="container mx-auto px-4 py-6 space-y-6">
-        {/* Habit Statistics Link Card */}
-        <div 
-          onClick={() => navigate("/habit-stats")}
-          className="bg-gradient-to-br from-purple-500/10 to-blue-500/10 rounded-2xl p-6 border border-purple-500/20 hover:border-purple-500/40 transition-all cursor-pointer group"
-        >
-          <div className="flex items-center justify-between">
-            <div className="space-y-2">
-              <div className="flex items-center gap-2">
-                <TrendingUp className="w-6 h-6 text-purple-400" />
-                <h3 className="font-display font-bold text-xl text-foreground">
-                  Estatísticas de Hábitos
-                </h3>
-              </div>
-              <p className="text-sm text-muted-foreground">
-                Analise seu progresso, streaks e consistência em cada hábito
-              </p>
+      <div className="container mx-auto px-4 py-4 space-y-4">
+        {/* Compact Profile Section */}
+        <div className="bg-card rounded-xl p-4 border border-border">
+          <div className="flex items-start gap-4">
+            {/* Avatar */}
+            <div className="flex-shrink-0">
+              <CharacterAvatar stats={stats} compact />
             </div>
-            <div className="text-4xl group-hover:scale-110 transition-transform">
-              📊
-            </div>
-          </div>
-        </div>
 
-        {/* Weekly Progress Tabs - Calendar + Charts */}
-        <Tabs defaultValue="calendar" className="w-full">
-          <div className="bg-card rounded-2xl border border-border">
-            <TabsList className="w-full grid grid-cols-3 rounded-b-none">
-              <TabsTrigger value="calendar">Calendário</TabsTrigger>
-              <TabsTrigger value="progress">Gráficos</TabsTrigger>
-              <TabsTrigger value="rings">Anéis</TabsTrigger>
-            </TabsList>
-            
-            <TabsContent value="calendar" className="m-0 p-4 sm:p-6">
-              <WeeklyCalendar userId={user?.id || ""} hideWrapper />
-            </TabsContent>
-            
-            <TabsContent value="progress" className="m-0 p-4 sm:p-6 space-y-4">
-              <GeneralProgressChart userId={user?.id || ""} hideWrapper />
-            </TabsContent>
-            
-            <TabsContent value="rings" className="m-0 p-4 sm:p-6">
-              <div className="h-80 flex items-center justify-center">
-                <WeeklyProgressRing userId={user?.id || ""} />
+            {/* Profile Info */}
+            <div className="flex-1 min-w-0 space-y-3">
+              {/* Level and XP Bar */}
+              <div className="space-y-1">
+                <div className="flex items-center justify-between">
+                  <span className="text-sm font-semibold text-muted-foreground">Nível {stats?.level || 1}</span>
+                  <span className="text-xs text-muted-foreground">
+                    {stats?.current_xp || 0} / {stats?.level ? stats.level * 100 : 100} XP
+                  </span>
+                </div>
+                <div className="relative h-2 bg-muted rounded-full overflow-hidden">
+                  <div
+                    className="absolute inset-0 bg-gradient-hero transition-all duration-500"
+                    style={{ 
+                      width: `${stats ? (stats.current_xp / (stats.level * 100)) * 100 : 0}%` 
+                    }}
+                  />
+                </div>
               </div>
-            </TabsContent>
-          </div>
-        </Tabs>
 
-        {/* Profile + Skills Section - Combined */}
-        <div className="bg-card rounded-2xl p-6 border border-border hover:border-primary/30 transition-colors">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            {/* Left: Avatar + XP */}
-            <div className="space-y-4">
-              <div className="flex items-center justify-center">
-                <CharacterAvatar stats={stats} />
+              {/* Skill Progress Bars - Horizontal Compact */}
+              <div className="space-y-2">
+                <SkillProgressBars userId={user?.id || ""} compact />
               </div>
-              
-              {/* Character Selector */}
-              <div className="px-4 space-y-2">
+
+              {/* Quick Actions */}
+              <div className="flex gap-2">
                 <CharacterSelector 
                   userId={user?.id || ""} 
                   onCharacterSelected={() => window.location.reload()}
@@ -224,126 +200,139 @@ const Dashboard = () => {
                   onSelectionChanged={() => window.location.reload()}
                 />
               </div>
-              
-              {/* Pet Display */}
-              {user && (
-                <div className="px-4">
-                  <PetDisplay userId={user.id} />
-                </div>
-              )}
-              
-              {/* XP Bar */}
-              <div>
-                <div className="flex justify-between text-sm mb-2">
-                  <span className="text-muted-foreground font-medium">XP</span>
-                  <span className="text-foreground font-bold">
-                    {stats?.current_xp || 0} / {stats?.level ? stats.level * 100 : 100}
-                  </span>
-                </div>
-                <div className="relative h-3 bg-muted rounded-full overflow-hidden">
-                  <div
-                    className="absolute inset-0 bg-gradient-hero transition-all duration-500"
-                    style={{ 
-                      width: `${stats ? (stats.current_xp / (stats.level * 100)) * 100 : 0}%` 
-                    }}
-                  />
-                </div>
-              </div>
-            </div>
-
-            {/* Right: Skill Progress */}
-            <div className="space-y-4">
-              <div>
-                <h3 className="font-display font-bold text-lg text-primary mb-4">
-                  Progresso de Habilidades
-                </h3>
-                <SkillProgressBars userId={user?.id || ""} />
-              </div>
-              
-              {/* Character Attributes */}
-              {user && (
-                <CharacterAttributes userId={user.id} />
-              )}
             </div>
           </div>
+
+          {/* Pet Display - Inline */}
+          {user && (
+            <div className="mt-3 pt-3 border-t border-border">
+              <PetDisplay userId={user.id} />
+            </div>
+          )}
         </div>
 
-        {/* General Progress Chart */}
-        <GeneralProgressChart userId={user?.id || ""} />
-
-        {/* Personal Quests */}
-        <div className="bg-card rounded-2xl p-6 border border-border hover:border-primary/30 transition-colors">
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="text-xl font-display font-bold text-primary">
-              Suas Missões
+        {/* Personal Quests - Compact */}
+        <div className="bg-card rounded-xl p-4 border border-border">
+          <div className="flex items-center justify-between mb-3">
+            <h2 className="text-lg font-display font-bold text-primary">
+              Missões
             </h2>
             <div className="flex items-center gap-2">
               <Button
                 variant="outline"
                 size="sm"
                 onClick={() => navigate("/quests")}
-                className="text-xs"
+                className="text-xs h-8"
               >
                 Ver Todas
               </Button>
               <CreateQuestDialog onQuestCreated={handleQuestCreated}>
-                <Button size="sm" className="gap-2 bg-primary hover:bg-primary/90 transition-colors">
-                  <Plus className="w-4 h-4" />
+                <Button size="sm" className="gap-2 bg-primary hover:bg-primary/90 transition-colors h-8">
+                  <Plus className="w-3 h-3" />
                   Nova
                 </Button>
               </CreateQuestDialog>
             </div>
           </div>
-          <QuestList onQuestCompleted={handleQuestCompleted} maxDisplay={4} />
+          <QuestList onQuestCompleted={handleQuestCompleted} maxDisplay={5} />
         </div>
 
-        {/* Group Quests */}
-        <div className="bg-card rounded-2xl p-6 border border-border hover:border-secondary/30 transition-colors">
-          <div className="flex items-center justify-between mb-4">
-            <div className="flex items-center gap-2">
-              <Users className="w-5 h-5 text-secondary" />
-              <h2 className="text-xl font-display font-bold text-secondary">
-                Missões em Grupo
-              </h2>
+        {/* Additional Content - Tabs for Stats & Groups */}
+        <Tabs defaultValue="stats" className="w-full">
+          <TabsList className="w-full grid grid-cols-3">
+            <TabsTrigger value="stats">📊 Stats</TabsTrigger>
+            <TabsTrigger value="groups">👥 Grupos</TabsTrigger>
+            <TabsTrigger value="progress">📈 Progresso</TabsTrigger>
+          </TabsList>
+          
+          <TabsContent value="stats" className="mt-4 space-y-4">
+            <div 
+              onClick={() => navigate("/habit-stats")}
+              className="bg-gradient-to-br from-purple-500/10 to-blue-500/10 rounded-xl p-4 border border-purple-500/20 hover:border-purple-500/40 transition-all cursor-pointer group"
+            >
+              <div className="flex items-center justify-between">
+                <div className="space-y-1">
+                  <div className="flex items-center gap-2">
+                    <TrendingUp className="w-5 h-5 text-purple-400" />
+                    <h3 className="font-display font-bold text-base text-foreground">
+                      Estatísticas de Hábitos
+                    </h3>
+                  </div>
+                  <p className="text-xs text-muted-foreground">
+                    Analise seu progresso detalhado
+                  </p>
+                </div>
+                <div className="text-2xl group-hover:scale-110 transition-transform">
+                  📊
+                </div>
+              </div>
             </div>
-            <div className="flex items-center gap-2">
-              {groups.length > 0 && (
-                <Select value={selectedGroup} onValueChange={setSelectedGroup}>
-                  <SelectTrigger className="w-[140px] bg-muted border-border h-9">
-                    <SelectValue placeholder="Grupo" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {groups.map((group) => (
-                      <SelectItem key={group.id} value={group.id}>
-                        {group.name}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              )}
-              {selectedGroup && (
-                <CreateGroupQuestDialog 
-                  groupId={selectedGroup} 
-                  onQuestCreated={handleQuestCreated}
-                >
-                  <Button size="sm" className="gap-2 bg-secondary hover:bg-secondary/90 transition-colors">
-                    <Plus className="w-4 h-4" />
-                    Nova
+
+            <div className="bg-card rounded-xl border border-border p-4">
+              <CharacterAttributes userId={user?.id || ""} />
+            </div>
+          </TabsContent>
+
+          <TabsContent value="groups" className="mt-4">
+            <div className="bg-card rounded-xl p-4 border border-border">
+              <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center gap-2">
+                  <Users className="w-5 h-5 text-secondary" />
+                  <h2 className="text-lg font-display font-bold text-secondary">
+                    Missões em Grupo
+                  </h2>
+                </div>
+                <div className="flex items-center gap-2">
+                  {groups.length > 0 && (
+                    <Select value={selectedGroup} onValueChange={setSelectedGroup}>
+                      <SelectTrigger className="w-[140px] bg-muted border-border h-9">
+                        <SelectValue placeholder="Grupo" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {groups.map((group) => (
+                          <SelectItem key={group.id} value={group.id}>
+                            {group.name}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  )}
+                  {selectedGroup && (
+                    <CreateGroupQuestDialog 
+                      groupId={selectedGroup} 
+                      onQuestCreated={handleQuestCreated}
+                    >
+                      <Button size="sm" className="gap-2 bg-secondary hover:bg-secondary/90 transition-colors">
+                        <Plus className="w-4 h-4" />
+                        Nova
+                      </Button>
+                    </CreateGroupQuestDialog>
+                  )}
+                </div>
+              </div>
+              {selectedGroup && <GroupQuestList groupId={selectedGroup} />}
+              {groups.length === 0 && (
+                <div className="text-center py-8 text-muted-foreground">
+                  <p className="text-sm mb-4">Você ainda não faz parte de nenhum grupo.</p>
+                  <Button variant="outline" size="sm" onClick={() => navigate("/profile")}>
+                    Criar ou Participar de um Grupo
                   </Button>
-                </CreateGroupQuestDialog>
+                </div>
               )}
             </div>
-          </div>
-          {selectedGroup && <GroupQuestList groupId={selectedGroup} />}
-          {groups.length === 0 && (
-            <div className="text-center py-8 text-muted-foreground">
-              <p className="mb-4">Você ainda não faz parte de nenhum grupo.</p>
-              <Button variant="outline" onClick={() => navigate("/profile")}>
-                Criar ou Participar de um Grupo
-              </Button>
+          </TabsContent>
+
+          <TabsContent value="progress" className="mt-4 space-y-4">
+            <div className="bg-card rounded-xl border border-border p-4">
+              <WeeklyCalendar userId={user?.id || ""} hideWrapper />
             </div>
-          )}
-        </div>
+            <div className="bg-card rounded-xl border border-border p-4">
+              <div className="h-64">
+                <WeeklyProgressRing userId={user?.id || ""} />
+              </div>
+            </div>
+          </TabsContent>
+        </Tabs>
       </div>
 
       {/* Bottom Navigation */}
