@@ -158,19 +158,19 @@ const Dashboard = () => {
       <div className="container mx-auto px-4 py-4 space-y-4">
         {/* Compact Profile Section */}
         <div className="bg-card rounded-xl p-4 border border-border">
-          <div className="flex items-start gap-4">
+          <div className="flex flex-col sm:flex-row items-start gap-4">
             {/* Avatar */}
-            <div className="flex-shrink-0">
+            <div className="flex-shrink-0 mx-auto sm:mx-0">
               <CharacterAvatar stats={stats} compact />
             </div>
 
             {/* Profile Info */}
-            <div className="flex-1 min-w-0 space-y-3">
+            <div className="flex-1 w-full min-w-0 space-y-3">
               {/* Level and XP Bar */}
               <div className="space-y-1">
                 <div className="flex items-center justify-between">
-                  <span className="text-sm font-semibold text-muted-foreground">Nível {stats?.level || 1}</span>
-                  <span className="text-xs text-muted-foreground">
+                  <span className="text-sm font-semibold text-muted-foreground truncate">Nível {stats?.level || 1}</span>
+                  <span className="text-xs text-muted-foreground whitespace-nowrap">
                     {stats?.current_xp || 0} / {stats?.level ? stats.level * 100 : 100} XP
                   </span>
                 </div>
@@ -190,7 +190,7 @@ const Dashboard = () => {
               </div>
 
               {/* Quick Actions */}
-              <div className="flex gap-2">
+              <div className="flex flex-col sm:flex-row gap-2">
                 <CharacterSelector 
                   userId={user?.id || ""} 
                   onCharacterSelected={() => window.location.reload()}
@@ -203,10 +203,10 @@ const Dashboard = () => {
             </div>
           </div>
 
-          {/* Pet Display - Inline */}
+          {/* Pet Display - Inline Compact */}
           {user && (
             <div className="mt-3 pt-3 border-t border-border">
-              <PetDisplay userId={user.id} />
+              <PetDisplay userId={user.id} compact />
             </div>
           )}
         </div>
