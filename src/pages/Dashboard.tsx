@@ -149,15 +149,16 @@ const Dashboard = () => {
         {/* Weekly Calendar */}
         <WeeklyCalendar userId={user?.id || ""} />
 
-        {/* Top Section: Avatar + General Progress */}
+        {/* Profile + Skills Section */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <div className="space-y-4">
-            <div className="bg-card rounded-2xl p-6 border border-border hover:border-primary/30 transition-colors flex items-center justify-center">
+          {/* Left: Avatar + XP */}
+          <div className="bg-card rounded-2xl p-6 border border-border hover:border-primary/30 transition-colors space-y-4">
+            <div className="flex items-center justify-center">
               <CharacterAvatar stats={stats} />
             </div>
             
             {/* XP Bar */}
-            <div className="bg-card rounded-2xl p-4 border border-border hover:border-primary/30 transition-colors">
+            <div>
               <div className="flex justify-between text-sm mb-2">
                 <span className="text-muted-foreground font-medium">XP</span>
                 <span className="text-foreground font-bold">
@@ -174,17 +175,18 @@ const Dashboard = () => {
               </div>
             </div>
           </div>
-          
-          <GeneralProgressChart userId={user?.id || ""} />
+
+          {/* Right: Skill Progress */}
+          <div className="bg-card rounded-2xl p-6 border border-border hover:border-accent/30 transition-colors">
+            <h3 className="font-display font-bold text-lg text-primary mb-4">
+              Progresso de Habilidades
+            </h3>
+            <SkillProgressBars userId={user?.id || ""} />
+          </div>
         </div>
 
-        {/* Skill Progress */}
-        <div className="bg-card rounded-2xl p-6 border border-border hover:border-accent/30 transition-colors">
-          <h3 className="font-display font-bold text-lg text-primary mb-4">
-            Progresso de Habilidades
-          </h3>
-          <SkillProgressBars userId={user?.id || ""} />
-        </div>
+        {/* General Progress Chart */}
+        <GeneralProgressChart userId={user?.id || ""} />
 
         {/* Personal Quests */}
         <div className="bg-card rounded-2xl p-6 border border-border hover:border-primary/30 transition-colors">
