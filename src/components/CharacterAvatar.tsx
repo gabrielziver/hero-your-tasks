@@ -1,4 +1,5 @@
-import { User } from "lucide-react";
+import { useState, useEffect } from "react";
+import { supabase } from "@/integrations/supabase/client";
 import { Link } from "react-router-dom";
 import RadarChart from "./RadarChart";
 
@@ -7,27 +8,78 @@ interface CharacterAvatarProps {
 }
 
 const CharacterAvatar = ({ stats }: CharacterAvatarProps) => {
-  if (!stats) return null;
+  const [characterImage, setCharacterImage] = useState<string | null>(null);
+  const [characterType, setCharacterType] = useState<string>("warrior");
 
-  const xpForNextLevel = stats.level * 100;
-  const xpProgress = (stats.current_xp / xpForNextLevel) * 100;
+  useEffect(() => {
+    loadCharacterData();
+  }, [stats]);
 
-  // Calculate radar stats based on user progress
-  const radarStats = {
-    strength: Math.min((stats.quests_completed / 50) * 100, 100),
-    intelligence: Math.min((stats.level / 20) * 100, 100),
-    willpower: Math.min((stats.current_streak / 30) * 100, 100),
-    charisma: Math.min((stats.level / 15) * 100, 100),
-    creativity: Math.min((stats.quests_completed / 40) * 100, 100),
-    wealth: Math.min((stats.gold / 500) * 100, 100),
+  const loadCharacterData = async () => {
+    if (!stats) return;
+    
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return;
+
+    const { data, error } = await supabase
+      .from("profiles")
+      .select("selected_character, character_images")
+      .eq("id", user.id)
+      .single();
+
+    if (error) {
+      console.error("Error loading character:", error);
+      return;
+    }
+
+    if (data) {
+      setCharacterType(data.selected_character || "warrior");
+      const images = data.character_images as Record<string, string>;
+      if (images && data.selected_character) {
+        setCharacterImage(images[data.selected_character]);
+      }
+    }
   };
+
+  const getCharacterEmoji = (type: string) => {
+    const emojis: Record<string, string> = {
+      warrior: "⚔️",
+      archer: "🏹",
+      mage: "🔮",
+      ninja: "🥷",
+    };
+    return emojis[type] || "⚔️";
+  };
+
+  const getCharacterGradient = (type: string) => {
+    const gradients: Record<string, string> = {
+      warrior: "from-purple-500 to-blue-500",
+      archer: "from-purple-400 to-pink-400",
+      mage: "from-blue-500 to-cyan-400",
+      ninja: "from-violet-500 to-purple-600",
+    };
+    return gradients[type] || "from-purple-500 to-blue-500";
+  };
+
+  if (!stats) return null;
 
   return (
     <Link to="/profile" className="relative w-32 h-32 block group">
-      <div className="w-full h-full rounded-full bg-gradient-hero flex items-center justify-center border-2 border-primary transition-all group-hover:scale-105 group-hover:border-accent cursor-pointer">
-        <User className="w-16 h-16 text-foreground" />
+      <div className={`absolute inset-0 rounded-full bg-gradient-to-br ${getCharacterGradient(characterType)} animate-pulse opacity-30`} />
+      <div className="relative w-full h-full rounded-full bg-card border-4 border-primary flex items-center justify-center overflow-hidden transition-all group-hover:scale-105 group-hover:border-accent cursor-pointer">
+        {characterImage ? (
+          <img 
+            src={characterImage} 
+            alt="Character" 
+            className="w-full h-full object-cover"
+          />
+        ) : (
+          <div className="text-5xl">
+            {getCharacterEmoji(characterType)}
+          </div>
+        )}
       </div>
-      <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 bg-gradient-gold px-4 py-1 rounded-full font-display font-bold text-sm text-background group-hover:scale-105 transition-transform">
+      <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 bg-gradient-hero px-4 py-1 rounded-full font-display font-bold text-sm text-foreground group-hover:scale-105 transition-transform">
         Lv. {stats.level}
       </div>
     </Link>
