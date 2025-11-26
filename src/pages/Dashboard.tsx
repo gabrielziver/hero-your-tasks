@@ -143,20 +143,23 @@ const Dashboard = () => {
       <div className="container mx-auto px-4 py-4 space-y-4">
         {/* Compact Profile Section */}
         <div className="bg-card rounded-xl p-4 border border-border">
-          <div className="flex flex-col sm:flex-row items-start gap-4">
-            {/* Avatar */}
-            <div className="flex-shrink-0 mx-auto sm:mx-0">
-              <CharacterAvatar stats={stats} compact />
+          <div className="flex flex-col sm:flex-row items-start gap-3">
+            {/* Avatar Column */}
+            <div className="flex-shrink-0 flex flex-col items-center gap-2 mx-auto sm:mx-0">
+              <CharacterAvatar stats={stats} square />
+              <div className="text-center">
+                <span className="text-sm font-semibold text-muted-foreground">Nível {stats?.level || 1}</span>
+              </div>
             </div>
 
-            {/* Profile Info */}
+            {/* Stats and Info Column */}
             <div className="flex-1 w-full min-w-0 space-y-3">
-              {/* Level and XP Bar */}
+              {/* XP Bar */}
               <div className="space-y-1">
                 <div className="flex items-center justify-between">
-                  <span className="text-sm font-semibold text-muted-foreground truncate">Nível {stats?.level || 1}</span>
+                  <span className="text-xs text-muted-foreground">XP</span>
                   <span className="text-xs text-muted-foreground whitespace-nowrap">
-                    {stats?.current_xp || 0} / {stats?.level ? stats.level * 100 : 100} XP
+                    {stats?.current_xp || 0} / {stats?.level ? stats.level * 100 : 100}
                   </span>
                 </div>
                 <div className="relative h-2 bg-muted rounded-full overflow-hidden">
@@ -166,13 +169,13 @@ const Dashboard = () => {
                 </div>
               </div>
 
-              {/* Skill Progress Bars - Horizontal Compact */}
+              {/* Skill Progress Bars */}
               <div className="space-y-2">
                 <SkillProgressBars userId={user?.id || ""} compact />
               </div>
 
               {/* Quick Actions */}
-              <div className="flex flex-col sm:flex-row gap-2">
+              <div className="grid grid-cols-2 gap-2">
                 <CharacterSelector userId={user?.id || ""} onCharacterSelected={() => window.location.reload()} />
                 <PetsAndMountsSelector userId={user?.id || ""} onSelectionChanged={() => window.location.reload()} />
               </div>
