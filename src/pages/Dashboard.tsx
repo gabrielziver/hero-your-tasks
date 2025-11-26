@@ -9,6 +9,7 @@ import WeeklyCalendar from "@/components/WeeklyCalendar";
 import CreateQuestDialog from "@/components/CreateQuestDialog";
 import CreateGroupQuestDialog from "@/components/CreateGroupQuestDialog";
 import SkillProgressBars from "@/components/SkillProgressBars";
+import CharacterSelector from "@/components/CharacterSelector";
 import NavBar from "@/components/NavBar";
 import { Button } from "@/components/ui/button";
 import { Plus, Users, Flame, TrendingUp } from "lucide-react";
@@ -195,6 +196,14 @@ const Dashboard = () => {
             <div className="space-y-4">
               <div className="flex items-center justify-center">
                 <CharacterAvatar stats={stats} />
+              </div>
+              
+              {/* Character Selector */}
+              <div className="px-4">
+                <CharacterSelector 
+                  userId={user?.id || ""} 
+                  onCharacterSelected={() => window.location.reload()}
+                />
               </div>
               
               {/* XP Bar */}
