@@ -149,39 +149,41 @@ const Dashboard = () => {
         {/* Weekly Calendar */}
         <WeeklyCalendar userId={user?.id || ""} />
 
-        {/* Profile + Skills Section */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          {/* Left: Avatar + XP */}
-          <div className="bg-card rounded-2xl p-6 border border-border hover:border-primary/30 transition-colors space-y-4">
-            <div className="flex items-center justify-center">
-              <CharacterAvatar stats={stats} />
-            </div>
-            
-            {/* XP Bar */}
-            <div>
-              <div className="flex justify-between text-sm mb-2">
-                <span className="text-muted-foreground font-medium">XP</span>
-                <span className="text-foreground font-bold">
-                  {stats?.current_xp || 0} / {stats?.level ? stats.level * 100 : 100}
-                </span>
+        {/* Profile + Skills Section - Combined */}
+        <div className="bg-card rounded-2xl p-6 border border-border hover:border-primary/30 transition-colors">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {/* Left: Avatar + XP */}
+            <div className="space-y-4">
+              <div className="flex items-center justify-center">
+                <CharacterAvatar stats={stats} />
               </div>
-              <div className="relative h-3 bg-muted rounded-full overflow-hidden">
-                <div
-                  className="absolute inset-0 bg-gradient-hero transition-all duration-500"
-                  style={{ 
-                    width: `${stats ? (stats.current_xp / (stats.level * 100)) * 100 : 0}%` 
-                  }}
-                />
+              
+              {/* XP Bar */}
+              <div>
+                <div className="flex justify-between text-sm mb-2">
+                  <span className="text-muted-foreground font-medium">XP</span>
+                  <span className="text-foreground font-bold">
+                    {stats?.current_xp || 0} / {stats?.level ? stats.level * 100 : 100}
+                  </span>
+                </div>
+                <div className="relative h-3 bg-muted rounded-full overflow-hidden">
+                  <div
+                    className="absolute inset-0 bg-gradient-hero transition-all duration-500"
+                    style={{ 
+                      width: `${stats ? (stats.current_xp / (stats.level * 100)) * 100 : 0}%` 
+                    }}
+                  />
+                </div>
               </div>
             </div>
-          </div>
 
-          {/* Right: Skill Progress */}
-          <div className="bg-card rounded-2xl p-6 border border-border hover:border-accent/30 transition-colors">
-            <h3 className="font-display font-bold text-lg text-primary mb-4">
-              Progresso de Habilidades
-            </h3>
-            <SkillProgressBars userId={user?.id || ""} />
+            {/* Right: Skill Progress */}
+            <div>
+              <h3 className="font-display font-bold text-lg text-primary mb-4">
+                Progresso de Habilidades
+              </h3>
+              <SkillProgressBars userId={user?.id || ""} />
+            </div>
           </div>
         </div>
 
