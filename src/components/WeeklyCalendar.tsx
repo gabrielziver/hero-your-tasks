@@ -11,7 +11,7 @@ interface DayData {
   totalCount: number;
 }
 
-const WeeklyCalendar = ({ userId }: { userId: string }) => {
+const WeeklyCalendar = ({ userId, hideWrapper = false }: { userId: string; hideWrapper?: boolean }) => {
   const [weekDays, setWeekDays] = useState<DayData[]>([]);
 
   useEffect(() => {
@@ -77,41 +77,49 @@ const WeeklyCalendar = ({ userId }: { userId: string }) => {
     return day.completedCount > 0;
   };
 
+  const calendarContent = (
+    <div className="grid grid-cols-7 gap-1 sm:gap-2">
+      {weekDays.map((day, index) => (
+        <div
+          key={index}
+          className={`flex flex-col items-center gap-1 sm:gap-2 ${
+            day.isToday ? "scale-105 sm:scale-110" : ""
+          }`}
+        >
+          <span className="text-[10px] sm:text-xs text-muted-foreground font-medium">
+            {day.dayName}
+          </span>
+          <div
+            className={`
+              text-base sm:text-xl font-display font-bold transition-all
+              ${hasCompletedTasks(day) ? "text-foreground" : "text-muted-foreground/40"}
+              ${day.isToday ? "text-primary" : ""}
+            `}
+          >
+            {day.dayNumber}
+          </div>
+          {hasCompletedTasks(day) ? (
+            <Flame 
+              className={`w-4 h-4 sm:w-5 sm:h-5 transition-all ${
+                day.isToday ? "text-primary" : "text-primary/80"
+              }`}
+              fill="currentColor"
+            />
+          ) : (
+            <div className="w-4 h-4 sm:w-5 sm:h-5" />
+          )}
+        </div>
+      ))}
+    </div>
+  );
+
+  if (hideWrapper) {
+    return calendarContent;
+  }
+
   return (
     <div className="bg-card rounded-2xl p-4 sm:p-6 border border-border">
-      <div className="grid grid-cols-7 gap-1 sm:gap-2">
-        {weekDays.map((day, index) => (
-          <div
-            key={index}
-            className={`flex flex-col items-center gap-1 sm:gap-2 ${
-              day.isToday ? "scale-105 sm:scale-110" : ""
-            }`}
-          >
-            <span className="text-[10px] sm:text-xs text-muted-foreground font-medium">
-              {day.dayName}
-            </span>
-            <div
-              className={`
-                text-base sm:text-xl font-display font-bold transition-all
-                ${hasCompletedTasks(day) ? "text-foreground" : "text-muted-foreground/40"}
-                ${day.isToday ? "text-primary" : ""}
-              `}
-            >
-              {day.dayNumber}
-            </div>
-            {hasCompletedTasks(day) ? (
-              <Flame 
-                className={`w-4 h-4 sm:w-5 sm:h-5 transition-all ${
-                  day.isToday ? "text-primary" : "text-primary/80"
-                }`}
-                fill="currentColor"
-              />
-            ) : (
-              <div className="w-4 h-4 sm:w-5 sm:h-5" />
-            )}
-          </div>
-        ))}
-      </div>
+      {calendarContent}
     </div>
   );
 };
