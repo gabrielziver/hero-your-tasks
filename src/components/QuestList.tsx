@@ -18,6 +18,12 @@ interface Quest {
   gold_reward: number;
   is_completed: boolean;
   is_boss_quest: boolean;
+  is_recurring: boolean;
+  recurrence_type: string | null;
+  recurrence_days: number[] | null;
+  monthly_target: number | null;
+  current_month_completions: number;
+  last_completion_date: string | null;
 }
 
 interface QuestListProps {
@@ -79,13 +85,15 @@ const QuestList = ({ onQuestCompleted, filterCompleted, maxDisplay }: QuestListP
       }
     }
 
-    const { data, error } = await supabase.rpc("complete_quest", {
-      quest_id: questId,
-    });
+    try {
+      const { data, error } = await supabase.rpc("complete_quest", {
+        quest_id: questId,
+      });
 
-    if (error) {
-      toast.error(error.message);
-    } else {
+      if (error) {
+        toast.error(error.message);
+        return;
+      }
       const result = data as any;
       
       // Show particle effect
@@ -107,10 +115,15 @@ const QuestList = ({ onQuestCompleted, filterCompleted, maxDisplay }: QuestListP
         }, 1000);
       }
       
-      loadQuests();
+      await loadQuests();
       if (onQuestCompleted) {
         onQuestCompleted();
       }
+      
+      // Dispatch event for other components
+      window.dispatchEvent(new Event('questCompleted'));
+    } catch (err) {
+      console.error('Error completing quest:', err);
     }
   };
   
@@ -156,12 +169,51 @@ const QuestList = ({ onQuestCompleted, filterCompleted, maxDisplay }: QuestListP
     }
   };
 
+  const getCategoryIcon = (category: string) => {
+    switch (category) {
+      case "produtividade": return "💼";
+      case "bem-estar": return "🧘";
+      case "criatividade": return "🎨";
+      case "forca": return "💪";
+      default: return "📝";
+    }
+  };
+
+  const getCategoryLabel = (category: string) => {
+    switch (category) {
+      case "produtividade": return "Produtividade";
+      case "bem-estar": return "Bem-estar";
+      case "criatividade": return "Criatividade";
+      case "forca": return "Força";
+      default: return category;
+    }
+  };
+
+  const getMonthlyProgress = (quest: Quest) => {
+    if (!quest.is_recurring || quest.recurrence_type !== "monthly") return null;
+    const target = quest.monthly_target || 30;
+    const current = quest.current_month_completions || 0;
+    return { current, target };
+  };
+
+  const getDayNames = (days: number[] | null) => {
+    if (!days || days.length === 0) return "Todos os dias";
+    const dayNames = ["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sáb"];
+    return days.map(d => dayNames[d]).join(", ");
+  };
+
+  const canCompleteToday = (quest: Quest) => {
+    if (!quest.is_recurring) return !quest.is_completed;
+    const today = new Date().toISOString().split('T')[0];
+    return quest.last_completion_date !== today;
+  };
+
   if (loading) {
     return <div className="text-center text-muted-foreground">Carregando missões...</div>;
   }
 
-  const activeQuests = quests.filter((q) => !q.is_completed);
-  const completedQuests = quests.filter((q) => q.is_completed);
+  const activeQuests = quests.filter((q) => q.is_recurring ? canCompleteToday(q) : !q.is_completed);
+  const completedQuests = quests.filter((q) => q.is_completed && !q.is_recurring);
   
   // Limit display if maxDisplay is set
   const displayedActiveQuests = maxDisplay ? activeQuests.slice(0, maxDisplay) : activeQuests;
@@ -206,17 +258,44 @@ const QuestList = ({ onQuestCompleted, filterCompleted, maxDisplay }: QuestListP
                     />
                     <div className="flex-1">
                       <div className="flex items-start justify-between gap-4">
-                        <div>
+                        <div className="flex-1">
                           <div className="flex items-center gap-2 mb-2">
                             {quest.is_boss_quest && <Sword className="w-5 h-5 text-secondary" />}
+                            {quest.is_recurring && <span className="text-lg">{getCategoryIcon(quest.category)}</span>}
                             <h4 className="font-semibold text-foreground">{quest.title}</h4>
                           </div>
+                          
+                          {quest.is_recurring && (
+                            <div className="mb-2 space-y-1">
+                              {quest.recurrence_type === "monthly" && (
+                                <div className="text-sm text-muted-foreground">
+                                  Progresso mensal: {getMonthlyProgress(quest)?.current || 0}/{getMonthlyProgress(quest)?.target || 30}
+                                </div>
+                              )}
+                              {quest.recurrence_type === "weekly" && (
+                                <div className="text-sm text-muted-foreground">
+                                  {getDayNames(quest.recurrence_days)}
+                                </div>
+                              )}
+                              {quest.recurrence_type === "daily" && (
+                                <div className="text-sm text-muted-foreground">
+                                  Todos os dias
+                                </div>
+                              )}
+                            </div>
+                          )}
+                          
                           <div className="flex flex-wrap gap-2">
+                            {quest.is_recurring && (
+                              <Badge variant="outline" className="bg-accent/20 text-accent border-accent/50">
+                                🔄 Hábito
+                              </Badge>
+                            )}
                             <Badge variant="outline" className={getPriorityColor(quest.priority)}>
                               {getPriorityLabel(quest.priority)}
                             </Badge>
                             <Badge variant="outline" className="bg-muted text-muted-foreground">
-                              {quest.category}
+                              {getCategoryLabel(quest.category)}
                             </Badge>
                             <Badge variant="outline" className="bg-primary/10 text-primary">
                               +{quest.xp_reward} XP
