@@ -179,14 +179,9 @@ const Dashboard = () => {
                 <CharacterSelector userId={user?.id || ""} onCharacterSelected={() => window.location.reload()} />
                 <PetsAndMountsSelector userId={user?.id || ""} onSelectionChanged={() => window.location.reload()} />
               </div>
-            </div>
           </div>
-
-          {/* Pet Display - Inline Compact */}
-          {user && <div className="mt-3 pt-3 border-t border-border">
-              <PetDisplay userId={user.id} compact />
-            </div>}
         </div>
+      </div>
 
         {/* Personal Quests - Compact */}
         <div className="bg-card rounded-xl p-4 border border-border">
