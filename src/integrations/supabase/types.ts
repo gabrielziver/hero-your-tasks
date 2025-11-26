@@ -254,6 +254,45 @@ export type Database = {
         }
         Relationships: []
       }
+      user_pets: {
+        Row: {
+          created_at: string
+          evolution_stage: number
+          id: string
+          is_active: boolean
+          pet_images: Json | null
+          pet_name: string | null
+          pet_type: string
+          pet_xp: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          evolution_stage?: number
+          id?: string
+          is_active?: boolean
+          pet_images?: Json | null
+          pet_name?: string | null
+          pet_type: string
+          pet_xp?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          evolution_stage?: number
+          id?: string
+          is_active?: boolean
+          pet_images?: Json | null
+          pet_name?: string | null
+          pet_type?: string
+          pet_xp?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       user_stats: {
         Row: {
           current_streak: number | null

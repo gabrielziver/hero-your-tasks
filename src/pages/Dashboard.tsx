@@ -10,6 +10,9 @@ import CreateQuestDialog from "@/components/CreateQuestDialog";
 import CreateGroupQuestDialog from "@/components/CreateGroupQuestDialog";
 import SkillProgressBars from "@/components/SkillProgressBars";
 import CharacterSelector from "@/components/CharacterSelector";
+import PetSelector from "@/components/PetSelector";
+import PetDisplay from "@/components/PetDisplay";
+import PetEvolutionToast from "@/components/PetEvolutionToast";
 import NavBar from "@/components/NavBar";
 import { Button } from "@/components/ui/button";
 import { Plus, Users, Flame, TrendingUp } from "lucide-react";
@@ -121,6 +124,9 @@ const Dashboard = () => {
 
   return (
     <div className="min-h-screen bg-background text-foreground pb-24">
+      {/* Pet Evolution Toast Handler */}
+      {user && <PetEvolutionToast userId={user.id} />}
+      
       {/* Compact Header */}
       <header className="sticky top-0 z-40 bg-card border-b border-border">
         <div className="container mx-auto px-4 py-4">
@@ -199,12 +205,23 @@ const Dashboard = () => {
               </div>
               
               {/* Character Selector */}
-              <div className="px-4">
+              <div className="px-4 space-y-2">
                 <CharacterSelector 
                   userId={user?.id || ""} 
                   onCharacterSelected={() => window.location.reload()}
                 />
+                <PetSelector
+                  userId={user?.id || ""}
+                  onPetSelected={() => window.location.reload()}
+                />
               </div>
+              
+              {/* Pet Display */}
+              {user && (
+                <div className="px-4">
+                  <PetDisplay userId={user.id} />
+                </div>
+              )}
               
               {/* XP Bar */}
               <div>
