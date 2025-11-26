@@ -11,10 +11,9 @@ import CreateQuestDialog from "@/components/CreateQuestDialog";
 import CreateGroupQuestDialog from "@/components/CreateGroupQuestDialog";
 import SkillProgressBars from "@/components/SkillProgressBars";
 import CharacterSelector from "@/components/CharacterSelector";
-import PetSelector from "@/components/PetSelector";
 import PetDisplay from "@/components/PetDisplay";
 import PetEvolutionToast from "@/components/PetEvolutionToast";
-import MountSelector from "@/components/MountSelector";
+import PetsAndMountsSelector from "@/components/PetsAndMountsSelector";
 import CharacterAttributes from "@/components/CharacterAttributes";
 import NavBar from "@/components/NavBar";
 import { Button } from "@/components/ui/button";
@@ -220,13 +219,9 @@ const Dashboard = () => {
                   userId={user?.id || ""} 
                   onCharacterSelected={() => window.location.reload()}
                 />
-                <PetSelector
+                <PetsAndMountsSelector
                   userId={user?.id || ""}
-                  onPetSelected={() => window.location.reload()}
-                />
-                <MountSelector
-                  userId={user?.id || ""}
-                  onMountSelected={() => window.location.reload()}
+                  onSelectionChanged={() => window.location.reload()}
                 />
               </div>
               
