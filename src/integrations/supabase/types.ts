@@ -182,6 +182,7 @@ export type Database = {
           completed_at: string | null
           created_at: string | null
           current_month_completions: number | null
+          current_streak: number | null
           gold_reward: number
           id: string
           is_boss_quest: boolean | null
@@ -201,6 +202,7 @@ export type Database = {
           completed_at?: string | null
           created_at?: string | null
           current_month_completions?: number | null
+          current_streak?: number | null
           gold_reward?: number
           id?: string
           is_boss_quest?: boolean | null
@@ -220,6 +222,7 @@ export type Database = {
           completed_at?: string | null
           created_at?: string | null
           current_month_completions?: number | null
+          current_streak?: number | null
           gold_reward?: number
           id?: string
           is_boss_quest?: boolean | null

@@ -24,6 +24,7 @@ interface Quest {
   monthly_target: number | null;
   current_month_completions: number;
   last_completion_date: string | null;
+  current_streak: number;
 }
 
 interface QuestListProps {
@@ -261,7 +262,7 @@ const QuestList = ({ onQuestCompleted, filterCompleted, maxDisplay }: QuestListP
         ) : (
           <div className="space-y-3">
             {displayedActiveQuests.map((quest) => (
-              <Card key={quest.id} className={`quest-card bg-card border-border hover:border-primary transition-all ${quest.is_boss_quest ? "border-secondary shadow-glow-gold" : ""}`}>
+              <Card key={quest.id} className={`quest-card bg-card border-border hover:border-primary transition-all ${quest.is_boss_quest ? "border-secondary" : ""}`}>
                 <CardContent className="p-4">
                   <div className="flex items-start gap-4">
                     <Checkbox
@@ -272,49 +273,65 @@ const QuestList = ({ onQuestCompleted, filterCompleted, maxDisplay }: QuestListP
                     <div className="flex-1">
                       <div className="flex items-start justify-between gap-4">
                         <div className="flex-1">
-                          <div className="flex items-center gap-2 mb-2">
-                            {quest.is_boss_quest && <Sword className="w-5 h-5 text-secondary" />}
-                            {quest.is_recurring && <span className="text-lg">{getCategoryIcon(quest.category)}</span>}
-                            <h4 className="font-semibold text-foreground">{quest.title}</h4>
-                          </div>
+                           <div className="flex items-center gap-2 mb-2">
+                             {quest.is_boss_quest && <Sword className="w-5 h-5 text-secondary" />}
+                             <span className="text-xl">{getCategoryIcon(quest.category)}</span>
+                             <h4 className="font-semibold text-foreground">{quest.title}</h4>
+                             {quest.is_recurring && (
+                               <Badge variant="outline" className="bg-accent/10 text-accent border-accent/30 text-xs ml-auto">
+                                 Hábito
+                               </Badge>
+                             )}
+                           </div>
                           
                           {quest.is_recurring && (
-                            <div className="mb-2 space-y-1">
-                              {quest.recurrence_type === "monthly" && (
-                                <div className="text-sm text-muted-foreground">
-                                  Progresso mensal: {getMonthlyProgress(quest)?.current || 0}/{getMonthlyProgress(quest)?.target || 30}
+                            <div className="mb-3 space-y-2">
+                              {/* Ícones estilo Nectar */}
+                              <div className="flex items-center gap-3 text-sm">
+                                {/* Streak */}
+                                <div className="flex items-center gap-1 bg-accent/10 px-2 py-1 rounded-lg border border-accent/20">
+                                  <span className="text-base">🔥</span>
+                                  <span className="font-semibold text-accent">{quest.current_streak || 0}</span>
+                                  <span className="text-muted-foreground text-xs">dias</span>
                                 </div>
-                              )}
-                              {quest.recurrence_type === "weekly" && (
-                                <div className="text-sm text-muted-foreground">
-                                  {getDayNames(quest.recurrence_days)}
+                                
+                                {/* Progresso mensal */}
+                                {quest.recurrence_type === "monthly" && (
+                                  <div className="flex items-center gap-1 bg-primary/10 px-2 py-1 rounded-lg border border-primary/20">
+                                    <span className="text-base">✔️</span>
+                                    <span className="font-semibold text-primary">
+                                      {getMonthlyProgress(quest)?.current || 0}/{getMonthlyProgress(quest)?.target || 30}
+                                    </span>
+                                  </div>
+                                )}
+                                
+                                {/* Frequência */}
+                                <div className="flex items-center gap-1 bg-muted/50 px-2 py-1 rounded-lg border border-border">
+                                  <span className="text-base">📅</span>
+                                  <span className="text-xs text-muted-foreground">
+                                    {quest.recurrence_type === "daily" ? "Diário" :
+                                     quest.recurrence_type === "weekly" ? getDayNames(quest.recurrence_days) :
+                                     "Mensal"}
+                                  </span>
                                 </div>
-                              )}
-                              {quest.recurrence_type === "daily" && (
-                                <div className="text-sm text-muted-foreground">
-                                  Todos os dias
-                                </div>
-                              )}
+                              </div>
                             </div>
                           )}
                           
                           <div className="flex flex-wrap gap-2">
-                            {quest.is_recurring && (
-                              <Badge variant="outline" className="bg-accent/20 text-accent border-accent/50">
-                                🔄 Hábito
-                              </Badge>
-                            )}
-                            <Badge variant="outline" className={getPriorityColor(quest.priority)}>
-                              {getPriorityLabel(quest.priority)}
-                            </Badge>
-                            <Badge variant="outline" className="bg-muted text-muted-foreground">
+                            <Badge variant="outline" className="bg-muted text-muted-foreground border-border">
                               {getCategoryLabel(quest.category)}
                             </Badge>
-                            <Badge variant="outline" className="bg-primary/10 text-primary">
+                            {!quest.is_recurring && (
+                              <Badge variant="outline" className={getPriorityColor(quest.priority)}>
+                                {getPriorityLabel(quest.priority)}
+                              </Badge>
+                            )}
+                            <Badge variant="outline" className="bg-primary/10 text-primary border-primary/20">
                               +{quest.xp_reward} XP
                             </Badge>
-                            <Badge variant="outline" className="bg-secondary/10 text-secondary">
-                              +{quest.gold_reward} Ouro
+                            <Badge variant="outline" className="bg-gold/10 text-gold border-gold/20">
+                              +{quest.gold_reward} 💰
                             </Badge>
                           </div>
                         </div>
