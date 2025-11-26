@@ -145,9 +145,9 @@ const Dashboard = () => {
         <div className="bg-card rounded-xl p-4 border border-border">
           <div className="flex flex-col sm:flex-row items-start gap-3">
             {/* Avatar Column */}
-            <div className="flex-shrink-0 flex flex-col items-center gap-2 mx-auto sm:mx-0">
+            <div className="flex-shrink-0 flex flex-col items-start sm:items-center gap-2">
               <CharacterAvatar stats={stats} square />
-              <div className="text-center">
+              <div className="text-left sm:text-center">
                 <span className="text-sm font-semibold text-muted-foreground">Nível {stats?.level || 1}</span>
               </div>
             </div>
@@ -175,7 +175,7 @@ const Dashboard = () => {
               </div>
 
               {/* Quick Actions */}
-              <div className="grid grid-cols-2 gap-2">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                 <CharacterSelector userId={user?.id || ""} onCharacterSelected={() => window.location.reload()} />
                 <PetsAndMountsSelector userId={user?.id || ""} onSelectionChanged={() => window.location.reload()} />
               </div>
