@@ -20,7 +20,6 @@ import { Button } from "@/components/ui/button";
 import { Plus, Users, Flame, TrendingUp } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-
 const Dashboard = () => {
   const navigate = useNavigate();
   const [user, setUser] = useState<any>(null);
@@ -28,22 +27,25 @@ const Dashboard = () => {
   const [groups, setGroups] = useState<any[]>([]);
   const [selectedGroup, setSelectedGroup] = useState<string>("");
   const [loading, setLoading] = useState(true);
-
   useEffect(() => {
     const checkAuth = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
+      const {
+        data: {
+          session
+        }
+      } = await supabase.auth.getSession();
       if (!session) {
         navigate("/auth");
         return;
       }
       setUser(session.user);
-      await Promise.all([
-        loadStats(session.user.id),
-        loadGroups(session.user.id)
-      ]);
+      await Promise.all([loadStats(session.user.id), loadGroups(session.user.id)]);
     };
-
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+    const {
+      data: {
+        subscription
+      }
+    } = supabase.auth.onAuthStateChange((event, session) => {
       if (event === "SIGNED_OUT") {
         navigate("/auth");
       } else if (session) {
@@ -52,18 +54,14 @@ const Dashboard = () => {
         loadGroups(session.user.id);
       }
     });
-
     checkAuth();
     return () => subscription.unsubscribe();
   }, [navigate]);
-
   const loadStats = async (userId: string) => {
-    const { data, error } = await supabase
-      .from("user_stats")
-      .select("*")
-      .eq("user_id", userId)
-      .single();
-
+    const {
+      data,
+      error
+    } = await supabase.from("user_stats").select("*").eq("user_id", userId).single();
     if (error) {
       console.error(error);
     } else {
@@ -71,27 +69,21 @@ const Dashboard = () => {
     }
     setLoading(false);
   };
-
   const loadGroups = async (userId: string) => {
-    const { data: memberData, error: memberError } = await supabase
-      .from("group_members")
-      .select("group_id")
-      .eq("user_id", userId);
-
+    const {
+      data: memberData,
+      error: memberError
+    } = await supabase.from("group_members").select("group_id").eq("user_id", userId);
     if (memberError) {
       console.error(memberError);
       return;
     }
-
     const groupIds = memberData?.map(m => m.group_id) || [];
-    
     if (groupIds.length === 0) return;
-
-    const { data: groupsData, error: groupsError } = await supabase
-      .from("groups")
-      .select("id, name")
-      .in("id", groupIds);
-
+    const {
+      data: groupsData,
+      error: groupsError
+    } = await supabase.from("groups").select("id, name").in("id", groupIds);
     if (groupsError) {
       console.error(groupsError);
     } else {
@@ -101,7 +93,6 @@ const Dashboard = () => {
       }
     }
   };
-
   const handleQuestCompleted = () => {
     if (user) {
       loadStats(user.id);
@@ -109,23 +100,17 @@ const Dashboard = () => {
       window.dispatchEvent(new Event('questCompleted'));
     }
   };
-
   const handleQuestCreated = () => {
     if (user) {
       loadStats(user.id);
     }
   };
-
   if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-background">
+    return <div className="min-h-screen flex items-center justify-center bg-background">
         <div className="text-xl text-foreground">Carregando...</div>
-      </div>
-    );
+      </div>;
   }
-
-  return (
-    <div className="min-h-screen bg-background text-foreground pb-24">
+  return <div className="min-h-screen bg-background text-foreground pb-24">
       {/* Pet Evolution Toast Handler */}
       {user && <PetEvolutionToast userId={user.id} />}
       
@@ -175,12 +160,9 @@ const Dashboard = () => {
                   </span>
                 </div>
                 <div className="relative h-2 bg-muted rounded-full overflow-hidden">
-                  <div
-                    className="absolute inset-0 bg-gradient-hero transition-all duration-500"
-                    style={{ 
-                      width: `${stats ? (stats.current_xp / (stats.level * 100)) * 100 : 0}%` 
-                    }}
-                  />
+                  <div className="absolute inset-0 bg-gradient-hero transition-all duration-500" style={{
+                  width: `${stats ? stats.current_xp / (stats.level * 100) * 100 : 0}%`
+                }} />
                 </div>
               </div>
 
@@ -191,24 +173,16 @@ const Dashboard = () => {
 
               {/* Quick Actions */}
               <div className="flex flex-col sm:flex-row gap-2">
-                <CharacterSelector 
-                  userId={user?.id || ""} 
-                  onCharacterSelected={() => window.location.reload()}
-                />
-                <PetsAndMountsSelector
-                  userId={user?.id || ""}
-                  onSelectionChanged={() => window.location.reload()}
-                />
+                <CharacterSelector userId={user?.id || ""} onCharacterSelected={() => window.location.reload()} />
+                <PetsAndMountsSelector userId={user?.id || ""} onSelectionChanged={() => window.location.reload()} />
               </div>
             </div>
           </div>
 
           {/* Pet Display - Inline Compact */}
-          {user && (
-            <div className="mt-3 pt-3 border-t border-border">
+          {user && <div className="mt-3 pt-3 border-t border-border">
               <PetDisplay userId={user.id} compact />
-            </div>
-          )}
+            </div>}
         </div>
 
         {/* Personal Quests - Compact */}
@@ -218,12 +192,7 @@ const Dashboard = () => {
               Missões
             </h2>
             <div className="flex items-center gap-2">
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => navigate("/quests")}
-                className="text-xs h-8"
-              >
+              <Button variant="outline" size="sm" onClick={() => navigate("/quests")} className="text-xs h-8">
                 Ver Todas
               </Button>
               <CreateQuestDialog onQuestCreated={handleQuestCreated}>
@@ -246,10 +215,7 @@ const Dashboard = () => {
           </TabsList>
           
           <TabsContent value="stats" className="mt-4 space-y-4">
-            <div 
-              onClick={() => navigate("/habit-stats")}
-              className="bg-gradient-to-br from-purple-500/10 to-blue-500/10 rounded-xl p-4 border border-purple-500/20 hover:border-purple-500/40 transition-all cursor-pointer group"
-            >
+            <div onClick={() => navigate("/habit-stats")} className="bg-gradient-to-br from-purple-500/10 to-blue-500/10 rounded-xl p-4 border border-purple-500/20 hover:border-purple-500/40 transition-all cursor-pointer group">
               <div className="flex items-center justify-between">
                 <div className="space-y-1">
                   <div className="flex items-center gap-2">
@@ -268,9 +234,7 @@ const Dashboard = () => {
               </div>
             </div>
 
-            <div className="bg-card rounded-xl border border-border p-4">
-              <CharacterAttributes userId={user?.id || ""} />
-            </div>
+            
           </TabsContent>
 
           <TabsContent value="groups" className="mt-4">
@@ -283,42 +247,31 @@ const Dashboard = () => {
                   </h2>
                 </div>
                 <div className="flex items-center gap-2">
-                  {groups.length > 0 && (
-                    <Select value={selectedGroup} onValueChange={setSelectedGroup}>
+                  {groups.length > 0 && <Select value={selectedGroup} onValueChange={setSelectedGroup}>
                       <SelectTrigger className="w-[140px] bg-muted border-border h-9">
                         <SelectValue placeholder="Grupo" />
                       </SelectTrigger>
                       <SelectContent>
-                        {groups.map((group) => (
-                          <SelectItem key={group.id} value={group.id}>
+                        {groups.map(group => <SelectItem key={group.id} value={group.id}>
                             {group.name}
-                          </SelectItem>
-                        ))}
+                          </SelectItem>)}
                       </SelectContent>
-                    </Select>
-                  )}
-                  {selectedGroup && (
-                    <CreateGroupQuestDialog 
-                      groupId={selectedGroup} 
-                      onQuestCreated={handleQuestCreated}
-                    >
+                    </Select>}
+                  {selectedGroup && <CreateGroupQuestDialog groupId={selectedGroup} onQuestCreated={handleQuestCreated}>
                       <Button size="sm" className="gap-2 bg-secondary hover:bg-secondary/90 transition-colors">
                         <Plus className="w-4 h-4" />
                         Nova
                       </Button>
-                    </CreateGroupQuestDialog>
-                  )}
+                    </CreateGroupQuestDialog>}
                 </div>
               </div>
               {selectedGroup && <GroupQuestList groupId={selectedGroup} />}
-              {groups.length === 0 && (
-                <div className="text-center py-8 text-muted-foreground">
+              {groups.length === 0 && <div className="text-center py-8 text-muted-foreground">
                   <p className="text-sm mb-4">Você ainda não faz parte de nenhum grupo.</p>
                   <Button variant="outline" size="sm" onClick={() => navigate("/profile")}>
                     Criar ou Participar de um Grupo
                   </Button>
-                </div>
-              )}
+                </div>}
             </div>
           </TabsContent>
 
@@ -337,8 +290,6 @@ const Dashboard = () => {
 
       {/* Bottom Navigation */}
       <NavBar />
-    </div>
-  );
+    </div>;
 };
-
 export default Dashboard;
