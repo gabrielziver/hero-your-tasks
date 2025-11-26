@@ -181,11 +181,17 @@ export type Database = {
           category: string
           completed_at: string | null
           created_at: string | null
+          current_month_completions: number | null
           gold_reward: number
           id: string
           is_boss_quest: boolean | null
           is_completed: boolean | null
+          is_recurring: boolean | null
+          last_completion_date: string | null
+          monthly_target: number | null
           priority: string
+          recurrence_days: number[] | null
+          recurrence_type: string | null
           title: string
           user_id: string
           xp_reward: number
@@ -194,11 +200,17 @@ export type Database = {
           category?: string
           completed_at?: string | null
           created_at?: string | null
+          current_month_completions?: number | null
           gold_reward?: number
           id?: string
           is_boss_quest?: boolean | null
           is_completed?: boolean | null
+          is_recurring?: boolean | null
+          last_completion_date?: string | null
+          monthly_target?: number | null
           priority?: string
+          recurrence_days?: number[] | null
+          recurrence_type?: string | null
           title: string
           user_id: string
           xp_reward?: number
@@ -207,11 +219,17 @@ export type Database = {
           category?: string
           completed_at?: string | null
           created_at?: string | null
+          current_month_completions?: number | null
           gold_reward?: number
           id?: string
           is_boss_quest?: boolean | null
           is_completed?: boolean | null
+          is_recurring?: boolean | null
+          last_completion_date?: string | null
+          monthly_target?: number | null
           priority?: string
+          recurrence_days?: number[] | null
+          recurrence_type?: string | null
           title?: string
           user_id?: string
           xp_reward?: number
@@ -266,6 +284,7 @@ export type Database = {
         Args: { _group_id: string; _user_id: string }
         Returns: boolean
       }
+      reset_monthly_habit_completions: { Args: never; Returns: undefined }
     }
     Enums: {
       [_ in never]: never
