@@ -13,6 +13,7 @@ import NavBar from "@/components/NavBar";
 import { Button } from "@/components/ui/button";
 import { Plus, Users, Flame } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -146,8 +147,23 @@ const Dashboard = () => {
 
       {/* Main Content */}
       <div className="container mx-auto px-4 py-6 space-y-6">
-        {/* Weekly Calendar */}
-        <WeeklyCalendar userId={user?.id || ""} />
+        {/* Weekly Progress Tabs - Calendar + Charts */}
+        <Tabs defaultValue="calendar" className="w-full">
+          <div className="bg-card rounded-2xl border border-border">
+            <TabsList className="w-full grid grid-cols-2 rounded-b-none">
+              <TabsTrigger value="calendar">Calendário Semanal</TabsTrigger>
+              <TabsTrigger value="progress">Progresso Semanal</TabsTrigger>
+            </TabsList>
+            
+            <TabsContent value="calendar" className="m-0 p-4 sm:p-6">
+              <WeeklyCalendar userId={user?.id || ""} hideWrapper />
+            </TabsContent>
+            
+            <TabsContent value="progress" className="m-0 p-4 sm:p-6 space-y-4">
+              <GeneralProgressChart userId={user?.id || ""} hideWrapper />
+            </TabsContent>
+          </div>
+        </Tabs>
 
         {/* Profile + Skills Section - Combined */}
         <div className="bg-card rounded-2xl p-6 border border-border hover:border-primary/30 transition-colors">

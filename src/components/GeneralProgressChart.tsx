@@ -10,11 +10,16 @@ interface DailyStats {
   date: string;
   completed: number;
 }
-const GeneralProgressChart = ({
-  userId
-}: {
+
+interface GeneralProgressChartProps {
   userId: string;
-}) => {
+  hideWrapper?: boolean;
+}
+
+const GeneralProgressChart = ({
+  userId,
+  hideWrapper = false
+}: GeneralProgressChartProps) => {
   const [progress, setProgress] = useState<CategoryProgress>({
     produtividade: 0,
     "bem-estar": 0,
@@ -121,7 +126,9 @@ const GeneralProgressChart = ({
     color: "#FACC15"
   }];
   const maxCompleted = Math.max(...dailyStats.map(s => s.completed), 1);
-  return <div className="w-full space-y-4 sm:space-y-6">
+  
+  const content = (
+    <>
       {/* Progress Rings */}
       <div className="bg-card rounded-2xl p-4 sm:p-6 border border-border">
         <h3 className="font-display font-bold text-xs sm:text-sm text-muted-foreground mb-4">
@@ -191,6 +198,13 @@ const GeneralProgressChart = ({
         })}
         </div>
       </div>
-    </div>;
+    </>
+  );
+  
+  if (hideWrapper) {
+    return content;
+  }
+  
+  return <div className="w-full space-y-4 sm:space-y-6">{content}</div>;
 };
 export default GeneralProgressChart;
