@@ -103,20 +103,29 @@ const CreateQuestDialog = ({ onQuestCreated, children }: CreateQuestDialogProps)
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <Label htmlFor="type">Tipo</Label>
-            <Select 
-              value={isRecurring ? "recurring" : "single"} 
-              onValueChange={(value) => setIsRecurring(value === "recurring")}
-              disabled={loading}
-            >
-              <SelectTrigger>
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="single">🎯 Missão Pontual</SelectItem>
-                <SelectItem value="recurring">🔄 Missão Recorrente (Hábito)</SelectItem>
-              </SelectContent>
-            </Select>
+            <Label htmlFor="type">Tipo de Missão</Label>
+            <div className="grid grid-cols-2 gap-2 mt-2">
+              <Button
+                type="button"
+                variant={!isRecurring ? "default" : "outline"}
+                className="h-auto py-3 px-4 flex flex-col items-center gap-1"
+                onClick={() => setIsRecurring(false)}
+                disabled={loading}
+              >
+                <span className="text-2xl">🎯</span>
+                <span className="text-xs font-medium">Missão Única</span>
+              </Button>
+              <Button
+                type="button"
+                variant={isRecurring ? "default" : "outline"}
+                className="h-auto py-3 px-4 flex flex-col items-center gap-1"
+                onClick={() => setIsRecurring(true)}
+                disabled={loading}
+              >
+                <span className="text-2xl">🔄</span>
+                <span className="text-xs font-medium">Hábito Recorrente</span>
+              </Button>
+            </div>
           </div>
           <div>
             <Label htmlFor="title">Título da Missão</Label>
@@ -145,7 +154,7 @@ const CreateQuestDialog = ({ onQuestCreated, children }: CreateQuestDialogProps)
           {isRecurring && (
             <>
               <div>
-                <Label>Frequência</Label>
+                <Label>Frequência do Hábito</Label>
                 <Select 
                   value={recurrenceType} 
                   onValueChange={(value: any) => setRecurrenceType(value)}
@@ -155,9 +164,9 @@ const CreateQuestDialog = ({ onQuestCreated, children }: CreateQuestDialogProps)
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="daily">📅 Diariamente</SelectItem>
-                    <SelectItem value="weekly">📆 Dias da semana</SelectItem>
-                    <SelectItem value="monthly">📊 Mensal (30 vezes)</SelectItem>
+                    <SelectItem value="daily">📅 Todos os dias</SelectItem>
+                    <SelectItem value="weekly">📆 Dias específicos da semana</SelectItem>
+                    <SelectItem value="monthly">📊 Meta mensal (30x)</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -171,7 +180,7 @@ const CreateQuestDialog = ({ onQuestCreated, children }: CreateQuestDialogProps)
                         key={index}
                         type="button"
                         variant={selectedDays.includes(index) ? "default" : "outline"}
-                        className="p-2 h-auto text-xs"
+                        className="p-2 h-auto text-xs transition-all"
                         onClick={() => toggleDay(index)}
                         disabled={loading}
                       >
@@ -179,6 +188,14 @@ const CreateQuestDialog = ({ onQuestCreated, children }: CreateQuestDialogProps)
                       </Button>
                     ))}
                   </div>
+                </div>
+              )}
+
+              {recurrenceType === "monthly" && (
+                <div className="p-3 bg-muted/50 rounded-lg border border-border">
+                  <p className="text-sm text-muted-foreground">
+                    Meta: Completar <span className="font-semibold text-foreground">30 vezes</span> no mês
+                  </p>
                 </div>
               )}
             </>
@@ -197,7 +214,7 @@ const CreateQuestDialog = ({ onQuestCreated, children }: CreateQuestDialogProps)
               </SelectContent>
             </Select>
           </div>
-          <Button type="submit" className="w-full bg-gradient-hero" disabled={loading}>
+          <Button type="submit" className="w-full bg-primary hover:bg-primary/90" disabled={loading}>
             {loading ? "Criando..." : isRecurring ? "Criar Hábito" : "Criar Missão"}
           </Button>
         </form>
