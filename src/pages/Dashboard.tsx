@@ -11,7 +11,7 @@ import CreateGroupQuestDialog from "@/components/CreateGroupQuestDialog";
 import SkillProgressBars from "@/components/SkillProgressBars";
 import NavBar from "@/components/NavBar";
 import { Button } from "@/components/ui/button";
-import { Plus, Users, Flame } from "lucide-react";
+import { Plus, Users, Flame, TrendingUp } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
@@ -147,6 +147,29 @@ const Dashboard = () => {
 
       {/* Main Content */}
       <div className="container mx-auto px-4 py-6 space-y-6">
+        {/* Habit Statistics Link Card */}
+        <div 
+          onClick={() => navigate("/habit-stats")}
+          className="bg-gradient-to-br from-purple-500/10 to-blue-500/10 rounded-2xl p-6 border border-purple-500/20 hover:border-purple-500/40 transition-all cursor-pointer group"
+        >
+          <div className="flex items-center justify-between">
+            <div className="space-y-2">
+              <div className="flex items-center gap-2">
+                <TrendingUp className="w-6 h-6 text-purple-400" />
+                <h3 className="font-display font-bold text-xl text-foreground">
+                  Estatísticas de Hábitos
+                </h3>
+              </div>
+              <p className="text-sm text-muted-foreground">
+                Analise seu progresso, streaks e consistência em cada hábito
+              </p>
+            </div>
+            <div className="text-4xl group-hover:scale-110 transition-transform">
+              📊
+            </div>
+          </div>
+        </div>
+
         {/* Weekly Progress Tabs - Calendar + Charts */}
         <Tabs defaultValue="calendar" className="w-full">
           <div className="bg-card rounded-2xl border border-border">

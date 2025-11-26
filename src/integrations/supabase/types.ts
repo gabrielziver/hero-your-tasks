@@ -183,7 +183,9 @@ export type Database = {
           created_at: string | null
           current_month_completions: number | null
           current_streak: number | null
+          frequency_data: Json | null
           gold_reward: number
+          habit_score: number | null
           id: string
           is_boss_quest: boolean | null
           is_completed: boolean | null
@@ -194,6 +196,7 @@ export type Database = {
           recurrence_days: number[] | null
           recurrence_type: string | null
           title: string
+          trend_indicator: string | null
           user_id: string
           xp_reward: number
         }
@@ -203,7 +206,9 @@ export type Database = {
           created_at?: string | null
           current_month_completions?: number | null
           current_streak?: number | null
+          frequency_data?: Json | null
           gold_reward?: number
+          habit_score?: number | null
           id?: string
           is_boss_quest?: boolean | null
           is_completed?: boolean | null
@@ -214,6 +219,7 @@ export type Database = {
           recurrence_days?: number[] | null
           recurrence_type?: string | null
           title: string
+          trend_indicator?: string | null
           user_id: string
           xp_reward?: number
         }
@@ -223,7 +229,9 @@ export type Database = {
           created_at?: string | null
           current_month_completions?: number | null
           current_streak?: number | null
+          frequency_data?: Json | null
           gold_reward?: number
+          habit_score?: number | null
           id?: string
           is_boss_quest?: boolean | null
           is_completed?: boolean | null
@@ -234,6 +242,7 @@ export type Database = {
           recurrence_days?: number[] | null
           recurrence_type?: string | null
           title?: string
+          trend_indicator?: string | null
           user_id?: string
           xp_reward?: number
         }
@@ -280,6 +289,7 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      calculate_habit_score: { Args: { quest_id: string }; Returns: number }
       complete_group_quest: { Args: { quest_id: string }; Returns: Json }
       complete_quest: { Args: { quest_id: string }; Returns: Json }
       get_user_groups: { Args: { _user_id: string }; Returns: string[] }

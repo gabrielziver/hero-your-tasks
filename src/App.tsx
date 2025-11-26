@@ -19,6 +19,7 @@ import Shop from "./pages/Shop";
 import Finance from "./pages/Finance";
 import AIAssistant from "./pages/AIAssistant";
 import Method from "./pages/Method";
+import HabitStats from "./pages/HabitStats";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -46,6 +47,7 @@ const App = () => (
           <Route path="/finance" element={<Finance />} />
           <Route path="/ai" element={<AIAssistant />} />
           <Route path="/method" element={<Method />} />
+          <Route path="/habit-stats" element={<HabitStats />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
