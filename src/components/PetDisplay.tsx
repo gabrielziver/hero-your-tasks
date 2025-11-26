@@ -6,6 +6,7 @@ import { Star } from "lucide-react";
 
 interface PetDisplayProps {
   userId: string;
+  compact?: boolean;
 }
 
 interface ActivePet {
@@ -25,7 +26,7 @@ const pets = {
   sparkfox: { name: "Sparkfox", emoji: "⚡", color: "from-yellow-500 to-orange-400", stages: ["Filhote", "Adolescente", "Lendário"] },
 };
 
-const PetDisplay = ({ userId }: PetDisplayProps) => {
+const PetDisplay = ({ userId, compact = false }: PetDisplayProps) => {
   const [activePet, setActivePet] = useState<ActivePet | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -66,20 +67,71 @@ const PetDisplay = ({ userId }: PetDisplayProps) => {
 
   if (!activePet) {
     return (
-      <Card className="bg-card/50 border-dashed border-2 border-border">
-        <CardContent className="p-4 text-center">
-          <p className="text-sm text-muted-foreground">Nenhum pet ativo</p>
-          <p className="text-xs text-muted-foreground mt-1">
-            Escolha um pet para começar!
-          </p>
-        </CardContent>
-      </Card>
+      <div className={`${compact ? 'text-xs' : 'p-4'} text-center text-muted-foreground`}>
+        <p className={compact ? 'text-xs' : 'text-sm'}>Nenhum pet ativo</p>
+      </div>
     );
   }
 
   const petInfo = pets[activePet.pet_type as keyof typeof pets];
   const xpForNext = activePet.evolution_stage * 100;
   const xpProgress = (activePet.pet_xp / xpForNext) * 100;
+
+  if (compact) {
+    return (
+      <div className="flex items-center gap-2">
+        {/* Pet Image - Compact */}
+        <div className="relative">
+          <div className="w-10 h-10 rounded-full overflow-hidden bg-muted flex items-center justify-center flex-shrink-0">
+            {activePet.pet_images[activePet.evolution_stage] ? (
+              <img
+                src={activePet.pet_images[activePet.evolution_stage]}
+                alt={activePet.pet_name || "Pet"}
+                className="w-full h-full object-cover"
+              />
+            ) : (
+              <div className={`w-full h-full bg-gradient-to-br ${petInfo.color} opacity-30 flex items-center justify-center`}>
+                <span className="text-lg">{petInfo.emoji}</span>
+              </div>
+            )}
+          </div>
+          <Badge className="absolute -bottom-1 -right-1 text-[10px] px-1 py-0 h-4">
+            <Star className="w-2 h-2 mr-0.5" />
+            {activePet.evolution_stage}
+          </Badge>
+        </div>
+
+        {/* Pet Info - Compact */}
+        <div className="flex-1 min-w-0">
+          <p className="font-semibold text-xs text-foreground truncate">
+            {activePet.pet_name}
+          </p>
+          <p className="text-[10px] text-muted-foreground truncate">
+            {petInfo.stages[activePet.evolution_stage - 1]}
+          </p>
+          
+          {activePet.evolution_stage < 3 ? (
+            <>
+              <div className="flex items-center justify-between text-[10px] mt-1">
+                <span className="text-muted-foreground">XP</span>
+                <span className="font-semibold">{activePet.pet_xp}/{xpForNext}</span>
+              </div>
+              <div className="relative h-1 bg-muted rounded-full overflow-hidden mt-0.5">
+                <div
+                  className={`absolute inset-0 bg-gradient-to-r ${petInfo.color} transition-all`}
+                  style={{ width: `${xpProgress}%` }}
+                />
+              </div>
+            </>
+          ) : (
+            <Badge className="mt-1 text-[10px] px-1 py-0 h-4 bg-gold text-gold-foreground">
+              🏆 Max
+            </Badge>
+          )}
+        </div>
+      </div>
+    );
+  }
 
   return (
     <Card className="bg-card border-border hover:border-primary/30 transition-colors">
@@ -91,7 +143,7 @@ const PetDisplay = ({ userId }: PetDisplayProps) => {
               {activePet.pet_images[activePet.evolution_stage] ? (
                 <img
                   src={activePet.pet_images[activePet.evolution_stage]}
-                  alt={activePet.pet_name}
+                  alt={activePet.pet_name || "Pet"}
                   className="w-full h-full object-cover"
                 />
               ) : (
