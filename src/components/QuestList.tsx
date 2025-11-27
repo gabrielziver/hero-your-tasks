@@ -1,10 +1,11 @@
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { Sword, Sparkles, Trash2 } from "lucide-react";
+import { Sword, Sparkles, Trash2, Pencil } from "lucide-react";
 import { Button } from "./ui/button";
 import LevelUpAnimation from "./LevelUpAnimation";
 import QuestCompleteEffect from "./QuestCompleteEffect";
+import EditQuestDialog from "./EditQuestDialog";
 
 interface Quest {
   id: string;
@@ -348,6 +349,20 @@ const QuestList = ({ onQuestCompleted, filterCompleted, maxDisplay }: QuestListP
                   
                   {/* Right Actions */}
                   <div className="flex items-center gap-2 flex-shrink-0">
+                    {/* Edit Button (Hidden by default, shows on hover) */}
+                    <EditQuestDialog
+                      quest={quest}
+                      onQuestUpdated={loadQuests}
+                    >
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="opacity-0 group-hover:opacity-100 transition-opacity h-8 w-8 text-muted-foreground hover:text-primary hover:bg-primary/10"
+                      >
+                        <Pencil className="w-4 h-4" />
+                      </Button>
+                    </EditQuestDialog>
+                    
                     {/* Delete Button (Hidden by default, shows on hover) */}
                     <Button
                       variant="ghost"
