@@ -1,73 +1,99 @@
-# Welcome to your Lovable project
+# Hero Your Tasks — Task Level
 
-## Project info
+![Banner do Task Level](src/assets/hero-banner.jpg)
 
-**URL**: https://lovable.dev/projects/f8c3894b-3ee8-4653-a948-da2cc3d720af
+Aplicação web de produtividade que transforma tarefas, hábitos e metas do dia a dia em uma jornada gamificada. O usuário conclui missões, ganha XP, mantém sequências, sobe de nível e acompanha sua evolução em uma experiência inspirada em jogos de RPG.
 
-## How can I edit this code?
+> Projeto autoral desenvolvido por **Gabriel Oliveira** para portfólio. O código está disponível para avaliação técnica; os direitos de uso e redistribuição permanecem reservados.
 
-There are several ways of editing your application.
+## Demonstração
 
-**Use Lovable**
+**Aplicação:** [hero-your-tasks.vercel.app](https://hero-your-tasks.vercel.app)
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/f8c3894b-3ee8-4653-a948-da2cc3d720af) and start prompting.
+O projeto é uma PWA responsiva e pode ser instalado no celular ou no computador diretamente pelo navegador.
 
-Changes made via Lovable will be committed automatically to this repo.
+## O que a aplicação oferece
 
-**Use your preferred IDE**
+- **Missões diárias:** criação e acompanhamento de tarefas individuais ou em grupo.
+- **Hábitos e sequências:** registro de consistência e visualização do progresso ao longo do tempo.
+- **Sistema de XP e níveis:** cada atividade concluída contribui para a evolução do perfil.
+- **Ranking:** comparação de desempenho e incentivo saudável à constância.
+- **Perfil personalizável:** avatares, mascotes, montarias e recompensas desbloqueáveis.
+- **Loja virtual:** uso das recompensas conquistadas dentro da experiência.
+- **Painel financeiro:** organização de receitas e despesas pessoais.
+- **Assistente de IA:** área experimental para apoio à organização e produtividade.
+- **Quiz e diagnóstico:** jornada inicial para identificar o perfil de produtividade do usuário.
+- **PWA:** experiência instalável com suporte a uso em diferentes dispositivos.
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+## Proposta do produto
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+O Hero Your Tasks nasceu da ideia de tornar a organização pessoal menos mecânica. Em vez de mostrar apenas uma lista de afazeres, a aplicação dá contexto e recompensa ao progresso: tarefas viram missões, constância vira sequência e evolução pessoal vira nível.
 
-Follow these steps:
+Esse conceito combina produtividade, formação de hábitos e elementos de jogos em uma interface visual com identidade própria.
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+## Tecnologias
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+- React 18 e TypeScript
+- Vite
+- Tailwind CSS e shadcn/ui
+- Supabase (autenticação, banco de dados e funções serverless)
+- TanStack Query
+- React Hook Form e Zod
+- Recharts
+- Vite PWA / Workbox
+- Vercel
 
-# Step 3: Install the necessary dependencies.
-npm i
+## Arquitetura
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
+```text
+Interface React
+    ├── Landing page, quiz e onboarding
+    ├── Dashboard, missões, hábitos e ranking
+    ├── Perfil, loja, finanças e assistente
+    └── PWA responsiva
+              │
+              ▼
+Supabase
+    ├── Autenticação
+    ├── PostgreSQL com Row Level Security
+    └── Edge Functions
+```
+
+## Executando localmente
+
+Requisitos: Node.js 18 ou superior e npm.
+
+```bash
+git clone https://github.com/gabrielziver/hero-your-tasks.git
+cd hero-your-tasks
+npm install
+cp .env.example .env
 npm run dev
 ```
 
-**Edit a file directly in GitHub**
+Preencha o arquivo `.env` com as credenciais públicas do seu projeto Supabase:
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+```env
+VITE_SUPABASE_PROJECT_ID=seu_project_id
+VITE_SUPABASE_PUBLISHABLE_KEY=sua_chave_publica
+VITE_SUPABASE_URL=https://seu-projeto.supabase.co
+```
 
-**Use GitHub Codespaces**
+## Segurança
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+- Credenciais privadas não fazem parte do repositório.
+- O acesso aos dados é protegido por políticas de Row Level Security no Supabase.
+- Cada usuário autenticado acessa apenas os registros permitidos pelas políticas do banco.
+- Variáveis públicas do frontend são fornecidas por ambiente durante o build.
 
-## What technologies are used for this project?
+## Status e próximos passos
 
-This project is built with:
+O projeto está em evolução. Entre as próximas melhorias planejadas estão o aprofundamento do assistente de IA, novos ciclos de recompensas, relatórios de produtividade e melhorias na experiência colaborativa.
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+## Autor
 
-## How can I deploy this project?
+Desenvolvido por [Gabriel Oliveira](https://github.com/gabrielziver).
 
-Simply open [Lovable](https://lovable.dev/projects/f8c3894b-3ee8-4653-a948-da2cc3d720af) and click on Share -> Publish.
+## Licença
 
-## Can I connect a custom domain to my Lovable project?
-
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+Este projeto é disponibilizado publicamente apenas para apresentação em portfólio e avaliação profissional. Consulte o arquivo [LICENSE](LICENSE) para os termos de uso.
