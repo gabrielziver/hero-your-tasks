@@ -12,6 +12,21 @@ Aplicação web de produtividade que transforma tarefas, hábitos e metas do dia
 
 O projeto é uma PWA responsiva e pode ser instalado no celular ou no computador diretamente pelo navegador.
 
+## Visão do produto
+
+<table>
+  <tr>
+    <td align="center"><strong>Jornada e progresso</strong></td>
+    <td align="center"><strong>Sequência diária</strong></td>
+    <td align="center"><strong>Jarvis AI</strong></td>
+  </tr>
+  <tr>
+    <td><img src="docs/screenshots/dashboard.png" alt="Dashboard do Hero Your Tasks com nível, XP, missões e progresso" width="280"></td>
+    <td><img src="docs/screenshots/streak.png" alt="Tela de sequência diária e consistência" width="280"></td>
+    <td><img src="docs/screenshots/jarvis-ai.png" alt="Interface conversacional do assistente Jarvis AI" width="280"></td>
+  </tr>
+</table>
+
 ## O que a aplicação oferece
 
 - **Missões diárias:** criação e acompanhamento de tarefas individuais ou em grupo.
@@ -21,7 +36,7 @@ O projeto é uma PWA responsiva e pode ser instalado no celular ou no computador
 - **Perfil personalizável:** avatares, mascotes, montarias e recompensas desbloqueáveis.
 - **Loja virtual:** uso das recompensas conquistadas dentro da experiência.
 - **Painel financeiro:** organização de receitas e despesas pessoais.
-- **Assistente de IA:** área experimental para apoio à organização e produtividade.
+- **Jarvis AI:** assistente pessoal em estágio experimental, com interface conversacional voltada à organização de tarefas, rotinas e metas.
 - **Quiz e diagnóstico:** jornada inicial para identificar o perfil de produtividade do usuário.
 - **PWA:** experiência instalável com suporte a uso em diferentes dispositivos.
 
@@ -88,7 +103,7 @@ VITE_SUPABASE_URL=https://seu-projeto.supabase.co
 
 ## Status e próximos passos
 
-O projeto está em evolução. Entre as próximas melhorias planejadas estão o aprofundamento do assistente de IA, novos ciclos de recompensas, relatórios de produtividade e melhorias na experiência colaborativa.
+O projeto está em evolução. Entre as próximas melhorias planejadas estão a integração do Jarvis AI a um modelo de linguagem, novos ciclos de recompensas, relatórios de produtividade e melhorias na experiência colaborativa.
 
 ## Autor
 
